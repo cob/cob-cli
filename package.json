@@ -1,0 +1,19 @@
+{
+  "name": "test-npm-bin",
+  "version": "1.0.0",
+  "description": "# Installing cob-cli `npm i -g cob-cli`",
+  "preferGlobal": true,
+  "main": "./bin/index.js",
+  "bin": {
+    "cob-cli": "./bin/index.js"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^5.0.0",
+    "inquirer": "^7.1.0",
+    "pad": "^3.2.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

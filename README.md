@@ -82,6 +82,7 @@ Utilizados:
 
  ## Bibliotecas potenciais para usar:
   * https://www.npmjs.com/package/listr
+  * https://www.npmjs.com/package/execa
   * https://www.npmjs.com/package/fs-extra
   * https://www.npmjs.com/package/copy-template-dir
   * https://www.npmjs.com/package/foreach-cli

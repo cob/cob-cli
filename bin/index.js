@@ -22,14 +22,12 @@ program
 
 program
     .command('customize')
-    .usage("")
     .description('Interactive prompt to customize an aspect of the server')
     .action( () => customize() );
 
 
 program
     .command('test')
-    .usage("")
     .description('Local test the current customization')
     .action( () => test() );
 

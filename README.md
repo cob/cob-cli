@@ -1,4 +1,4 @@
-# How to create customize CoB servers
+# CLI to customize CoB servers
 
 # Installing cob-cli
 `npm i -g cob-cli`
@@ -80,10 +80,13 @@ Utilizados:
  * https://javascript.info/promise-chaining#tasks
  * https://github.com/vuejs/vue-cli/tree/9c1e797ac6c25b5827403693e018eb199300d067/packages/%40vue/cli-service/generator/template/src
 
- ## Bibliotecas potenciais para usar:
+ ## Bibliotecas :
+Usadas:
   * https://www.npmjs.com/package/listr
   * https://www.npmjs.com/package/execa
   * https://www.npmjs.com/package/fs-extra
+
+  Potenciais:
   * https://www.npmjs.com/package/copy-template-dir
   * https://www.npmjs.com/package/foreach-cli
   * https://www.npmjs.com/package/commander-auto-complete

@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "# Installing cob-cli `npm i -g cob-cli`",
   "preferGlobal": true,
-  "main": "./bin/index.js",
+  "main": "./index.js",
   "bin": {
-    "cob-cli": "./bin/index.js"
+    "cob-cli": "./index.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
     "commander": "^5.0.0",
     "execa": "^4.0.0",
+    "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
     "listr": "^0.14.3",
     "pad": "^3.2.0"

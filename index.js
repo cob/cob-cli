@@ -2,17 +2,16 @@
 
 const program   = require('commander');
 
-const init      = require("../lib/init");
-const customize = require("../lib/customize");
-const test      = require("../lib/test");
-const deploy    = require("../lib/deploy");
+const init      = require("./commands/init");
+const customize = require("./commands/customize");
+const test      = require("./commands/test");
+const deploy    = require("./commands/deploy");
 
 /*******************************************/
 program
     .description('CoB Command line to simplify server customizations')
     .usage("command")
     
-
 program
     .command('init')
     .usage("<server>")
@@ -25,18 +24,14 @@ program
     .description('Interactive prompt to customize an aspect of the server')
     .action( () => customize() );
 
-
 program
     .command('test')
     .description('Local test the current customization')
     .action( () => test() );
 
-
 program
     .command('deploy')
-    .usage("")
     .description('Deploy current customization to the server')
     .action( () => deploy() );
-
 
 program.parse(process.argv);

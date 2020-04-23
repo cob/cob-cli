@@ -1,7 +1,39 @@
 const inquirer = require('inquirer');
 const colors = require('colors');
 const pad = require('pad');
-const values = require('../lib/options');
+
+
+let values = {}
+
+// coffee types
+values.options = [
+    {name: 'Espresso', price: '$5.99'},
+    {name: 'Latte', price: '$4.50'},
+    {name: 'Cappuchino', price: '$3.99'},
+    {name: 'Americano', price: '$2.50'},
+    {name: 'Macchiato', price: '$3.50'},
+];
+values.typesPlain = values.options.map(function(o) {
+    return o.name + ' (' + o.price + ')'; // convert to one line
+});
+
+// sugar levels
+values.sugar = [
+    {name: 'Low', spoons: '1'},
+    {name: 'Medium', spoons: '2'},
+    {name: 'High', spoons: '3'},
+    {name: 'Very High', spoons: '4'},
+];
+values.sugarPlain = values.sugar.map(function(o) {
+    return o.name + ' (' + o.spoons + ' spoons)'; // convert to one line
+});
+
+// served in
+values.servedIn = [
+    "Mug",
+    "Cup",
+    "Takeway package"
+];
 
 const questions = [
     { type: 'list', name: 'coffeType', message: 'Choose coffee type', choices: values.typesPlain },

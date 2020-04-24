@@ -5,15 +5,15 @@ function newProject(server) {
     return new Listr([
         {
             title: 'A...',
-            task: () => execa('touch', ['2'])
+            task: () => execa('touch', ['server_'+server])
         },
         {
             title: 'B...',
-            task: () => execa('touch', ['2'])
+            task: () => execa('touch', ['server_'+server])
         },
         {
-            title: 'C..',
-            task: () => execa('touch', ['3'])
+            title: 'C...',
+            task: () => execa('touch', ['server_'+server])
         }
     ]);
 }

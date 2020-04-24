@@ -1,5 +1,7 @@
 const colors = require('colors');
 
+/* ************************************************************************ */
+
 const options = [
     {name: 'Espresso', price: '$5.99'},
     {name: 'Latte', price: '$4.50'},
@@ -8,7 +10,9 @@ const options = [
     {name: 'Macchiato', price: '$3.50'},
 ];
 
-module.exports = function(server) {
+/* ************************************************************************ */
+
+function deploy(server) {
     console.log('Deploy');
     console.log('------------------');
 
@@ -17,3 +21,4 @@ module.exports = function(server) {
         console.log('%s %s', colors.bold(option.name), colors.grey('/ '+ option.price));
     });
 }
+module.exports = deploy;

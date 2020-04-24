@@ -8,6 +8,7 @@
     "cob-cli": "./index.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "colors": "^1.4.0",
     "commander": "^5.0.0",
     "execa": "^4.0.0",

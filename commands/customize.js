@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const colors = require('colors');
 const pad = require('pad');
 
+/* ************************************************************************ */
 
 let values = {}
 
@@ -44,7 +45,9 @@ const questions = [
     { type: 'confirm', name: 'stirrer', message: 'Do you prefer your coffee with a stirrer?', default: true },
 ];
 
-module.exports = function () {
+/* ************************************************************************ */
+
+function customize() {
     console.log('Deploy');
     inquirer
         .prompt(questions)
@@ -61,3 +64,4 @@ module.exports = function () {
             
         });
 };
+module.exports = customize;

@@ -62,6 +62,7 @@
 # Links consultados
 ## Sobre npm cli:
 Utilizados:
+  * https://medium.com/@thatisuday/creating-cli-executable-global-npm-module-5ef734febe32
   * https://itnext.io/making-cli-app-with-ease-using-commander-js-and-inquirer-js-f3bbd52977ac
   * https://www.twilio.com/blog/how-to-build-a-cli-with-node-js
   * https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/
@@ -82,6 +83,8 @@ Utilizados:
 
  ## Bibliotecas :
 Usadas:
+  * https://www.npmjs.com/package/commander
+  * https://www.npmjs.com/package/inquirer
   * https://www.npmjs.com/package/listr
   * https://www.npmjs.com/package/execa
   * https://www.npmjs.com/package/fs-extra

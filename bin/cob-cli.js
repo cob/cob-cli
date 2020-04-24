@@ -16,22 +16,23 @@ program
     .command('init')
     .usage("<server>")
     .arguments('<server>')
-    .description('Initializes a server customization. Use <server>.cultofbits.com (name without the FQDN)')
-    .action( (server) => init(server) );
+    .option('-l --legacy <folder>','import git history from legacy ClientConfs')
+    .description('initializes a server customization repository. Use <server>.cultofbits.com (i.e. name without the FQDN)')
+    .action( (server,args) => init(server,args) );
 
 program
     .command('customize')
-    .description('Interactive prompt to customize an aspect of the server')
+    .description('interactive prompt to customize an aspect of the server')
     .action( () => customize() );
 
 program
     .command('test')
-    .description('Local test the current customization')
+    .description('locally test the customization')
     .action( () => test() );
 
 program
     .command('deploy')
-    .description('Deploy current customization to the server')
+    .description('deploy customization to the server')
     .action( () => deploy() );
 
 program.parse(process.argv);

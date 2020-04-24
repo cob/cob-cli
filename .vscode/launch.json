@@ -6,6 +6,7 @@
     "configurations": [
 
 
+
         {
             "type": "node",
             "request": "launch",
@@ -13,8 +14,11 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/index.js",
-            "args": ["init","3"],
+            //cwd é necessário para correr o debuger sem ter o aviso (da lógica normal do programa) a avisar que não se pode correr a aplicação numa directoria que faça parte de um repositório
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/..",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["init","dogfooding"],
         }
     ]
 }

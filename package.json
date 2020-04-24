@@ -1,5 +1,5 @@
 {
-  "name": "test-npm-bin",
+  "name": "cob-cli",
   "version": "1.0.0",
   "description": "# Installing cob-cli `npm i -g cob-cli`",
   "preferGlobal": true,
@@ -19,6 +19,6 @@
     "simple-git": "^1.132.0"
   },
   "keywords": [],
-  "author": "",
+  "author": "mimes70",
   "license": "ISC"
 }

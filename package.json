@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "# Installing cob-cli `npm i -g cob-cli`",
   "preferGlobal": true,
-  "main": "./index.js",
+  "main": "./bin/cob-cli.js",
   "bin": {
-    "cob-cli": "./index.js"
+    "cob-cli": "./bin/cob-cli.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -15,7 +15,8 @@
     "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
     "listr": "^0.14.3",
-    "pad": "^3.2.0"
+    "pad": "^3.2.0",
+    "simple-git": "^1.132.0"
   },
   "keywords": [],
   "author": "",

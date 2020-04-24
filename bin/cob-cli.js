@@ -2,10 +2,10 @@
 
 const program   = require('commander');
 
-const init      = require("./commands/init");
-const customize = require("./commands/customize");
-const test      = require("./commands/test");
-const deploy    = require("./commands/deploy");
+const init      = require("../lib/commands/init");
+const customize = require("../lib/commands/customize");
+const test      = require("../lib/commands/test");
+const deploy    = require("../lib/commands/deploy");
 
 /*******************************************/
 program

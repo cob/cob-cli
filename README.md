@@ -10,7 +10,7 @@
  * `cob-cli test`
  * `cob-cli deploy`
 
-## cob-cli init \<server>
+## cob-cli init \<server> [--legacy <folder>]
 
 ## cob-cli customize
 
@@ -38,6 +38,7 @@
 
 
 # TODO:
+   * Suportar mode de deploy manual (basicamente hão de ser as instruções de cópia - considerar pelo menos a Lidl e Abanca)
    * Considerar autocomplete para cob-cli (ver package [commander-auto-complete](https://www.npmjs.com/package/commander-auto-complete)), nomeadamente a parte que refere:
       > If you want this done automatically for you, you could add that script to npm lifecycle hooks
 

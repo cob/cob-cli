@@ -5,5 +5,3 @@
 #abort if `/opt/cob-cli.checkout/ACTIVE_VERSION` != "master" ==> ERROR: current configuration set to `echo ACTIVE_VERSION`
 
 #echo "Can't auto-deploy production. Files differ. Do a cob-cli resync."
-
-`

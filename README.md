@@ -85,6 +85,7 @@ Used:
       * https://wpengine.com/support/git/
       * https://wpengine.com/support/deploying-code-with-bitbucket-pipelines-wp-engine/
       * https://security.stackexchange.com/questions/45452/is-using-git-for-deploying-a-bad-practice
+      * https://www.git-scm.com/docs/githooks
    * Proposed git Workflow: 
       * https://githubflow.github.io (in contrast with https://nvie.com/posts/a-successful-git-branching-model/)
       * https://gist.github.com/cjsteel/5bdab49c97ecacb67904056ccdcb956d

@@ -18,7 +18,7 @@
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
             "cwd": "${workspaceRoot}/..",
             "program": "${workspaceFolder}/bin/cob-cli.js",
-            "args": ["init","demo"],
+            "args": ["init","mimes8"],
         }
     ]
 }

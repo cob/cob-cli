@@ -54,6 +54,7 @@ Note: This command might not be available to the whole development team and henc
 ---
 
 ## TODO:
+   * Support user other than `cob`
    * Support manual mode deployment (basically the copy intructions and deploy process - considerar pelo menos a Lidl e Abanca)
    * Consider adding autocomplete to cob-cli (see package [commander-auto-complete](https://www.npmjs.com/package/commander-auto-complete)), specifically:
       > If you want this done automatically for you, you could add that script to npm lifecycle hooks
@@ -80,8 +81,13 @@ Used:
    * About deploys: 
       * https://dev.to/becodeorg/deploy-an-application-automatically-using-github-hooks-50fd
       * https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
+      * https://devcenter.heroku.com/articles/git
+      * https://wpengine.com/support/git/
+      * https://wpengine.com/support/deploying-code-with-bitbucket-pipelines-wp-engine/
+      * https://security.stackexchange.com/questions/45452/is-using-git-for-deploying-a-bad-practice
    * Proposed git Workflow: 
       * https://githubflow.github.io (in contrast with https://nvie.com/posts/a-successful-git-branching-model/)
+      * https://gist.github.com/cjsteel/5bdab49c97ecacb67904056ccdcb956d
 
 ## Improving vue boilerplate
  * https://gitlab.com/cob/vue-cli-preset
@@ -104,3 +110,7 @@ Used:
       * https://www.npmjs.com/package/copy-template-dir
       * https://www.npmjs.com/package/foreach-cli
       * https://www.npmjs.com/package/commander-auto-complete
+
+# cob-cli development
+
+ * Using VSCode you can debug the command line behaviour. The file `.vscode/launch.json` has the command and arguments that will be used. Note that the `cob-cli` will run on the upper directory of where the project is located, as specified in this file.

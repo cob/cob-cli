@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# check out master branch
+GIT_WORK_TREE=/opt/cob-cli.production.checkout git checkout -f master

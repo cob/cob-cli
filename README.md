@@ -104,6 +104,7 @@ Used:
       * https://www.npmjs.com/package/commander
       * https://www.npmjs.com/package/inquirer
       * https://www.npmjs.com/package/listr
+      * https://www.npmjs.com/package/simple-git
       * https://www.npmjs.com/package/execa
       * https://www.npmjs.com/package/fs-extra
 

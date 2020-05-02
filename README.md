@@ -105,20 +105,12 @@ Used:
 
 ## Packages 
    * Used:
-<<<<<<< Updated upstream
       * https://www.npmjs.com/package/commander
       * https://www.npmjs.com/package/inquirer
       * https://www.npmjs.com/package/listr
       * https://www.npmjs.com/package/simple-git
       * https://www.npmjs.com/package/execa
       * https://www.npmjs.com/package/fs-extra
-=======
-	  * https://www.npmjs.com/package/commander
-	  * https://www.npmjs.com/package/inquirer
-	  * https://www.npmjs.com/package/listr
-	  * https://www.npmjs.com/package/execa
-	  * https://www.npmjs.com/package/fs-extra
->>>>>>> Stashed changes
 
    * Potentials:
 	  * https://www.npmjs.com/package/copy-template-dir

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# check out master branch
-GIT_WORK_TREE=/opt/cob-cli.staging.checkout git checkout -f master

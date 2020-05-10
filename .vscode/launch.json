@@ -4,21 +4,57 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
-
-
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "cd server_mimes8; cob-cli test",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            //cwd é necessário para correr o debuger sem ter o aviso (da lógica normal do programa) a avisar que não se pode correr a aplicação numa directoria que faça parte de um repositório
+            //cwd é necessário para correr o debuger na directoria ../server_mimes8
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/../server_mimes8",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["test"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cd server_mimes8; cob-cli deploy",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            //cwd é necessário para correr o debuger na directoria ../server_mimes8
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/../server_mimes8",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["deploy"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cob-cli init mimes8",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            //cwd é necessário para correr o debuger na directoria ../
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
             "cwd": "${workspaceRoot}/..",
             "program": "${workspaceFolder}/bin/cob-cli.js",
             "args": ["init","mimes8"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cob-cli init dogfooding -l CoB/dogfooding",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            //cwd é necessário para correr o debuger na directoria ../
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/..",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["init","dogfooding","-l","CoB/dogfooding"],
         }
     ]
 }

@@ -7,6 +7,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "cd server_mimes8; cob-cli test",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            //cwd é necessário para correr o debuger na directoria ../server_mimes8
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/../server_mimes8",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["test"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "cd server_mimes8; cob-cli deploy",
             "skipFiles": [
                 "<node_internals>/**"

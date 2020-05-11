@@ -34,6 +34,6 @@ program
 program
     .command('deploy')
     .description('Deploy customization to the server')
-    .action( () => deploy() );
+    .action( (args) => deploy(args) );
 
 program.parse(process.argv);

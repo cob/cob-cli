@@ -1,7 +1,7 @@
 {
   "name": "cob-cli",
-  "version": "0.1.0",
-  "description": "# Installing cob-cli `npm i -g cob-cli`",
+  "version": "0.9.0",
+  "description": "A command line utility to help Cult of Bits partners develop with higher speed and reusing common code and best practices.",
   "preferGlobal": true,
   "main": "./bin/cob-cli.js",
   "bin": {

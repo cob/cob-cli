@@ -59,7 +59,7 @@ Note: This command might not be available to the whole development team and henc
 
 ## TODO:
    * Support user other than `cob`
-   * Support manual mode deployment (basically the copy intructions and deploy process - considerar pelo menos a Lidl e Abanca)
+   * Support manual mode deployment (basically the copy intructions and a deploy process script)
    * Consider adding autocomplete to cob-cli (see package [commander-auto-complete](https://www.npmjs.com/package/commander-auto-complete)), specifically:
       > If you want this done automatically for you, you could add that script to npm lifecycle hooks
 

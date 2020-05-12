@@ -1,4 +1,5 @@
 # COB-CLI: customizing CoB servers
+__cob-cli__ is a command line utility to help Cult of Bits partners develop with higher speed and reusing common code and best practices.
 
 ## Installing cob-cli
 `npm i -g cob-cli`

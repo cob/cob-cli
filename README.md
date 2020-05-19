@@ -82,6 +82,11 @@ Used:
       * https://nodesource.com/blog/node-js-powerful-beautiful-clis
 
 ## About using git for production deployments
+   * Using commit messages to manage semantic-release:
+      * https://www.conventionalcommits.org/en/v1.0.0/
+      * https://github.com/semantic-release/semantic-release
+      * https://github.com/semantic-release/changelog
+      * https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits
    * About deploys: 
       * https://dev.to/becodeorg/deploy-an-application-automatically-using-github-hooks-50fd
       * https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks

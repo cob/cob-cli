@@ -85,8 +85,10 @@ Used:
    * Using commit messages to manage semantic-release:
       * https://www.conventionalcommits.org/en/v1.0.0/
       * https://github.com/semantic-release/semantic-release
-      * https://github.com/semantic-release/changelog
+      * https://github.com/semantic-release/semantic-release/blob/master/docs/extending/plugins-list.md
+      * https://github.com/oleg-koval/semantic-release-npm-github-publish (from [Shareable configurations list](https://github.com/semantic-release/semantic-release/blob/master/docs/extending/shareable-configurations-list.md))
       * https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits
+      * https://blog.usejournal.com/semantic-release-with-nodejs-full-gitlab-ci-flow-dfee9639f20f
    * About deploys: 
       * https://dev.to/becodeorg/deploy-an-application-automatically-using-github-hooks-50fd
       * https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks

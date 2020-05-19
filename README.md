@@ -49,9 +49,11 @@ All other files imply a copy to the server. Each of the files copied to the serv
 
 ---
 
-### cob-cli deploy
-This last command alows you to close a development branch and deploy it to the server, garanting that there are no conflicts.
+### cob-cli deploy [-f,--force]
+This last command alows you to deploy your finished developmentto the server, garanting that there are no conflicts with changes made by other.
 In adition it promotes the management of adequate and updated documentation.
+
+The --force option allows to bypass the conflict test and deploy the local configuration independently of the existing conditions. It should be used with extreme caution and only to resolve problems not possible to resolve in other ways.
 
 Note: This command might not be available to the whole development team and hence some member might just pre-deploy to git hub and it's up to priveledge member of the this to finalize the deploy process after, typically after review.
 

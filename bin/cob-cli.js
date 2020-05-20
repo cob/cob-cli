@@ -34,6 +34,7 @@ program
 
 program
     .command('deploy')
+    .option('-f --force', 'skips comparisons')
     .description('Deploy customization to the server')
     .action( (args) => deploy(args) );
 

@@ -7,33 +7,33 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "cd server_mimes8; cob-cli test",
+            "name": "cd server_higest; cob-cli test",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             //cwd é necessário para correr o debuger na directoria ../server_mimes8
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
-            "cwd": "${workspaceRoot}/../server_mimes8",
+            "cwd": "${workspaceRoot}/../server_higest",
             "program": "${workspaceFolder}/bin/cob-cli.js",
             "args": ["test"],
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "cd server_mimes8; cob-cli deploy",
+            "name": "cd server_higest; cob-cli deploy",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             //cwd é necessário para correr o debuger na directoria ../server_mimes8
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
-            "cwd": "${workspaceRoot}/../server_mimes8",
+            "cwd": "${workspaceRoot}/../server_higest",
             "program": "${workspaceFolder}/bin/cob-cli.js",
             "args": ["deploy"],
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "cob-cli init mimes8",
+            "name": "cob-cli init higest",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -41,7 +41,7 @@
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
             "cwd": "${workspaceRoot}/..",
             "program": "${workspaceFolder}/bin/cob-cli.js",
-            "args": ["init","mimes8"],
+            "args": ["init","higest"],
         },
         {
             "type": "node",

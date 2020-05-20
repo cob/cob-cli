@@ -18,6 +18,7 @@ program
     .arguments('<server>')
     .option('-l --legacy <folder>','import git history from legacy ClientConfs. <folder> should be path to server files inside ClienConfs.')
     .option('-a --repoaccount <account url>', 'Specify git account to use', "https://gitlab.com/cob/")
+    .option('-V --verbose', 'verbose execution of tasks')
     .description('Initializes a server customization repository. Use <server>.cultofbits.com (i.e. name without the FQDN)')
     .action( (server,args) => init(server,args) );
 

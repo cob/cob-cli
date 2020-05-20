@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/cob/cob-cli/compare/v0.12.0...v0.13.0) (2020-05-20)
+
+
+### Bug Fixes
+
+* corrects when to add time to the commit message ([47d2bec](https://github.com/cob/cob-cli/commit/47d2becc61de9549dd05daee79fe4318ca649bf0))
+
+
+### Chores
+
+* deploy 0.13.0 to server ([8ef40ef](https://github.com/cob/cob-cli/commit/8ef40ef04d172b4fe4301489f36116b1636e68bf))
+
+
+### Documentation
+
+* readme minor fix ([710760b](https://github.com/cob/cob-cli/commit/710760b5fabfc37a0f2826f687536a484ab340eb))
+
+
+### Features
+
+* show diff and confirm deploy ([7e2d61b](https://github.com/cob/cob-cli/commit/7e2d61b1789f52cf2e8a5d9cd04fe995f5cbb323))
+
+
+### Miscellaneous
+
+* 0.13.0 ([2020.5.20  0959c8c](https://github.com/cob/cob-cli/commit/0959c8c09ca0c434cc65d5138d529ee46d8e778d))
+* 0.12.0 ([2020.5.20  8aa8955](https://github.com/cob/cob-cli/commit/8aa8955f49e1f0129a3ceda090353ec67ba32f05))
+
 # [0.12.0](https://github.com/cob/cob-cli/compare/v0.11.0...v0.12.0) (2020-05-20)
 
 

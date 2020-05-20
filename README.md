@@ -11,7 +11,7 @@ There are 4 commands. The first, `init`, is to be run once in the begging of cus
  * `cob-cli init <server> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]`
  * `cob-cli customize`
  * `cob-cli test`
- * `cob-cli deploy`
+ * `cob-cli deploy [-f,--force]`
 
 ---
 

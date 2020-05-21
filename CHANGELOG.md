@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/cob/cob-cli/compare/v0.13.0...v0.13.1) (2020-05-21)
+
+
+### Code Refactoring
+
+* major reorganization of files ([b5a28a7](https://github.com/cob/cob-cli/commit/b5a28a753676f68d71052f3254465cdc0f8969ab))
+
+
+### Documentation
+
+* changelog cleaning ([598a562](https://github.com/cob/cob-cli/commit/598a5629c563c079146bd596725f91ce937200a9))
+
+
+### Miscellaneous
+
+* README cleanup ([2020.5.21  7f5e14b](https://github.com/cob/cob-cli/commit/7f5e14b1f848425af53d31d042a6ad6836a2e0ce))
+
 # [0.13.0](https://github.com/cob/cob-cli/compare/v0.12.0...v0.13.0) (2020-05-20)
 
 
@@ -29,4 +46,3 @@ All notable changes to this project will be documented in this file. See
 ### Documentation
 
 * add info regarding semantic-release references ([ff78feb](https://github.com/cob/cob-cli/commit/ff78febbda4a3195a12a925f1c5f635d7dba88e0))
-

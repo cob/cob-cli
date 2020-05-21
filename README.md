@@ -8,7 +8,7 @@ __cob-cli__ is a command line utility to help Cult of Bits partners develop with
 
 There are 4 commands. The first, `init`, is to be run once in the begging of customization of each server. The three other should be used sequentially serveral times during development (1.`customize`, 2.`test`, 3.`deploy`).
 
- * `cob-cli init <server> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]`
+ * `cob-cli init <servername> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]`
  * `cob-cli customize`
  * `cob-cli test`
  * `cob-cli deploy [-f,--force]`
@@ -21,7 +21,8 @@ This command has two diferent behaviors, depending on the circumstances:
  1. If already exists a repo in `https:/gitlab/cob/` (or the specified --repoaccount) for this server just do a `git clone` of that repo.
  2. Otherwise, creates all the infrastucture to suport the server customization. In this last option, if the `--legacy` is used, in addition to creating the infrastructure it will try to rebuild the server customization history, existing on the legacy repo (old ClientConfs).
 
-`cob-cli init` should be run on a directory that is not already in a git repo, that does not already have a project directory for this server, and in a computer with access to the server and the internet.
+ By default a new repo will be created in the cob gitlab account, [https://gitlab.com/cob](https://gitlab.com/cob). 
+ The `--repoaccount` option allows the use of a different account.
 
 ---
 
@@ -59,38 +60,56 @@ Note: This command might not be available to the whole development team and henc
 
 ---
 
+## cob-cli development
+ * **debugging**: Using VSCode you can debug the command line behaviour. The file `.vscode/launch.json` has the commands and arguments that will be used. Note that the `cob-cli` command will run on the on the directories specified in this file.
+
+---
+
 ## TODO:
    * Support user other than `cob`
    * Support manual mode deployment (basically the copy intructions and a deploy process script)
    * Consider adding autocomplete to cob-cli (see package [commander-auto-complete](https://www.npmjs.com/package/commander-auto-complete)), specifically:
-      > If you want this done automatically for you, you could add that script to npm lifecycle hooks
+      > _If you want this done automatically for you, you could add that script to npm lifecycle hooks_
 
 
 # References:
 
+## Packages 
+   * Used:
+      * https://www.npmjs.com/package/commander
+      * https://www.npmjs.com/package/inquirer
+      * https://www.npmjs.com/package/listr
+      * https://www.npmjs.com/package/simple-git
+      * https://www.npmjs.com/package/execa
+      * https://www.npmjs.com/package/fs-extra
+
+   * Potentials:
+      * https://www.npmjs.com/package/copy-template-dir
+      * https://www.npmjs.com/package/commander-auto-complete
+
 ## About npm cli
-Used:
    * Base info about adding node cmds to path environment :
       * https://medium.com/@thatisuday/creating-cli-executable-global-npm-module-5ef734febe32
-   * Additional about supporting multiple commands and parsing arguments: 
+   * Additional info about supporting multiple commands and parsing arguments: 
       * https://itnext.io/making-cli-app-with-ease-using-commander-js-and-inquirer-js-f3bbd52977ac
-   * NPM package publishing: 
-      * https://zellwk.com/blog/publish-to-npm/
    * About inquirer e listr
       * https://www.twilio.com/blog/how-to-build-a-cli-with-node-js
+   * NPM package publishing: 
+      * https://zellwk.com/blog/publish-to-npm/
    * Others:
       * https://www.sitepoint.com/javascript-command-line-interface-cli-node-js/
       * https://www.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/
       * https://nodesource.com/blog/node-js-powerful-beautiful-clis
 
+## About using commit messages to manage semantic-release:
+   * https://www.conventionalcommits.org/en/v1.0.0/
+   * https://github.com/semantic-release/semantic-release
+   * https://github.com/semantic-release/semantic-release/blob/master/docs/extending/plugins-list.md
+   * https://github.com/oleg-koval/semantic-release-npm-github-publish (from [Shareable configurations list](https://github.com/semantic-release/semantic-release/blob/master/docs/extending/shareable-configurations-list.md))
+   * https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits
+   * https://blog.usejournal.com/semantic-release-with-nodejs-full-gitlab-ci-flow-dfee9639f20f
+
 ## About using git for production deployments
-   * Using commit messages to manage semantic-release:
-      * https://www.conventionalcommits.org/en/v1.0.0/
-      * https://github.com/semantic-release/semantic-release
-      * https://github.com/semantic-release/semantic-release/blob/master/docs/extending/plugins-list.md
-      * https://github.com/oleg-koval/semantic-release-npm-github-publish (from [Shareable configurations list](https://github.com/semantic-release/semantic-release/blob/master/docs/extending/shareable-configurations-list.md))
-      * https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits
-      * https://blog.usejournal.com/semantic-release-with-nodejs-full-gitlab-ci-flow-dfee9639f20f
    * About deploys: 
       * https://dev.to/becodeorg/deploy-an-application-automatically-using-github-hooks-50fd
       * https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
@@ -111,21 +130,3 @@ Used:
  * https://cli.vuejs.org/dev-guide/plugin-dev.html#discoverability
  * https://javascript.info/promise-chaining#tasks
  * https://github.com/vuejs/vue-cli/tree/9c1e797ac6c25b5827403693e018eb199300d067/packages/%40vue/cli-service/generator/template/src
-
-## Packages 
-   * Used:
-      * https://www.npmjs.com/package/commander
-      * https://www.npmjs.com/package/inquirer
-      * https://www.npmjs.com/package/listr
-      * https://www.npmjs.com/package/simple-git
-      * https://www.npmjs.com/package/execa
-      * https://www.npmjs.com/package/fs-extra
-
-   * Potentials:
-      * https://www.npmjs.com/package/copy-template-dir
-      * https://www.npmjs.com/package/foreach-cli
-      * https://www.npmjs.com/package/commander-auto-complete
-
-# cob-cli development
-
- * Using VSCode you can debug the command line behaviour. The file `.vscode/launch.json` has the command and arguments that will be used. Note that the `cob-cli` will run on the upper directory of where the project is located, as specified in this file.

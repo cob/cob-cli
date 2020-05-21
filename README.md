@@ -24,6 +24,8 @@ This command has two diferent behaviors, depending on the circumstances:
  By default a new repo will be created in the cob gitlab account, [https://gitlab.com/cob](https://gitlab.com/cob). 
  The `--repoaccount` option allows the use of a different account.
 
+ In adition to setting up the local repository `cob-cli init` also creates the `.git/hooks/commit-msg` file. This will make set mandatory the use of [conventionalcommits](www.conventionalcommits.org) for the commit messages to the project.
+
 ---
 
 ### cob-cli customize

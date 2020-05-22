@@ -14,11 +14,7 @@ All notable changes to this project will be documented in this file. See
 ### Documentation
 
 * changelog cleaning ([598a562](https://github.com/cob/cob-cli/commit/598a5629c563c079146bd596725f91ce937200a9))
-
-
-### Miscellaneous
-
-* README cleanup ([2020.5.21  7f5e14b](https://github.com/cob/cob-cli/commit/7f5e14b1f848425af53d31d042a6ad6836a2e0ce))
+* README cleanup ([7f5e14b](https://github.com/cob/cob-cli/commit/7f5e14b1f848425af53d31d042a6ad6836a2e0ce))
 
 # [0.13.0](https://github.com/cob/cob-cli/compare/v0.12.0...v0.13.0) (2020-05-20)
 

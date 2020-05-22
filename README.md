@@ -50,6 +50,8 @@ Many of the changes are serverd locally from the development machine and are not
 
 All other files imply a copy to the server. Each of the files copied to the server has a backup of any pre-existing one. Once the `test` command ends all copied files are removed and any existing backups are restored.
 
+While in testing you can press `o` or `O` to open your default browser with the url for the local tests. You can also use `enter` to space your logs, if you want.
+
 ---
 
 ### cob-cli deploy [-f,--force]

@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
 ## [0.13.1](https://github.com/cob/cob-cli/compare/v0.13.0...v0.13.1) (2020-05-21)
 

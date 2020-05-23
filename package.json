@@ -7,6 +7,9 @@
   "bin": {
     "cob-cli": "./bin/cob-cli.js"
   },
+  "scripts": {
+    "publish" : "semantic-release -e ./lib/task_lists/deploy_semanticReleaseConfiguration.js --no-ci"
+  },
   "dependencies": {
     "axios": "^0.19.2",
     "colors": "^1.4.0",

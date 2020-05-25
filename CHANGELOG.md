@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
-## [0.13.2](https://github.com/cob/cob-cli/compare/v0.13.1...v0.13.2) (2020-05-23)
+## [0.14.0 ](https://github.com/cob/cob-cli/compare/v0.13.1...v0.13.2) (2020-05-23)
 
 ### Feature
 
-* **deploy:** correct error throw and fix waitForAnswer ([2020.5.23  87caac6](https://github.com/cob/cob-cli/commit/87caac6b52f5e1a04fc685d287f879dab050de29))
-* **test:** support for default browser ([2020.5.22  4043882](https://github.com/cob/cob-cli/commit/404388210ff8fe3129a1b14027cf223956845e86))
-* **test:** watch for file changes other then `customUI` ([2020.5.21  9f4ac28](https://github.com/cob/cob-cli/commit/9f4ac28bf1e947949ee40779d3ab91cefb3708c7))
+* **deploy:** correct error throw and fix waitForAnswer ([87caac6](https://github.com/cob/cob-cli/commit/87caac6b52f5e1a04fc685d287f879dab050de29))
+* **test:** support for default browser ([4043882](https://github.com/cob/cob-cli/commit/404388210ff8fe3129a1b14027cf223956845e86))
+* **test:** watch for file changes other then `customUI` ([9f4ac28](https://github.com/cob/cob-cli/commit/9f4ac28bf1e947949ee40779d3ab91cefb3708c7))
 
 ### Bug Fixes
 

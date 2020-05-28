@@ -35,6 +35,7 @@ program
 program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
+    .option('-s --resync <reason>', 'updates local checkout with live server files. <reason> should brefly explain how changes happend')
     .description('Deploy customization to the server')
     .action( (args) => deploy(args) );
 

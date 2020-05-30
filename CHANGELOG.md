@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.16.0](https://github.com/cob/cob-cli/compare/v0.14.0...v0.15.0) (2020-05-30)
+
+
+### Features
+
+* add syncronization of changes done while testing ([f49bc88](https://github.com/cob/cob-cli/commit/f49bc887ed092579a7ef9c73c3db388377d9acc1))
+* add aditional validation to deploy - no test running ([053c8e6](https://github.com/cob/cob-cli/commit/053c8e65539653db203b86d4c0a1ad98afde2a21))
+* add resync option to deploy ([1c9b9b0](https://github.com/cob/cob-cli/commit/1c9b9b06850a645d8f6efa099669ef32707f4c5d))
+* add support for /opt/others ([fbc9060](https://github.com/cob/cob-cli/commit/fbc9060a63016c070930bf2b54a49956706cb0e1))
+* add support for nginx configurations ([9c2882a](https://github.com/cob/cob-cli/commit/9c2882a7f9d9f45a09fdb0ed3d827a39f77d2efd))
+* add undo capabilities to server changed files in begging of test ([6f7e9ee](https://github.com/cob/cob-cli/commit/6f7e9eee7a56043237010b575e9722868dd444b1))
+* add user info to the running test file ([26f8a39](https://github.com/cob/cob-cli/commit/26f8a39c3c310c6e792eab1ed667d2976cdf8e54))
+* assert no aditional 'cob-cli test' running on the same project ([da207a1](https://github.com/cob/cob-cli/commit/da207a1eba4438b756f117cb1e255b80ed498553))
+
+
+### Bug Fixes
+
+* correct the skipping of `git stash pop` ([2d55538](https://github.com/cob/cob-cli/commit/2d555388ae504ae3fb93e9fc86620bf17c517add))
+* prevent sync of test file flag ([bec734c](https://github.com/cob/cob-cli/commit/bec734c2fef29b71797c0a6112d0be212ba6c99f))
+* support empty directories on server ([0639994](https://github.com/cob/cob-cli/commit/06399947a341c76ddbfb5bae98cbbe1196d64992))
+
+
 ## [0.14.0 ](https://github.com/cob/cob-cli/compare/v0.13.1...v0.13.2) (2020-05-23)
 
 ### Feature

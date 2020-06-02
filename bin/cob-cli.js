@@ -6,6 +6,7 @@ const init      = require("../lib/commands/init");
 const customize = require("../lib/commands/customize");
 const test      = require("../lib/commands/test");
 const deploy    = require("../lib/commands/deploy");
+const reset    = require("../lib/commands/reset");
 
 /*******************************************/
 program
@@ -35,8 +36,13 @@ program
 program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
-    .option('-s --resync <reason>', 'updates local checkout with live server files. <reason> should brefly explain how changes happend')
     .description('Deploy customization to the server')
     .action( (args) => deploy(args) );
+
+
+program
+    .command('reset')
+    .description('Updates local copy with current files on server, in case of changes made out of standard process.')
+    .action( () => reset() );
 
 program.parse(process.argv);

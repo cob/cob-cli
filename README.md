@@ -6,7 +6,7 @@ __cob-cli__ is a command line utility to help Cult of Bits partners develop with
 
 ## Available commands
 
-There are 4 commands. The first, `init`, is to be run once in the begging of customization of each server. The three other should be used sequentially serveral times during development (1.`customize`, 2.`test`, 3.`deploy`).
+There are 4 commands. The first, `init`, is to be run once in the beginning of customization of each server. The three other should be used sequentially serveral times during development (1.`customize`, 2.`test`, 3.`deploy`).
 
  * `cob-cli init <servername> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]`
  * `cob-cli customize`
@@ -15,7 +15,7 @@ There are 4 commands. The first, `init`, is to be run once in the begging of cus
 
 ---
 
-### cob-cli init <server> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]
+### cob-cli init \<servername> [-l,--legacy <folder>] [-a,--repoaccount \<git acount url>]
 
 This command has two diferent behaviors, depending on the circumstances:
  1. If already exists a repo in `https:/gitlab/cob/` (or the specified --repoaccount) for this server just do a `git clone` of that repo.

@@ -6,7 +6,7 @@ const init      = require("../lib/commands/init");
 const customize = require("../lib/commands/customize");
 const test      = require("../lib/commands/test");
 const deploy    = require("../lib/commands/deploy");
-const reset    = require("../lib/commands/reset");
+const updateFromServer = require("../lib/commands/updateFromServer");
 
 /*******************************************/
 program
@@ -41,8 +41,8 @@ program
 
 
 program
-    .command('reset')
+    .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
-    .action( () => reset() );
+    .action( () => updateFromServer() );
 
 program.parse(process.argv);

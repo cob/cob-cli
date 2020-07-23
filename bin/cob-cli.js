@@ -36,6 +36,7 @@ program
 program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
+    .option('-V --verbose', 'verbose execution of tasks')
     .description('Deploy customization to the server')
     .action( (args) => deploy(args) );
 

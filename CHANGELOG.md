@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.17.0](https://github.com/cob/cob-cli/compare/v0.16.0...v0.17.0) (2020-07-23)
+
+
+### Bug Fixes
+
+* add revert of 'git checkout latestbranch' in case of error ([3953e9a](https://github.com/cob/cob-cli/commit/3953e9a88bb21101f265bcfe8ebd59e422b5cea3))
+* add specific load of slow scripts ([f08da39](https://github.com/cob/cob-cli/commit/f08da3922699ad5a6d87867473c993635b92d95e))
+* create directories, if non existing ([43d6094](https://github.com/cob/cob-cli/commit/43d6094912b8c16b1d446bb32a64ebac63cd0e8b))
+* formatRsyncOutput only parses relevant lines ([637c6a0](https://github.com/cob/cob-cli/commit/637c6a0c85c30b6a0a11a740486f23673ff912e1))
+* not redine cob.custom if already exists ([90c6956](https://github.com/cob/cob-cli/commit/90c6956352e0fd4412b03c8e1b2de330cfbdb3ed))
+* problemas com dirs sem acesso ou inexistentes ([2bb1a04](https://github.com/cob/cob-cli/commit/2bb1a0479de6d41f491ab37efd303647f64090f3))
+* **test:** exclude customUI from initial copy to server ([24fcfff](https://github.com/cob/cob-cli/commit/24fcfffd6319161807dccb69d3a466ccccd63ea7))
+
+
+### Code Refactoring
+
+* change names & extract function ([c60bd53](https://github.com/cob/cob-cli/commit/c60bd538371f67c900ec75b6b1bdf5f83b9e38ba))
+* remove checkNoTestRunningLocally  unnecessary argument ([42b4dd4](https://github.com/cob/cob-cli/commit/42b4dd4d03913f1f8281bdcfb67bc355d2dd38d2))
+* removed unnecessary function argument ([8de44b6](https://github.com/cob/cob-cli/commit/8de44b6b2deb65e23c82cf193879058a95f7c9bc))
+
+
+### Documentation
+
+* correct typos ([dd3cfed](https://github.com/cob/cob-cli/commit/dd3cfed9e5f0189557c8e7993cb1be0ab9acf6ce))
+* describe tests to perform ([1337a4c](https://github.com/cob/cob-cli/commit/1337a4c54bac2c7f2e7614afdd59ed643f88740d))
+* describe teststo perform ([f4acd78](https://github.com/cob/cob-cli/commit/f4acd7814a3913f6f336cc62b2ee570706576a1c))
+
+
+### Features
+
+* **deploy:** add verbose option for troubleshoot ([910a2a5](https://github.com/cob/cob-cli/commit/910a2a52920e4ac07a516240c0b22870d678c969))
+* add 'cob-cli reset' command ([9965956](https://github.com/cob/cob-cli/commit/9965956649d3e4c0f842cec07e16dae84cb5c3fc))
+* add validate of conditions to updateFromServer ([812e1e7](https://github.com/cob/cob-cli/commit/812e1e7ccb54cfa35f944cfac33f56b971f0e3f0))
+
+
+### Miscellaneous
+
+* Merge branch 'master' of https://github.com/cob/cob-cli ([2020.7.07  e6c07e4](https://github.com/cob/cob-cli/commit/e6c07e49420f7a8cc04ab6fd155b73b269ca8957))
+* Merge branch 'master' of github.com:cob/cob-cli ([2020.6.12  5abb687](https://github.com/cob/cob-cli/commit/5abb6878b44f9e1b9ea5bd15cc0d573120ad6f70))
+* Merge branch 'master' of github.com:cob/cob-cli ([2020.6.02  c2b52cb](https://github.com/cob/cob-cli/commit/c2b52cb4783b56bc67ff612ada8cfa0caff2e8c6))
+* Delete CHANGELOG.md ([2020.6.01  899cf97](https://github.com/cob/cob-cli/commit/899cf97dd0e4f9ca19307886a22478f8addaa16e))
+
 # [0.16.0](https://github.com/cob/cob-cli/compare/v0.14.0...v0.15.0) (2020-05-30)
 
 

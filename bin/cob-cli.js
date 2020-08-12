@@ -30,8 +30,9 @@ program
 
 program
     .command('test')
+    .option('-d --dashboard <dashboard>', 'Aditionally specify a VUE dashboard to test')
     .description('Locally test the customization')
-    .action( () => test() );
+    .action( (args) => test(args) );
 
 program
     .command('deploy')

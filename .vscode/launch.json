@@ -20,6 +20,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "cd server_mdados; cob-cli test -d escolher_empresa",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            //cwd é necessário para correr o debuger na directoria ../server_mimes8
+            //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
+            "cwd": "${workspaceRoot}/../server_mdados",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["test", "-d", "escolher_empresa"],
+        },        
+        {
+            "type": "node",
+            "request": "launch",
             "name": "cd server_mdados; cob-cli deploy",
             "skipFiles": [
                 "<node_internals>/**"

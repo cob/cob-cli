@@ -12,6 +12,7 @@ const updateFromServer = require("../lib/commands/updateFromServer");
 program
     .description('CoB Command line to simplify server customizations')
     .usage("command")
+    .version( require('../package.json').version,'-v, --version', 'output the current version');
     
 program
     .command('init')

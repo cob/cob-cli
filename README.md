@@ -43,7 +43,7 @@ It also helps you manage the correct git workflow and provide help links to rele
 
 ---
 
-### cob-cli test
+### cob-cli test [-d, --dashboard <name>]
 After running the `test` command you'll enter a livereload state were you can instantly see the effect of the changes being made. To stop this state just press any key.
 
 Many of the changes are serverd locally from the development machine and are not propagated to the production server. These are all files that reside inside the diferent `customUI` folders. 
@@ -51,6 +51,8 @@ Many of the changes are serverd locally from the development machine and are not
 All other files imply a copy to the server. Each of the files copied to the server has a backup of any pre-existing one. Once the `test` command ends all copied files are removed and any existing backups are restored.
 
 While in testing you can press `o` or `O` to open your default browser with the url for the local tests. You can also use `enter` to space your logs, if you want.
+
+If you specify a `-d <name>` the corresponding dashboard will be served from source (instead of built files) and will also provide livereload.
 
 ---
 

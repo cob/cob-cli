@@ -31,7 +31,7 @@ program
 
 program
     .command('test')
-    .option('-d --dashboard <dashboard>', 'Aditionally specify a VUE dashboard to test')
+    .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .description('Locally test the customization')
     .action( (args) => test(args) );
 

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.21.0](https://github.com/cob/cob-cli/compare/v0.20.0...v0.21.0) (2020-08-21)
+
+
+### Bug Fixes
+
+* add support for built files ([ad1daac](https://github.com/cob/cob-cli/commit/ad1daac4d2775fd91a39428f2e72b7d063a69803))
+
+
+### Chores
+
+* git ignore enviroment files ([890335e](https://github.com/cob/cob-cli/commit/890335e7840c8b22046cb9178f40309a8ee4d9c6))
+
+
+### Features
+
+* **test:** add --localOnly option ([91ba2e4](https://github.com/cob/cob-cli/commit/91ba2e4bfbaf36e41e6890bcfc8f8d98768b643a))
+
 # [0.17.0](https://github.com/cob/cob-cli/compare/v0.16.0...v0.17.0) (2020-07-23)
 
 

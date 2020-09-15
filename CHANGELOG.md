@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+## [0.21.1](https://github.com/cob/cob-cli/compare/v0.21.0...v0.21.1) (2020-09-15)
+
+
+### Bug Fixes
+
+* **test:** stop stashing ignored files ([c196bcf](https://github.com/cob/cob-cli/commit/c196bcfc697be567768d14fb2a74d570e5201a1d))
+
+
+### Miscellaneous
+
+* 0.21.0 ([2020.8.21  d4b65b0](https://github.com/cob/cob-cli/commit/d4b65b05abdf68c336e04fb50cb48c4f717370c3))
+
 # [0.21.0](https://github.com/cob/cob-cli/compare/v0.20.0...v0.21.0) (2020-08-21)
 
 

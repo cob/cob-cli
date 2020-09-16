@@ -31,6 +31,7 @@ program
 
 program
     .command('test')
+    .option('-V --verbose', 'verbose execution of tasks')
     .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .option('-l --localOnly', 'test only localFiles (customUI)')
     .description('Test the customization')

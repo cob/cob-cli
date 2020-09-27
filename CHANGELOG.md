@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+## [0.22.1](https://github.com/cob/cob-cli/compare/v0.22.0...v0.22.1) (2020-09-27)
+
+
+### Bug Fixes
+
+* **test:** corrects copying/deleting test files ([41d937e](https://github.com/cob/cob-cli/commit/41d937ee09fe63da42dcd2936fc04349911c7b63))
+* **test:** fiex error handling count ([c8c6f0d](https://github.com/cob/cob-cli/commit/c8c6f0d5d60298fadcdb10e3c15e19536247780a))
+* **test:** fix handling of rsync failures when copying one by one files ([a42cc68](https://github.com/cob/cob-cli/commit/a42cc6869c9c19309971cfc803431a8aa473232a))
+* fiexes npm audit warnings ([35a4b29](https://github.com/cob/cob-cli/commit/35a4b29a9d6e9388aa070b7db28ad199fc91b260))
+* fixes npm audit errors ([29ae4de](https://github.com/cob/cob-cli/commit/29ae4defa546a37b72ae7ee6b59192bb3b611a2a))
+* **test:** fixes introduced bug on handling changes ([f374a19](https://github.com/cob/cob-cli/commit/f374a192353d035ff81b5f2dfd6514a47b8416e5))
+
+
+### Code Refactoring
+
+* identation ([c5ae0f0](https://github.com/cob/cob-cli/commit/c5ae0f0bbfaca11d7d819db1ac7cf6b958395f0c))
+* improve RSYNC_RETRIES use ([174b5d9](https://github.com/cob/cob-cli/commit/174b5d92fbdd6c595105cc41e2b4e09ae402071c))
+
+
+### Documentation
+
+* npm fix version increase ([715925e](https://github.com/cob/cob-cli/commit/715925e5dffcd5e5bc0d464f4a7f4c4abf948a32))
+
+
+### Miscellaneous
+
+* update versions ([2020.9.27  fd38da0](https://github.com/cob/cob-cli/commit/fd38da086dea7811659dd6016eb7120cfc268a8a))
+
 # [0.24.0](https://github.com/cob/cob-cli/compare/v0.21.1...v0.22.0) (2020-09-27)
 
 

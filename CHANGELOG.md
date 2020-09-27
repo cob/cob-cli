@@ -11,11 +11,11 @@ All notable changes to this project will be documented in this file. See
 ### Bug Fixes
 
 * **test:** corrects copying/deleting test files ([41d937e](https://github.com/cob/cob-cli/commit/41d937ee09fe63da42dcd2936fc04349911c7b63))
-* **test:** fiex error handling count ([c8c6f0d](https://github.com/cob/cob-cli/commit/c8c6f0d5d60298fadcdb10e3c15e19536247780a))
+* **test:** fixes error handling count ([c8c6f0d](https://github.com/cob/cob-cli/commit/c8c6f0d5d60298fadcdb10e3c15e19536247780a))
 * **test:** fix handling of rsync failures when copying one by one files ([a42cc68](https://github.com/cob/cob-cli/commit/a42cc6869c9c19309971cfc803431a8aa473232a))
-* fiexes npm audit warnings ([35a4b29](https://github.com/cob/cob-cli/commit/35a4b29a9d6e9388aa070b7db28ad199fc91b260))
+* fixes npm audit warnings ([35a4b29](https://github.com/cob/cob-cli/commit/35a4b29a9d6e9388aa070b7db28ad199fc91b260))
 * fixes npm audit errors ([29ae4de](https://github.com/cob/cob-cli/commit/29ae4defa546a37b72ae7ee6b59192bb3b611a2a))
-* **test:** fixes introduced bug on handling changes ([f374a19](https://github.com/cob/cob-cli/commit/f374a192353d035ff81b5f2dfd6514a47b8416e5))
+* **test:** fixes bug introduced on handling changes ([f374a19](https://github.com/cob/cob-cli/commit/f374a192353d035ff81b5f2dfd6514a47b8416e5))
 
 
 ### Code Refactoring

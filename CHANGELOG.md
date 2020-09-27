@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+## [0.22.2](https://github.com/cob/cob-cli/compare/v0.22.1...v0.22.2) (2020-09-27)
+
+
+### Build System
+
+* **deps:** bump websocket-extensions from 0.1.3 to 0.1.4 ([53b80d7](https://github.com/cob/cob-cli/commit/53b80d75a6e504dc6184f3abe6c53eef1332c3d5))
+
+
+### Code Refactoring
+
+* fixes npm audit ([0cb056f](https://github.com/cob/cob-cli/commit/0cb056fdc697d2b34df14874b9003aa04b01520e))
+
+
+### Miscellaneous
+
+* Merge pull request #1 from cob/dependabot/npm_and_yarn/websocket-extensions-0.1.4 ([2020.9.27  80f28bf](https://github.com/cob/cob-cli/commit/80f28bf736dbb95ab22afc5b31beb124135dfd68)), closes [#1](https://github.com/cob/cob-cli/issues/1)
+
 ## [0.22.1](https://github.com/cob/cob-cli/compare/v0.22.0...v0.22.1) (2020-09-27)
 
 

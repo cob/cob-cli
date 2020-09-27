@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.22.0](https://github.com/cob/cob-cli/compare/v0.21.1...v0.22.0) (2020-09-27)
+
+
+### Bug Fixes
+
+* solves problems with rsync ([ef0241f](https://github.com/cob/cob-cli/commit/ef0241fd1f70fc175ba56d6fb4511af6267c4725))
+* **test:** also warn of restart needed in importer files ([acc2436](https://github.com/cob/cob-cli/commit/acc2436168775525caf6ef9f40f9a2cb9e14817d))
+* **test:** correct error message not shown ([71036d0](https://github.com/cob/cob-cli/commit/71036d095026988fa1b2cdc2fa822936ad73d97d))
+* **test:** correctly restore files and state in case failures ([33575f7](https://github.com/cob/cob-cli/commit/33575f7cd1da7b69b329f5f696d83a0d67ba47c7))
+* **test:** corrects destination dir for 'others' products ([ffd8f25](https://github.com/cob/cob-cli/commit/ffd8f252b13f9eaccf8138f25d8e2da6420f7fbb))
+* **test:** corrects removing files from server test inventory ([ad62911](https://github.com/cob/cob-cli/commit/ad62911a475af9000431f0d433e690064e5a4bbb))
+* **test:** corrige problema com lista de ficheiros em teste no servidor ([ea9b290](https://github.com/cob/cob-cli/commit/ea9b290c9bfb91fa785409e7e6ee8989235939ce))
+* **test:** corrige problema com lista de ficheiros em teste no servidor ([eb93d12](https://github.com/cob/cob-cli/commit/eb93d1274c0b2e4200dafae6c8f01c9b1144acb2))
+* **test:** only add files not already registered ([8ed2656](https://github.com/cob/cob-cli/commit/8ed26568238c72550e90402d586e835257e7c2d1))
+* **test:** recover git state in case of failure of test ([67594da](https://github.com/cob/cob-cli/commit/67594da95d4b3081bcb6c7e28ee4d37b59420382))
+* prevent rsync error in slower connections ([c766469](https://github.com/cob/cob-cli/commit/c76646938d5e7ec132cc2d49d7994dc2b3d88916))
+
+
+### Features
+
+* **test:** add --verbose option to test command ([fff8ba5](https://github.com/cob/cob-cli/commit/fff8ba52977d2a677fdd669589b8d9a79502ef96))
+
+
+### Miscellaneous
+
+* Merge branch 'update-npm-&-ssh-options' ([2020.9.27  6ff6bf6](https://github.com/cob/cob-cli/commit/6ff6bf6bb445c8e7163635b4b9fdc2d47c018ad3))
+* Merge branch 'master' of https://github.com/cob/cob-cli ([2020.9.23  91f01c6](https://github.com/cob/cob-cli/commit/91f01c6278d18fbe1a19312d8038cd33e1cf3fd7))
+* Merge branch 'master' of https://github.com/cob/cob-cli ([2020.9.17  acd00a3](https://github.com/cob/cob-cli/commit/acd00a371e1dd9b76861da63bca8ae75ac3c37df))
+* running trual ([2020.9.17  261b385](https://github.com/cob/cob-cli/commit/261b3858f8c0c1e606fe4d7deedc2d8de1879e78))
+
 ## [0.21.1](https://github.com/cob/cob-cli/compare/v0.21.0...v0.21.1) (2020-09-15)
 
 

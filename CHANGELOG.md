@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
-# [0.22.0](https://github.com/cob/cob-cli/compare/v0.21.1...v0.22.0) (2020-09-27)
+# [0.24.0](https://github.com/cob/cob-cli/compare/v0.21.1...v0.22.0) (2020-09-27)
 
 
 ### Bug Fixes

@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.25.0](https://github.com/cob/cob-cli/compare/v0.24.3...v0.25.0) (2020-10-22)
+
+
+### Bug Fixes
+
+* stop trying to copy non existing dirs ([b6c9f2d](https://github.com/cob/cob-cli/commit/b6c9f2de36515c6e978e4976f12b7b75c748d1cb))
+* **deploy:** remove conf do commitlint não usada no commit-analyser ([a386f4f](https://github.com/cob/cob-cli/commit/a386f4f9c0e96b55ec15d97f045bca8041c36e23))
+* **init:** corrige hook de pre-commit do git nos projectos ([53cd364](https://github.com/cob/cob-cli/commit/53cd3646b646424588af7a9feaa8e71e326ed5be))
+* **test:** fix handling of multiple files in the same directory ([9d551f4](https://github.com/cob/cob-cli/commit/9d551f443fb7604d2e6161c9451a641ddfa6d814))
+
+
+### Chores
+
+* repõe indentação no init_newProject ([da0b91f](https://github.com/cob/cob-cli/commit/da0b91f903cc5d138593ec9dbb906288add5dfbe))
+* repõe indentação no init_newProject II ([c2ba23d](https://github.com/cob/cob-cli/commit/c2ba23d58904e78675114bbd300fed3adb99b405))
+
+
+### Code Refactoring
+
+* debug flag for troubleshooting ([cd7219d](https://github.com/cob/cob-cli/commit/cd7219d13592f17d369922ad88ee57cc8e8ee20b))
+* **test:** add troubleshooting log to enable when necessary ([c7c6940](https://github.com/cob/cob-cli/commit/c7c694046e56cd51f76d776cd59a5961b0d866e0))
+
+
+### Features
+
+* **init:** adiciona o .commitlintrc.js aos projectos ([da31da4](https://github.com/cob/cob-cli/commit/da31da47ebfcaef5f7822aed495bea30a02bdcd9))
+
+
+### Miscellaneous
+
+* Merge branch 'fix-commitlint' into master ([2020.10.22  d7d4306](https://github.com/cob/cob-cli/commit/d7d43061d31491a2106a0c333b37f8c141d88493))
+
 ## [0.22.2](https://github.com/cob/cob-cli/compare/v0.22.1...v0.22.2) (2020-09-27)
 
 

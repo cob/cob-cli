@@ -5,7 +5,7 @@
   "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/cob/cob-cli.git"
+    "url": "git@github.com:cob/cob-cli.git"
   },
   "main": "./bin/cob-cli.js",
   "bin": {

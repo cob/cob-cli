@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [0.26.0](https://github.com/cob/cob-cli/compare/v0.25.0...v0.26.0) (2020-10-28)
+
+
+### Bug Fixes
+
+* corrects package.json repository url ([f020a95](https://github.com/cob/cob-cli/commit/f020a95a10a499520fd94ad74780bed8922c835c))
+* corrigir falha inicial de ficheiros inexistentes ([82a4a05](https://github.com/cob/cob-cli/commit/82a4a05f2e776e0e58aab7bd1667dd34930bb946))
+* use git in url instead of https ([c0d28d2](https://github.com/cob/cob-cli/commit/c0d28d2e64bc1495e078af33c7a5987bb2b6e985))
+
+
+### Chores
+
+* update version ([75d4fd3](https://github.com/cob/cob-cli/commit/75d4fd38fd74c1bd7061fbed51f58816d925ee3c))
+
+
+### Features
+
+* remove git hook to validate commit message ([37b9c01](https://github.com/cob/cob-cli/commit/37b9c01f53a6eb4329c5bfe4ed61f38dd4bfb736))
+
 # [0.25.0](https://github.com/cob/cob-cli/compare/v0.24.3...v0.25.0) (2020-10-22)
 
 

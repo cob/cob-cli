@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. See
 
  Type must be one of [build, chore, ci, docs, feat, fix, improvement, perf, refactor, revert, style, test].
 
+# [1.0.0](https://github.com/cob/cob-cli/compare/v0.26.0...v1.0.0) (2020-10-28)
+
+
+### Bug Fixes
+
+* finish correcting dependencies ([cf41ba8](https://github.com/cob/cob-cli/commit/cf41ba81af9bc078a5106a81e9dd5ae9d7e0673c))
+
+
+### BREAKING CHANGES
+
+* from this point on there will be no validation of the
+commit message. It's up to the dev make sure it uses the correct
+semantic-versioning prefixes in the commit message
+
+EACH EXISTING PROJECT SHOULD BE DELETED AND REDO THE COMMAND:
+cob-cli init <server name>
+
 # [0.26.0](https://github.com/cob/cob-cli/compare/v0.25.0...v0.26.0) (2020-10-28)
 
 

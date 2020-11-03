@@ -11,14 +11,7 @@
   "bin": {
     "cob-cli": "./bin/cob-cli.js"
   },
-  "scripts": {
-    "semantic-publish": "semantic-release -e ./lib/task_lists/deploy_semanticReleaseConfiguration.js --no-ci"
-  },
   "dependencies": {
-    "@semantic-release/changelog": "^5.0.1",
-    "@semantic-release/commit-analyzer": "^8.0.1",
-    "@semantic-release/git": "^9.0.0",
-    "@semantic-release/release-notes-generator": "^7.3.0",
     "axios": "^0.19.2",
     "colors": "^1.4.0",
     "commander": "^5.1.0",
@@ -27,7 +20,6 @@
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "listr": "^0.14.3",
-    "semantic-release": "^16.0.3",
     "simple-git": "^1.132.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",

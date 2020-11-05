@@ -61,6 +61,17 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "cd server_icad2; cob-cli deploy -s icad",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "cwd": "${workspaceRoot}/../server_icad2",
+            "program": "${workspaceFolder}/bin/cob-cli.js",
+            "args": ["deploy","-s","icad"],
+        },        
+        {
+            "type": "node",
+            "request": "launch",
             "name": "cob-cli init mdados",
             "skipFiles": [
                 "<node_internals>/**"

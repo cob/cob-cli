@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const program   = require('commander');
+const program = require('commander');
 
-const init      = require("../lib/commands/init");
-const customize = require("../lib/commands/customize");
-const test      = require("../lib/commands/test");
-const deploy    = require("../lib/commands/deploy");
-const reset = require("../lib/commands/updateFromServer");
+const init             = require("../lib/commands/init");
+const customize        = require("../lib/commands/customize");
+const test             = require("../lib/commands/test");
+const deploy           = require("../lib/commands/deploy");
+const updateFromServer = require("../lib/commands/updateFromServer");
 
 /*******************************************/
 program
@@ -51,6 +51,6 @@ program
     .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
-    .action( (args) => reset(args) );
+    .action( (args) => updateFromServer(args) );
 
 program.parse(process.argv);

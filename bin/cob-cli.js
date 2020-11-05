@@ -6,7 +6,7 @@ const init      = require("../lib/commands/init");
 const customize = require("../lib/commands/customize");
 const test      = require("../lib/commands/test");
 const deploy    = require("../lib/commands/deploy");
-const updateFromServer = require("../lib/commands/updateFromServer");
+const reset = require("../lib/commands/updateFromServer");
 
 /*******************************************/
 program
@@ -34,6 +34,7 @@ program
     .option('-V --verbose', 'verbose execution of tasks')
     .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .option('-l --localOnly', 'test only localFiles (customUI)')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Test the customization')
     .action( (args) => test(args) );
 
@@ -41,6 +42,7 @@ program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
     .option('-V --verbose', 'verbose execution of tasks')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
     .action( (args) => deploy(args) );
 
@@ -48,6 +50,7 @@ program
 program
     .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
-    .action( () => updateFromServer() );
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .action( (args) => reset(args) );
 
 program.parse(process.argv);

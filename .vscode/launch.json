@@ -61,11 +61,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "cd server_icad2; cob-cli deploy -s icad",
+            "name": "cd server_icad; cob-cli deploy -s icad",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "cwd": "${workspaceRoot}/../server_icad2",
+            "cwd": "${workspaceRoot}/../server_icad",
             "program": "${workspaceFolder}/bin/cob-cli.js",
             "args": ["deploy","-s","icad"],
         },        

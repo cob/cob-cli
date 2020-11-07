@@ -15,6 +15,7 @@
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
             "cwd": "${workspaceFolder}/../server_icad2",
         "program": "${workspaceFolder}/../xpto/app.js",
+        "console": "integratedTerminal",
         "args": [
                 "test"
             ],
@@ -22,20 +23,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "cd server_icad2; cob-cli test",
+            "name": "cd server_mimes8; cob-cli test",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             //cwd é necessário para correr o debuger na directoria ../server_mimes8
             //AVISO: isto significa que o resultado do comando vai ser na directoria pai de onde este código estiver
-            "cwd": "${workspaceRoot}/../server_icad2",
+            "cwd": "${workspaceRoot}/../server_mimes8",
             "program": "${workspaceFolder}/bin/cob-cli.js",
-            "args": ["test","-s","icad2"],
+            "console": "integratedTerminal",
+            "args": ["test"],
         },
         {
             "type": "node",
             "request": "launch",
             "name": "cd server_mdados; cob-cli test -d escolher_empresa",
+            "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -49,6 +52,7 @@
             "type": "node",
             "request": "launch",
             "name": "cd server_mdados; cob-cli deploy",
+            "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -62,6 +66,7 @@
             "type": "node",
             "request": "launch",
             "name": "cd server_icad; cob-cli deploy -s icad",
+            "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -73,6 +78,7 @@
             "type": "node",
             "request": "launch",
             "name": "cob-cli init mdados",
+            "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -86,6 +92,7 @@
             "type": "node",
             "request": "launch",
             "name": "cob-cli init dogfooding -l CoB/dogfooding",
+            "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"
             ],

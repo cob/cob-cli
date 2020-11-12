@@ -3,6 +3,7 @@ node_modules
 .idea
 *.iml
 .env.json
+.test.in.execution
 
 # NativeScript application
 hooks

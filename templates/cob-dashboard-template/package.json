@@ -1,0 +1,27 @@
+{
+  "name": "cob-dashboard-template",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@cob/dashboard-info": "^2.2.5",
+    "@cob/rest-api-wrapper": "^2.1.6",
+    "@cob/ui-vue-components": "^4.2.0",
+    "vue": "^2.6.11",
+    "vuetify": "^2.4.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.13.15",
+    "@vue/cli-service": "~4.5.0",
+    "vue-cli-plugin-vuetify": "~2.3.1",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

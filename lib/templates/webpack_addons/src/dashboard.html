@@ -17,6 +17,11 @@
     <body>
 <% } %>
       <div id="app"></div>
+      <script>
+            // mimes: .cob-app tem estilos globais que se aplicam a elementos vuetify que mudam o aspecto previsto
+            let section = document.getElementsByClassName("custom-resource")[0];
+            section && section.classList.remove("cob-app"); //TODO: validar que isto é a melhor opção (considerar remover class na ui-all)
+      </script>
 <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
       <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
 <% } %>

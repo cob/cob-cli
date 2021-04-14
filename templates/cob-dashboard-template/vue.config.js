@@ -16,10 +16,8 @@ if(!process.env.dash_dir || !SERVER) {
   } catch {
     //  se não conseguirmos usamos a máquina de formação como default
     SERVER = "https://learning.cultofbits.com";
-    console.warn("Warning: file '.server' not found. Using " + SERVER + "as backend" )
+    console.warn("Warning: file '.server' not found. Using " + SERVER + " as backend" )
   }
-  //Aguarda 5s para tentar garantir que utilizador vê o link de acesso
-  setTimeout(() => {  console.log("Access through http://localhost:8041/" + DASH_DIR + "/dashboard.html") }, 5000);  
 }
 
 module.exports = {
@@ -41,7 +39,7 @@ module.exports = {
       .plugin('html')
       .tap(args => {
         args[0].template = 'src/dashboard.html'  // Isto permite ler o ficheiro daqui em vez do default public/index.html
-        args[0].filename = 'dashboard.html'      // Isto indica que o nome no url será dashboard.html em vez de index.html (infelizmente o pedido a / não é redireccionado para aqui (TODO))
+        args[0].filename = 'dashboard.html'      // Isto indica que o nome no url será dashboard.html em vez de index.html
         args[0].inject = false                   // Não queremos inject automático pois o nosso src/dashboard.html sabe lidar com página isolado ou integrado no recordm. TODO: considerar permitir ainda shared vue e vuetify em vez de embebido (o actual). Ver NOTA abaixo.
         args[0].minify = true
         args[0].rmIntegrated = process.env.dash_dir || process.env.NODE_ENV === 'production'  // Esta é a variável utilizada dentro do src/dashboard.html para saber qual o render a utilizar (isolado ou integrado). Deve ser integrado quer quando corrido via cob-cli test -d <dashboard> quer quando é feito o build.
@@ -49,7 +47,6 @@ module.exports = {
       })
   },
     
-
   // NOTA: Código comentado porque abandonamos a opção de usar ficheiros partilhados. Se quisermos reverter isto é necessário:
   // configureWebpack: {
   //   // deve ser igual ao que é usado no afterDeps do public/dashboard.html
@@ -64,6 +61,16 @@ module.exports = {
 
   devServer: {
     port: 8041,
+    before: function(app) {
+      app.get('/*', function(req, res, next) {
+        // Permite usar / ou /DASH_BOARD/ quando acedido directamente
+        if(req.url != "/" && req.url != '/'+DASH_DIR+'/') {
+          return next();
+        }
+
+        res.redirect(`/${DASH_DIR}/dashboard.html`);
+      });
+    },
     proxy: {
       [ "/recordm/localresource/" + DASH_DIR + "/dist"]: {
         // Isto serve o propósito de rescrever os pedidos feitos via url final para o url local.

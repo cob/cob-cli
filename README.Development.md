@@ -152,7 +152,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import cobUiVueComponents from './plugins/cobUiVueComponents';
-import '@babel/polyfill'
 
 Vue.config.productionTip = false
 
@@ -170,8 +169,8 @@ A simple page that uses all libs and adds a splash screen with the relevant link
   <v-app>
     <v-main>
       <HelloWorld 
-        :msg='"Welcome " + (userInfo.username ? userInfo.username : "You") '
-        :extraInfo='domainCount.value  ? "(your domain 1 has " + domainCount.value + " instances)" : "(no domain 1 instances)"'
+        :msg='"Welcome " + userInfo.username'
+        :extraInfo='domainCount.value  ? "(your domain 1 has " + domainCount.value + " instances)" : "(no backend info)"'
       />
     </v-main>
   </v-app>

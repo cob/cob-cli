@@ -3,7 +3,7 @@
     <v-main>
       <HelloWorld 
         :msg='"Welcome " + userInfo.username'
-        :extraInfo='domainCount.value  ? "(your domain 1 has " + domainCount.value + " instances)" : "(no domain 1 access)"'
+        :extraInfo='domainCount.value  ? "(your domain 1 has " + domainCount.value + " instances)" : "(no backend info)"'
       />
     </v-main>
   </v-app>

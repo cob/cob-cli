@@ -1,6 +1,6 @@
 {
   "name": "cob-cli",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "A command line utility to help Cult of Bits partners develop with higher speed and reusing common code and best practices.",
   "preferGlobal": true,
   "repository": {
@@ -9,7 +9,7 @@
   },
   "main": "./bin/cob-cli.js",
   "bin": {
-    "cob-cli": "./bin/cob-cli.js"
+    "cob-cli": "bin/cob-cli.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

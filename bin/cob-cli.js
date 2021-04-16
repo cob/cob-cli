@@ -23,11 +23,12 @@ program
     .option('-V --verbose', 'verbose execution of tasks')
     .description('Initializes a server customization repository. Use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .action( (servername,args) => init(servername,args) );
-
+    
 program
     .command('customize')
+    .arguments('[name]', "Name of the customization", "interactive menu")
     .description('Interactive prompt to customize an aspect of the server')
-    .action( () => customize() );
+    .action( (name) => customize(name) );
 
 program
     .command('test')

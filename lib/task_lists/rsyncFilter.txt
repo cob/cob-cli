@@ -1,0 +1,29 @@
++ /services/com.cultofbits.web.integration.properties
++ /services/com.cultofbits.confm.interact.properties
++ /services/com.cultofbits.integrationm.service.properties
+- /services/**
+
+- /security
+- /hornetq
+- /elasticsearch
+- /db
+- /reports
+
+- health.conf
+
+- uploaded
+- .processed
+- .failed
+- recordm-importer.log*
+- recordm-importer*.jar
+
+- node_modules
+- .git
+- .gitkeep
+- *.rc
+- *.iml
+- *.swap
+- *.swp
+- .DS_Store
+- .env.json
+- .idea

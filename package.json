@@ -11,6 +11,9 @@
   "bin": {
     "cob-cli": "bin/cob-cli.js"
   },
+  "scripts" : {
+    "postinstall" : "bin/cob-cli.js --setup"
+  },
   "dependencies": {
     "axios": "^0.21.1",
     "colors": "^1.4.0",
@@ -21,6 +24,7 @@
     "inquirer": "^7.3.3",
     "listr": "^0.14.3",
     "ncp": "^2.0.0",
+    "omelette": "^0.4.15-1",
     "simple-git": "^1.132.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",

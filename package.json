@@ -11,9 +11,6 @@
   "bin": {
     "cob-cli": "bin/cob-cli.js"
   },
-  "scripts" : {
-    "postinstall" : "bin/cob-cli.js --setup"
-  },
   "dependencies": {
     "axios": "^0.21.1",
     "colors": "^1.4.0",

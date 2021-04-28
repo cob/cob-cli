@@ -11,10 +11,11 @@
   "bin": {
     "cob-cli": "bin/cob-cli.js"
   },
-  "scripts" : {
-    "postinstall" : "bin/cob-cli.js --setup"
+  "scripts": {
+    "postinstall": "bin/cob-cli.js --setup"
   },
   "dependencies": {
+    "askpassword": "^1.2.4",
     "axios": "^0.21.1",
     "colors": "^1.4.0",
     "commander": "^5.1.0",
@@ -23,8 +24,11 @@
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "listr": "^0.14.3",
+    "listr-update-renderer": "^0.5.0",
+    "listr-verbose-renderer": "^0.5.0",
     "ncp": "^2.0.0",
     "omelette": "^0.4.15-1",
+    "rxjs": "^6.6.7",
     "simple-git": "^1.132.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",

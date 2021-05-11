@@ -61,6 +61,7 @@ program
 program
     .command('test')
     .option('-V --verbose', 'verbose execution of tasks')
+    .option('-e --environment <name>', 'environment to use')
     .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .option('-l --localOnly', 'test only localFiles (customUI)')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')

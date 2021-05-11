@@ -28,3 +28,5 @@
 - .DS_Store
 - .env.json
 - .idea
+
+- **.ENV__*__.*

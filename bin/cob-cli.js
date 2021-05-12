@@ -71,6 +71,7 @@ program
 program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
+    .option('-e --environment <name>', 'environment to use')
     .option('-V --verbose', 'verbose execution of tasks')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Deploy customization to the server')

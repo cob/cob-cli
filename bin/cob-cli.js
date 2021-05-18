@@ -81,6 +81,7 @@ program
 program
     .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
+    .option('-e --environment <name>', 'environment to use')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .action( (args) => updateFromServer(args) );
 

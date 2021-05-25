@@ -1,0 +1,125 @@
+@media screen and (max-width:767px) {
+   /* *************** Para impedir o resize dos inputs nos telemóveis ******************* */
+   input, select,textarea {
+      font-size: 16px !important;
+   }
+   .dashboard .board {
+      min-height: 20px !important;
+   }
+
+   .cob-app .row, .cob-app .thumbnails {
+       margin-left: 1px;
+       margin-top: -5px;
+   }
+
+   /* *************** Melhores Buttons ******************* */
+   .cob-app .search-definition .results-container .mass-options button {
+       display: inline;
+       margin-bottom: 2px;
+   }
+
+   /* *************** Melhor sidenav ******************* */
+   .cob-app section {
+      top: 70px;
+   }
+
+   .sidenav .left-aligned.left-spaced.padding-5px {
+      position: absolute;
+      top: 64px;
+      right: 0px;
+      text-align: right;
+      margin-right: 21px;
+   }
+
+   .js-group-edit-container .sidenav .left-aligned.left-spaced.padding-5px {
+      top: 122px;
+   }
+
+   .sidenav .space {
+      height:5px !important;
+   }
+
+   .cob-app .instance-detail-container .instance-container .fields-container {
+      border-top: solid 1px;
+      margin-top: -10px;
+      padding-top: 8px;
+   }
+
+   /* *************** Centrar input dos $ref correctamente ******************* */
+   .cob-app .input-append, .cob-app .input-prepend {
+      margin-bottom: 0px;
+   }
+
+   /* *************** Para ter uma tabela melhor nos telemóveis ******************* */
+   .cob-app .instance-detail-container div.instance-container ol.fields {
+      width:98%;
+   }
+   ol.fields table > tbody > tr > td:nth-child(1) {
+      min-width:30px !important;
+      width:30px !important;
+      max-width:30px !important;
+   }
+   ol.fields .custom-comentarios table > tbody > tr > td:nth-child(1) {
+      min-width:70px !important;
+      width:70px !important;
+      max-width:70px !important;
+   }
+   ol.fields table > tbody > tr > td:nth-child(2) {
+      width:100px !important;
+      min-width:100px !important;
+   }
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div > input,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div > span > input {
+      min-width:140px !important;
+      max-width:140px !important;
+   }
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > input,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > label,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.instance-container > span,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.instance-container  > input,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.inline > input,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div > textarea {
+      min-width:175px !important;
+      max-width:175px !important;
+   }
+   .cob-app .markdown-container,
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.inline  > select {
+      min-width:100% !important;
+      max-width:190px !important;
+   }
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(4) {
+      min-width:0px !important;
+      max-width:0px !important;
+   }
+   /* labels constantes */
+   .cob-app .instance-detail-container div.instance-container ol.fields > li > table label {
+      max-width: 150px !important;
+      min-width: 150px !important;
+   }
+   /* selects constantes */
+   .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.inline > select,
+   .cob-app .instance-detail-container select {
+      min-width: 188px !important;
+      max-width: 188px !important;
+   }
+   /* identação nas hierarquias mínimas */
+   .cob-app .instance-detail-container div.instance-container ol.fields {
+      margin-left: -1px;
+      margin-right:0px;
+      width: 100%
+   }
+   .cob-app .instance-detail-container div.instance-container ol.fields > li {
+      padding-left: 1px;
+   }
+}
+
+@media (max-width: 585px) {
+   /* *************** Para alinhar melhor as opções do menu em mobile ******************* */
+   .cob-app #header .app-menus,
+   .cob-app #header .cobapps-menus {
+     margin-left: unset;
+   }   
+   .cob-app #header .nav > li {  
+     text-align:right
+   }
+} 

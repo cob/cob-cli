@@ -1,0 +1,11 @@
+/* $style[hide-in-group-edit] */
+/* $style[hide-in-new-instance] */
+/* $style[hide] */
+
+.instance-detail-container.js-group-edit-container .custom-hide-in-group-edit,
+.instance-detail-container.js-instance-details-container:not(.js-group-edit-container) .custom-hide-in-edit,
+.instance-detail-container:not(.js-group-edit-container) #service--1 .custom-hide-in-new-instance,
+.custom-hide {
+  background-color: rgba(255,0,0,0.05) !important; /* Tom de vermelho para assinalar que estes campos estão escondidos */
+  display: var(--dev-display, none);  /* pode ser ligado via botão colocado pelo js/cob/_show_hidden.js */
+}

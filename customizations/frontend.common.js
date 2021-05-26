@@ -6,10 +6,10 @@ exports.option = {
   customization: async function (answers) {
       console.log("\nApplying common frontend customizations ...")
 
-      const { copy } = require("../task_lists/customize_copy");
-      const { mergeFiles } = require("../task_lists/customize_mergeFiles");
+      const { copy } = require("../lib/task_lists/customize_copy");
+      const { mergeFiles } = require("../lib/task_lists/customize_mergeFiles");
       const target = "./recordm/customUI/"
-      await copy("../templates/frontend/common/",target)
+      await copy("../../templates/frontend/common/",target)
       await mergeFiles()
   }
 }

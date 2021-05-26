@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('path');
-const directoryPath = path.join(__dirname,"../lib/customizations/");
+const directoryPath = path.join(__dirname,"../customizations/");
 
 const files = () => require('fs').readdirSync(directoryPath).filter(f => !f.startsWith("common")).map(f => f.substr(0,f.lastIndexOf(".")))
 

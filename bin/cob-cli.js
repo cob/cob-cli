@@ -10,7 +10,7 @@ const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const updateFromServer = require("../lib/commands/updateFromServer");
-const upgradeRepo      = require("../lib/commands/upgradeRepo");
+const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
 /*******************************************/
 program

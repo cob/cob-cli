@@ -10,7 +10,8 @@ const commandStructure = {
     'customize' : files, 
     'test' : [], 
     'deploy' : [], 
-    'updateFromServer' : []
+    'updateFromServer' : [],
+    'upgradeRepo' : []
 }
 const completion = omelette('cob-cli').tree(commandStructure)
 completion.init()

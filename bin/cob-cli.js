@@ -10,8 +10,14 @@ const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const updateFromServer = require("../lib/commands/updateFromServer");
+const upgradeRepo      = require("../lib/commands/upgradeRepo");
 
 /*******************************************/
+program
+    .description('CoB Command line to simplify server customizations')
+    .usage("command")
+    .version( require('../package.json').version,'-v, --version', 'output the current version');
+
 program
     .description('CoB Command line to simplify server customizations')
     .usage("command")
@@ -59,4 +65,9 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .action( updateFromServer );
 
+program
+    .command('upgradeRepo')
+    .description('Upgrade current repository to the last cob-cli version structure')
+    .action( upgradeRepo );
+    
 program.parse(process.argv);

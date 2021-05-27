@@ -1,30 +1,5 @@
 #!/usr/bin/env node
-
-const path = require('path');
-const directoryPath = path.join(__dirname,"../lib/customizations/");
-
-const files = () => require('fs').readdirSync(directoryPath).filter(f => !f.startsWith("common")).map(f => f.substr(0,f.lastIndexOf(".")))
-
-/* Autocomplete Component*/
-var omelette = require('omelette');
-const commandStructure = {
-    'init' : [], 
-    'customize' : files, 
-    'test' : [], 
-    'deploy' : [], 
-    'updateFromServer' : []
-}
-const completion = omelette('cob-cli').tree(commandStructure)
-completion.init()
-
-// add to system profiles
-if (~process.argv.indexOf('--setup')) {
-    completion.setupShellInitFile()
-}
-// remove from system profiles
-if (~process.argv.indexOf('--cleanup')) {
-    completion.cleanupShellInitFile()
-}
+require("./handleAutoComplete");
 
 /*******************************************/
 
@@ -35,13 +10,19 @@ const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const updateFromServer = require("../lib/commands/updateFromServer");
+const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
 /*******************************************/
 program
     .description('CoB Command line to simplify server customizations')
     .usage("command")
     .version( require('../package.json').version,'-v, --version', 'output the current version');
-    
+
+program
+    .description('CoB Command line to simplify server customizations')
+    .usage("command")
+    .version( require('../package.json').version,'-v, --version', 'output the current version');
+
 program
     .command('init')
     .usage("<servername>")
@@ -50,13 +31,13 @@ program
     .option('-a --repoaccount <account url>', 'Specify git account to use', "git@gitlab.com:cob/")
     .option('-V --verbose', 'verbose execution of tasks')
     .description('Initializes a server customization repository. Use <servername>.cultofbits.com (i.e. name without the FQDN)')
-    .action( (servername,args) => init(servername,args) );
-    
+    .action( init );
+
 program
     .command('customize')
     .arguments('[name]', "Name of the customization", "interactive menu")
     .description('Interactive prompt to customize an aspect of the server')
-    .action( (name) => customize(name) );
+    .action( customize );
 
 program
     .command('test')
@@ -66,7 +47,7 @@ program
     .option('-l --localOnly', 'test only localFiles (customUI)')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Test the customization')
-    .action( (args) => test(args) );
+    .action( test );
 
 program
     .command('deploy')
@@ -75,14 +56,18 @@ program
     .option('-V --verbose', 'verbose execution of tasks')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
-    .action( (args) => deploy(args) );
-
+    .action( deploy );
 
 program
     .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
     .option('-e --environment <name>', 'environment to use')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
-    .action( (args) => updateFromServer(args) );
+    .action( updateFromServer );
 
+program
+    .command('upgradeRepo')
+    .description('Upgrade current repository to the last cob-cli version structure')
+    .action( upgradeRepo );
+    
 program.parse(process.argv);

@@ -8,3 +8,7 @@ node_modules
 # NativeScript application
 hooks
 platforms
+
+# CoB Enviroment management temporary files
+*ENV__DELETE__.*
+*ENV__ORIGINAL_BACKUP__.*

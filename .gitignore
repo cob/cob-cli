@@ -1,6 +1,11 @@
 .DS_Store
 node_modules
 
+#CoB cli
+.test.in.execution
+*.ENV__ORIGINAL_BACKUP__.*
+*.ENV__DELETE__.*
+
 # local env files
 .env.local
 .env.*.local

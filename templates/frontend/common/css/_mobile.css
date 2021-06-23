@@ -122,4 +122,12 @@
    .cob-app #header .nav > li {  
      text-align:right
    }
-} 
+}
+
+@media (hover: none) and (pointer: coarse) {
+   /* *************** Aumentar o tamanho dos botões + e - em ecrãs tácteis ******************* */
+   .js-advanced-field-add,
+   .js-advanced-field-remove {
+      font-size: 2em !important;
+   }
+}

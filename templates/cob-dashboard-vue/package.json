@@ -9,7 +9,7 @@
   "dependencies": {
     "@cob/dashboard-info": "^2.2.5",
     "@cob/rest-api-wrapper": "^2.1.6",
-    "@cob/ui-vue-components": "^4.2.0",
+    "@cob/ui-vue-components": "^4.3.0",
     "vue": "^2.6.11",
     "vuetify": "^2.4.0"
   },

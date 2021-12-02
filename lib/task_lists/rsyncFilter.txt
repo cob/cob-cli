@@ -8,7 +8,6 @@
 - /elasticsearch
 - /db
 - /reports
-- /rancid
 
 - health.conf
 

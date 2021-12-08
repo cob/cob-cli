@@ -1,0 +1,11 @@
+.currency_negative {
+	color:red;
+}
+.currency_positive {
+	color:green;
+}
+
+.currency_negative::after,
+.currency_positive::after {
+	content: ' €';
+}

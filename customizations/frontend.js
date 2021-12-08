@@ -6,7 +6,8 @@ exports.option = {
     name: 'choosenFollowUp',
     message: 'Select one?',
     choices: [
-        require("./frontend.common").option
+        require("./frontend.common").option,
+        require("./frontend.formatList").option
     ]}
   ]
 }

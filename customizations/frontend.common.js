@@ -10,6 +10,6 @@ exports.option = {
       const { mergeFiles } = require("../lib/task_lists/customize_mergeFiles");
       const target = "./recordm/customUI/"
       await copy("../../templates/frontend/common/",target)
-      await mergeFiles()
+      await mergeFiles("Frontend.Common")
   }
 }

@@ -3,38 +3,34 @@ import org.codehaus.jettison.json.JSONObject
 
 import java.math.RoundingMode;
 
-@Field DEFINICOES  = [
-		"Calc Test"
-];
-
 // ========================================================================================================
-if (messageMap.product == "recordm"
-		&& DEFINICOES.contains(messageMap.type)
-		&& messageMap.action =~ "add|update"
-		&& messageMap.user != "integrationm") {
+if (msg.product == "recordm"
+		&& msg.user != "integrationm"
+		&& msg.action =~ "add|update"
+		&& (definitionsCalculationsCache[msg.type] == null || definitionsCalculationsCache[msg.type].size()) ){
 
-	/**/log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	def calculations = getAllCalculationsFields(messageMap.instance.fields);
+	//log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	def calculations = getAllCalculationsFields(messageMap.type);
 
-	/**/log.info("\$calc fields: ${calculations}");
+	//log.info("\$calc fields: ${calculations}");
+	
+	def updates = executeCalculations(calculations,msg.instance.fields)
 
-	def updates = executeCalculations(calculations,messageMap.instance.fields)
-
-	/**/log.info("Updates: ${updates}");
+	log.info("\$calc Updates: ${updates}");
 
     def result = actionPacks.recordm.update(messageMap.type, "recordmInstanceId:" + messageMap.instance.id, updates);
-	/**/log.info("ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
-	/**/log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	//log.info("ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
+	//log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // ========================================================================================================
 @Field static definitionsCalculationsCache = [:]
 @Field static definitionsCalculationsCacheInvalidationTimer
 
-def getAllCalculationsFieldsXPTO(instanceFields) {
+def getAllCalculationsFields(definitionName) {
 
-	if(definitionsCalculationsCache[msg.type] == undefined) {
-    	definitionsCalculationsCache[msg.type] = [
+	if(!definitionsCalculationsCache.containsKey(msg.type)) {
+    	definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
 	}
 
     if(definitionsCalculationsCacheInvalidationTimer) {
@@ -44,55 +40,43 @@ def getAllCalculationsFieldsXPTO(instanceFields) {
     definitionsCalculationsCacheInvalidationTimer.runAfter(6000000) { // 1h of cache: touch this file to force cache update
 		definitionsCalculationsCache.clear()
 	}
+	return definitionsCalculationsCache[definitionName]
+}
 
 // ========================================================================================================
-def getAllCalculationsFields(instanceFields) {
+def getAllCurrentCalculationsFields(definitionName) {
+	//log.info("\$calc update calculations... 2");
+
 	// Obtém detalhes da definição
-	def definitionEncoded = URLEncoder.encode(messageMap.type, "utf-8").replace("+", "%20")
+	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
 	def resp = actionPacks.rmRest.get( "recordm/definitions/name/${definitionEncoded}".toString(), [:], "");
 	JSONObject definition = new JSONObject(resp);
 
-	// Preenche nos dados da instância desta mensagem o campo descrição
-	// (será necessário para a lista de campos a calcular e para obter os campos que sejam variáveis)
 	def fieldsSize = definition.fieldDefinitions.length();
-	def newInstanceFields = [];
 
+	def fields = [:]
 	(0..fieldsSize-1).each { index ->
 		def fieldDefinition  = definition.fieldDefinitions.getJSONObject(index)
 		def fieldDescription = fieldDefinition.get("description")
 		def fieldDefId       = fieldDefinition.get("id")
 		def fieldName        = fieldDefinition.get("name");
-
-		def dummyInstanceField = [
-				parent         : null,
-				fieldDefinition: [name: fieldName, id: fieldDefId, description: fieldDescription],
-				value          : null
-		];
-
-		int idxExistingF = instanceFields.findIndexOf { it.fieldDefinition.id == fieldDefId }
-
-		if(idxExistingF > -1) {
-			instanceFields[idxExistingF].fieldDefinition.description = fieldDescription;
-			newInstanceFields << instanceFields[idxExistingF]
-
-		} else {
-			newInstanceFields << dummyInstanceField;
-		}
+		fields[fieldDefId]   = [name:fieldName, description: fieldDescription]
 	}
-
-	instanceFields.clear();
-	instanceFields.addAll(newInstanceFields);
 
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def calculations = [];
-	instanceFields.each { field ->
-		def fieldDescription = field.fieldDefinition.description;
-		if(fieldDescription.toString() =~ /[$]calc\./) {
-			def op = getCalculationOperation(fieldDescription)
-			def args = getCalculationArgNames(fieldDescription)
-			calculations << [field : field, op : op, args : args]
+	fields.each { fieldId,field ->
+		if(field.description.toString() =~ /[$]calc\./) {
+			def op = getCalculationOperation(field.description)
+			def args = getCalculationArgNames(field.description)
+			argsFields = [:]
+			args.each { arg ->
+				argsFields[arg] = fields.findAll{fId,f -> f.description?.toString() =~ /.*[$]$arg.*/ }.collect { fId,f -> fId}
+			}
+			calculations << [fieldId: fieldId, name:field.name, op : op, args : argsFields]
 		}
 	}
+	
 	return calculations
 }
 
@@ -116,18 +100,19 @@ def executeCalculations(calculations,instanceFields) {
 	def atLeastOneChangeFlag = false;
 	def passCount = 0;
 
+	def results = [:]
 	while(passCount++ == 0 || atLeastOneChangeFlag) {
 		atLeastOneChangeFlag = false
 		calculations.each { calculation ->
 			def novoResultado = evaluateExpression(calculation,instanceFields)
-			if(calculation.field.value != novoResultado ) {
-				log.info("[Calculations] {{passCount:${passCount}, field:${calculation.field.fieldDefinition.name}" +
+			if(results[calculation.fieldId] != novoResultado ) {
+				log.info("[Calculations] {{passCount:${passCount}, field:${calculation.name}" +
 						", calcType:${calculation.op}(${calculation.args})" +
-						", fieldValue:${calculation.field.value}" +
+						", fieldValue:${results[calculation.fieldId]}" +
 						", calcValue:$novoResultado}}");
 
-				calculation.field.value = novoResultado;
-				updates << [(calculation.field.fieldDefinition.name) : novoResultado]
+				results[calculation.fieldId] = novoResultado;
+				updates << [(calculation.name) : novoResultado]
 				atLeastOneChangeFlag = true
 			}
 		}
@@ -161,31 +146,27 @@ def evaluateExpression(calculation,instanceFields) {
 
 // ==================================================
 def getCalculationArguments(calculation,instanceFields) {
-	def argNames = calculation.args
-	def values = argNames.collect { argName ->
+	def values = calculation.args.collect { argName,argFieldIds ->
 		(""+argName).isNumber()
 			? argName * 1
-			: getAllAplicableValuesForVarName(calculation.field,argName,instanceFields)
+			: getAllAplicableValuesForVarName(calculation.fieldId,argName,argFieldIds,instanceFields)
 	}
 	return values.flatten()
 }
 
 // ==================================================
-def getAllAplicableValuesForVarName(field,varName,instanceFields) {
+def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields) {
 	def result
 
-	if(varName == "parent") {
+	if(varName == "previous") {
 		def fieldIndex = 0
-		while(instanceFields[fieldIndex].id != field.parent) { fieldIndex++ };
-		result = instanceFields[fieldIndex].value
-	} else if(varName == "previous") {
-		def fieldIndex = 0
-		while(instanceFields[fieldIndex].fieldDefinition.id != field.fieldDefinition.id) { fieldIndex++ };
+		while(instanceFields[fieldIndex].fieldDefinition.id != fieldId) { fieldIndex++ };
 		result = instanceFields[fieldIndex-1].value
 	} else {
-		def relevantFields = instanceFields.findAll{ instField -> instField.fieldDefinition.description.toString() =~ /.*[$]$varName.*/ }
+		//log.info("[Calculations] find '$varFieldIds' in $instanceFields");
+		def relevantFields = instanceFields.findAll{ instField -> varFieldIds.indexOf(instField.fieldDefinition.id) >= 0 }
 		result = relevantFields.collect { it.value }
 	}
-	/**/log.info("[Calculations] values for '$varName' = $result");
+	//log.info("[Calculations] values for '$varName' = $result");
 	return result
 }

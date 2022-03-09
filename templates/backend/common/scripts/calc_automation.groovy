@@ -5,22 +5,16 @@ import java.math.RoundingMode;
 
 // ========================================================================================================
 if (msg.product == "recordm"
-		&& msg.user != "integrationm"
-		&& msg.action =~ "add|update"
-		&& (definitionsCalculationsCache[msg.type] == null || definitionsCalculationsCache[msg.type].size()) ){
+	&& msg.user != "integrationm"
+	&& msg.action =~ "add|update"
+	&& (definitionsCalculationsCache[msg.type] == null || definitionsCalculationsCache[msg.type].size()) ){
 
-	//log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	//log.info("[Calculations] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	def calculations = getAllCalculationsFields(messageMap.type);
-
-	//log.info("\$calc fields: ${calculations}");
-	
 	def updates = executeCalculations(calculations,msg.instance.fields)
-
-	log.info("\$calc Updates: ${updates}");
-
     def result = actionPacks.recordm.update(messageMap.type, "recordmInstanceId:" + messageMap.instance.id, updates);
-	//log.info("ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
-	//log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	//log.info("[Calculations] ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
+	//log.info("[Calculations] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // ========================================================================================================
@@ -28,24 +22,26 @@ if (msg.product == "recordm"
 @Field static definitionsCalculationsCacheInvalidationTimer
 
 def getAllCalculationsFields(definitionName) {
-
 	if(!definitionsCalculationsCache.containsKey(msg.type)) {
     	definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
+		log.info("[Calculations] \$calc fields for '${definitionName}': ${definitionsCalculationsCache[definitionName]}");	
 	}
 
     if(definitionsCalculationsCacheInvalidationTimer) {
         definitionsCalculationsCacheInvalidationTimer.cancel()
     }
     definitionsCalculationsCacheInvalidationTimer = new Timer()
-    definitionsCalculationsCacheInvalidationTimer.runAfter(6000000) { // 1h of cache: touch this file to force cache update
+    definitionsCalculationsCacheInvalidationTimer.runAfter(600000) { // 5m of cache: touch this file to force cache update
 		definitionsCalculationsCache.clear()
+		log.info("[Calculations] cleared cache");	
 	}
+
 	return definitionsCalculationsCache[definitionName]
 }
 
 // ========================================================================================================
 def getAllCurrentCalculationsFields(definitionName) {
-	//log.info("\$calc update calculations... 2");
+	//log.info("\$calc update calculations... ");
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
@@ -65,18 +61,23 @@ def getAllCurrentCalculationsFields(definitionName) {
 
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def calculations = [];
+	def previousId
 	fields.each { fieldId,field ->
 		if(field.description.toString() =~ /[$]calc\./) {
 			def op = getCalculationOperation(field.description)
 			def args = getCalculationArgNames(field.description)
 			argsFields = [:]
 			args.each { arg ->
-				argsFields[arg] = fields.findAll{fId,f -> f.description?.toString() =~ /.*[$]$arg.*/ }.collect { fId,f -> fId}
+				if(arg == "previous") {
+					argsFields[arg] = [previousId]
+				} else {
+					argsFields[arg] = fields.findAll{fId,f -> f.description?.toString() =~ /.*[$]$arg.*/ }.collect { fId,f -> fId}
+				}
 			}
 			calculations << [fieldId: fieldId, name:field.name, op : op, args : argsFields]
 		}
+		previousId = fieldId
 	}
-	
 	return calculations
 }
 
@@ -99,19 +100,18 @@ def executeCalculations(calculations,instanceFields) {
 	def updates = [:]
 	def atLeastOneChangeFlag = false;
 	def passCount = 0;
-
-	def results = [:]
-	while(passCount++ == 0 || atLeastOneChangeFlag) {
+	def temporaryResults = [:]
+	while(passCount++ == 0 || atLeastOneChangeFlag && passCount < 10) { //10 is just for security against loops
 		atLeastOneChangeFlag = false
 		calculations.each { calculation ->
-			def novoResultado = evaluateExpression(calculation,instanceFields)
-			if(results[calculation.fieldId] != novoResultado ) {
-				log.info("[Calculations] {{passCount:${passCount}, field:${calculation.name}" +
-						", calcType:${calculation.op}(${calculation.args})" +
-						", fieldValue:${results[calculation.fieldId]}" +
-						", calcValue:$novoResultado}}");
+			def novoResultado = evaluateExpression(calculation,instanceFields,temporaryResults)
+			if(temporaryResults[calculation.fieldId] != novoResultado ) {
+				// log.info("[Calculations] {{passCount:${passCount}, field:${calculation.name} (${calculation.fieldId})" + 
+				// 		", calcType:${calculation.op}(${calculation.args})" +
+				// 		", previousResult:${temporaryResults[calculation.fieldId]}" +
+				// 		", calcValue:$novoResultado}}");
 
-				results[calculation.fieldId] = novoResultado;
+				temporaryResults[calculation.fieldId] = novoResultado;
 				updates << [(calculation.name) : novoResultado]
 				atLeastOneChangeFlag = true
 			}
@@ -121,10 +121,10 @@ def executeCalculations(calculations,instanceFields) {
 }
 
 // ==================================================
-def evaluateExpression(calculation,instanceFields) {
+def evaluateExpression(calculation,instanceFields,temporaryResults) {
 	// Realizar operação
 	def resultado = new BigDecimal(0)
-	def args = getCalculationArguments(calculation,instanceFields)
+	def args = getCalculationArguments(calculation,instanceFields,temporaryResults)
 
 	if(calculation.op == "multiply" && args.size() > 0) {
 		resultado = 1
@@ -145,28 +145,27 @@ def evaluateExpression(calculation,instanceFields) {
 }
 
 // ==================================================
-def getCalculationArguments(calculation,instanceFields) {
+def getCalculationArguments(calculation,instanceFields,temporaryResults) {
 	def values = calculation.args.collect { argName,argFieldIds ->
 		(""+argName).isNumber()
 			? argName * 1
-			: getAllAplicableValuesForVarName(calculation.fieldId,argName,argFieldIds,instanceFields)
+			: getAllAplicableValuesForVarName(calculation.fieldId,argName,argFieldIds,instanceFields,temporaryResults)
 	}
 	return values.flatten()
 }
 
 // ==================================================
-def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields) {
-	def result
-
-	if(varName == "previous") {
-		def fieldIndex = 0
-		while(instanceFields[fieldIndex].fieldDefinition.id != fieldId) { fieldIndex++ };
-		result = instanceFields[fieldIndex-1].value
-	} else {
-		//log.info("[Calculations] find '$varFieldIds' in $instanceFields");
-		def relevantFields = instanceFields.findAll{ instField -> varFieldIds.indexOf(instField.fieldDefinition.id) >= 0 }
-		result = relevantFields.collect { it.value }
+def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields,temporaryResults) {
+	// log.info("[Calculations] find '$varName'($varFieldIds) in $instanceFields (temporaryResults=$temporaryResults) ");
+	def relevantFields = instanceFields.findAll{ instField -> varFieldIds.indexOf(instField.fieldDefinition.id) >= 0 }
+	
+	def result = varFieldIds.collect { varFieldId ->
+		if(temporaryResults[varFieldId] != null) { 
+			return temporaryResults[varFieldId]
+		} else {
+			return  temporaryResults[varFieldId] = instanceFields.findAll{ instField -> varFieldId == instField.fieldDefinition.id }?.collect { it.value }
+		}
 	}
-	//log.info("[Calculations] values for '$varName' = $result");
-	return result
+	// log.info("[Calculations] values for '$varName'($varFieldIds) = $result (temporaryResults=$temporaryResults) " );
+	return result.flatten()
 }

@@ -6,7 +6,7 @@ exports.option = {
     name: 'choosenFollowUp',
     message: 'Select one?',
     choices: [
-        require("./backend.common").option,
+        require("./backend.calc").option,
         require("./backend.email").option,
         require("./backend.updateField").option
     ]}

@@ -4,6 +4,13 @@ import org.codehaus.jettison.json.JSONObject
 import java.math.RoundingMode;
 
 // ========================================================================================================
+@Field static definitionsCalculationsCache = [:]
+@Field static definitionsCalculationsCacheInvalidationTimer = [:]
+if (msg.product == "recordm-definition") {
+	definitionsCalculationsCache[msg.type] = getAllCurrentCalculationsFields(msg.type) // update cache
+	definitionsCalculationsCacheInvalidationTimer[msg.type] = 'disable'
+}
+// ========================================================================================================
 if (msg.product == "recordm"
 	&& msg.user != "integrationm"
 	&& msg.action =~ "add|update"
@@ -18,24 +25,21 @@ if (msg.product == "recordm"
 }
 
 // ========================================================================================================
-@Field static definitionsCalculationsCache = [:]
-@Field static definitionsCalculationsCacheInvalidationTimer = [:]
-
 def getAllCalculationsFields(definitionName) {
-	if(!definitionsCalculationsCache.containsKey(definitionName)) {
-    	definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
-		log.info("[Calculations] \$calc fields for '$definitionName': ${definitionsCalculationsCache[definitionName]}");	
-	}
+	if(definitionsCalculationsCacheInvalidationTimer[definitionName] != 'disable') {     // Legacy: If not mantained by definition changes
+		if(!definitionsCalculationsCache.containsKey(definitionName)) {
+			definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
+		}
 
-    if(definitionsCalculationsCacheInvalidationTimer.containsKey(definitionName)) {
-        definitionsCalculationsCacheInvalidationTimer[definitionName].cancel()
-    }
-    definitionsCalculationsCacheInvalidationTimer[definitionName] = new Timer()	
-    definitionsCalculationsCacheInvalidationTimer[definitionName].runAfter(600000) { // 5m of cache: touch this file to force cache update
-		definitionsCalculationsCache.clear()
-		log.info("[User] cleared definition '$definitionName' cache for '\$calc' fields");	
-	}
-
+		if(definitionsCalculationsCacheInvalidationTimer.containsKey(definitionName)) {  // Legacy: If not mantained by definition changes
+			definitionsCalculationsCacheInvalidationTimer[definitionName].cancel()       // Legacy: If not mantained by definition changes
+		}																				 // Legacy: If not mantained by definition changes
+		definitionsCalculationsCacheInvalidationTimer[definitionName] = new Timer()	     // Legacy: If not mantained by definition changes
+		definitionsCalculationsCacheInvalidationTimer[definitionName].runAfter(600000) { // Legacy: If not mantained by definition changes
+			definitionsCalculationsCache.clear()										 // Legacy: If not mantained by definition changes
+			log.info("[User] cleared definition '$definitionName' cache for '\$calc' fields"); // Legacy: If not mantained by definition changes
+		}																				 // Legacy: If not mantained by definition changes
+	}																					 // Legacy: If not mantained by definition changes
 	return definitionsCalculationsCache[definitionName]
 }
 
@@ -78,6 +82,7 @@ def getAllCurrentCalculationsFields(definitionName) {
 		}
 		previousId = fieldId
 	}
+	log.info("[Calculations] \$calc fields for '$definitionName': $calculations");	
 	return calculations
 }
 

@@ -2,38 +2,43 @@ import groovy.transform.Field
 import org.codehaus.jettison.json.JSONObject
 
 // ========================================================================================================
+@Field static definitionsUserCache = [:]
+@Field static definitionsUserCacheInvalidationTimer = [:]
+if (msg.product == "recordm-definition") {
+	definitionsUserCache[msg.type] = getAllCurrentUserFields(msg.type)
+	definitionsUserCacheInvalidationTimer[msg.type] = 'disable'
+}
+
+// ========================================================================================================
 if (msg.product == "recordm"
 	&& msg.user != "integrationm"
 	&& msg.action =~ "add|update"
 	&& (definitionsUserCache[msg.type] == null || definitionsUserCache[msg.type].size()) ){
 
 	//log.info("[User] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	def userFields = getAllUserFields(messageMap.type);
+	def userFields = getAllUserFields(msg.type);
 	def updates = updateUser(userFields,msg.instance.fields)
-    def result = actionPacks.recordm.update(messageMap.type, "recordmInstanceId:" + messageMap.instance.id, updates);
-	//log.info("[User] ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
+    def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
+	//log.info("[User] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
 	//log.info("[User] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // ========================================================================================================
-@Field static definitionsUserCache = [:]
-@Field static definitionsUserCacheInvalidationTimer = [:]
-
 def getAllUserFields(definitionName) {
-	if(!definitionsUserCache.containsKey(definitionName)) {
-    	definitionsUserCache[definitionName] = getAllCurrentUserFields(definitionName)
-		log.info("[User] \$user fields for '$definitionName': ${definitionsUserCache[definitionName]}");	
-	}
+	if(definitionsUserCacheInvalidationTimer[definitionName] != 'disable') {    // Legacy: If not mantained by definition changes
+		if(!definitionsUserCache.containsKey(definitionName)) {
+			definitionsUserCache[definitionName] = getAllCurrentUserFields(definitionName)
+		}
 
-    if(definitionsUserCacheInvalidationTimer.containsKey(definitionName)) {
-        definitionsUserCacheInvalidationTimer[definitionName].cancel()
-    }
-    definitionsUserCacheInvalidationTimer[definitionName] = new Timer()
-    definitionsUserCacheInvalidationTimer[definitionName].runAfter(600000) { // 5m of cache: touch this file to force cache update
-		definitionsUserCache.clear()
-		log.info("[User] cleared definition '$definitionName' cache for '\$user' fields");	
-	}
-
+		if(definitionsUserCacheInvalidationTimer.containsKey(definitionName)) {  // Legacy: If not mantained by definition changes
+			definitionsUserCacheInvalidationTimer[definitionName].cancel()       // Legacy: If not mantained by definition changes
+		}																		 // Legacy: If not mantained by definition changes
+		definitionsUserCacheInvalidationTimer[definitionName] = new Timer()      // Legacy: If not mantained by definition changes
+		definitionsUserCacheInvalidationTimer[definitionName].runAfter(600000) { // Legacy: If not mantained by definition changes
+			definitionsUserCache.clear()                                         // Legacy: If not mantained by definition changes
+			log.info("[User] cleared definition '$definitionName' cache for '\$user' fields"); // Legacy: If not mantained by definition changes
+		}																		 // Legacy: If not mantained by definition changes
+	}																			 // Legacy: If not mantained by definition changes
 	return definitionsUserCache[definitionName]
 }
 
@@ -67,6 +72,7 @@ def getAllCurrentUserFields(definitionName) {
 			userFields << [fieldId: fieldId, name:field.name, op : op, args: arg]
 		}
 	}
+	log.info("[User] \$user fields for '$definitionName': $userFields");
 	return userFields
 }
 

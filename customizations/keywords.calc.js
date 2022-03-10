@@ -4,14 +4,14 @@ exports.option = {
   questions: [
   ],
   customization: async function (answers) {
-      console.log("\nApplying Calc backend customizations ...")
+      console.log("\nApplying Calc keyword customizations ...")
 
       const { copy } = require("../lib/task_lists/customize_copy");
       const { mergeFiles } = require("../lib/task_lists/customize_mergeFiles");
       const fe_target = "./recordm/customUI/"
-      await copy("../../templates/backend/calc/frontend_counterpart",fe_target)
-      const be_target = "./integrationm/scripts/"
-      await copy("../../templates/backend/calc/scripts",be_target)
-      await mergeFiles("Backend.Calc")
+      await copy("../../templates/keywords/calc/frontend",fe_target)
+      const be_target = "./integrationm/"
+      await copy("../../templates/keywords/calc/backend/",be_target)
+      await mergeFiles("Keyword.Calc")
   }
 }

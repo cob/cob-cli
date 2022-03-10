@@ -19,21 +19,21 @@ if (msg.product == "recordm"
 
 // ========================================================================================================
 @Field static definitionsCalculationsCache = [:]
-@Field static definitionsCalculationsCacheInvalidationTimer
+@Field static definitionsCalculationsCacheInvalidationTimer = [:]
 
 def getAllCalculationsFields(definitionName) {
-	if(!definitionsCalculationsCache.containsKey(msg.type)) {
+	if(!definitionsCalculationsCache.containsKey(definitionName)) {
     	definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
-		log.info("[Calculations] \$calc fields for '${definitionName}': ${definitionsCalculationsCache[definitionName]}");	
+		log.info("[Calculations] \$calc fields for '$definitionName': ${definitionsCalculationsCache[definitionName]}");	
 	}
 
-    if(definitionsCalculationsCacheInvalidationTimer) {
-        definitionsCalculationsCacheInvalidationTimer.cancel()
+    if(definitionsCalculationsCacheInvalidationTimer.containsKey(definitionName)) {
+        definitionsCalculationsCacheInvalidationTimer[definitionName].cancel()
     }
-    definitionsCalculationsCacheInvalidationTimer = new Timer()
-    definitionsCalculationsCacheInvalidationTimer.runAfter(600000) { // 5m of cache: touch this file to force cache update
+    definitionsCalculationsCacheInvalidationTimer[definitionName] = new Timer()	
+    definitionsCalculationsCacheInvalidationTimer[definitionName].runAfter(600000) { // 5m of cache: touch this file to force cache update
 		definitionsCalculationsCache.clear()
-		log.info("[Calculations] cleared cache");	
+		log.info("[User] cleared definition '$definitionName' cache for '\$calc' fields");	
 	}
 
 	return definitionsCalculationsCache[definitionName]

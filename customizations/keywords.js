@@ -7,7 +7,7 @@ exports.option = {
     message: 'Select one?',
     choices: [
         require("./keywords.calc").option,
-        require("./keywords.user").option
+        require("./keywords.audit").option
     ]}
   ]
 }

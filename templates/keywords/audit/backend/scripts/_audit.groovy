@@ -5,14 +5,14 @@ import com.google.common.cache.*
 import java.util.concurrent.TimeUnit
 
 // ========================================================================================================
-@Field static cacheOfUserFieldsForDefinition = CacheBuilder.newBuilder()
+@Field static cacheOfAuditFieldsForDefinition = CacheBuilder.newBuilder()
         .maximumSize(100)
         .expireAfterAccess(30, TimeUnit.SECONDS) // remove se não for mexida (lida ou escrita)
         .expireAfterWrite(5, TimeUnit.MINUTES) // remove x tempo depois de escrita
         .build();
 
-if (msg.product == "recordm-definition") cacheOfUserFieldsForDefinition.invalidate(msg.type)
-def auditFields = cacheOfUserFieldsForDefinition.get(msg.type, { getAllUserFields(msg.type) })
+if (msg.product == "recordm-definition") cacheOfAuditFieldsForDefinition.invalidate(msg.type)
+def auditFields = cacheOfAuditFieldsForDefinition.get(msg.type, { getAuditFields(msg.type) })
 
 // ========================================================================================================
 
@@ -23,7 +23,7 @@ if (auditFields.size() > 0
 
 	def updates = updateUser(auditFields,msg.instance.fields)
     def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
-	/**/log.info("[User] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
+	/**/log.info("[Audit] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
 }
 
 // ========================================================================================================
@@ -42,7 +42,7 @@ def updateUser(auditFields,instanceFields) {
 }
 
 // ========================================================================================================
-def getAllUserFields(definitionName) {
+def getAuditFields(definitionName) {
 	/**/log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	/**/log.info("[\$audit] Update auditFields for $definitionName ... ");
 

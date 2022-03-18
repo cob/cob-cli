@@ -17,7 +17,7 @@ function calc_automation(instance, presenter) {
     //=========================================================
     function getAllCalculationsFields() {
         return presenter
-            .findFieldPs( fp => fp.field.fieldDefinition.description && fp.field.fieldDefinition.description.includes("$calc.") )
+            .findFieldPs( fp => /[$]calc\.(.*)/.exec(fp.field.fieldDefinition.description) )
             .map( calculationFp => {
                 calculationFp.disable()
                 return {

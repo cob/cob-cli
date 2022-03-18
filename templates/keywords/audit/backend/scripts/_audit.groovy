@@ -6,9 +6,7 @@ import java.util.concurrent.TimeUnit
 
 // ========================================================================================================
 @Field static cacheOfAuditFieldsForDefinition = CacheBuilder.newBuilder()
-        .maximumSize(100)
-        .expireAfterAccess(30, TimeUnit.SECONDS) // remove se não for mexida (lida ou escrita)
-        .expireAfterWrite(5, TimeUnit.MINUTES) // remove x tempo depois de escrita
+        .expireAfterWrite(5, TimeUnit.MINUTES)
         .build();
 
 if (msg.product == "recordm-definition") cacheOfAuditFieldsForDefinition.invalidate(msg.type)
@@ -23,7 +21,7 @@ if (auditFields.size() > 0
 
 	def updates = updateUser(auditFields,msg.instance.fields)
     def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
-	/**/log.info("[Audit] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
+	/**/log.info("[\$audit] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
 }
 
 // ========================================================================================================

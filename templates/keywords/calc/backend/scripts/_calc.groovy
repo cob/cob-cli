@@ -3,87 +3,26 @@ import org.codehaus.jettison.json.JSONObject
 
 import java.math.RoundingMode;
 
+import com.google.common.cache.*
+import java.util.concurrent.TimeUnit
+
 // ========================================================================================================
-@Field static definitionsCalculationsCache = [:]
-@Field static definitionsCalculationsCacheInvalidationTimer = [:]
-if (msg.product == "recordm-definition") {
-	definitionsCalculationsCache[msg.type] = getAllCurrentCalculationsFields(msg.type) // update cache
-	definitionsCalculationsCacheInvalidationTimer[msg.type] = 'disable'
-}
+@Field static cacheOfCalcFieldsForDefinition = CacheBuilder.newBuilder()
+        .expireAfterWrite(5, TimeUnit.MINUTES)
+        .build();
+
+if (msg.product == "recordm-definition") cacheOfCalcFieldsForDefinition.invalidate(msg.type)
+def calculationFields = cacheOfCalcFieldsForDefinition.get(msg.type, { getAllCalculationFields(msg.type) })
+
 // ========================================================================================================
-if (msg.product == "recordm"
+if (calculationFields.size() > 0
+	&& msg.product == "recordm"
 	&& msg.user != "integrationm"
-	&& msg.action =~ "add|update"
-	&& (definitionsCalculationsCache[msg.type] == null || definitionsCalculationsCache[msg.type].size()) ){
+	&& msg.action =~ "add|update" ){
 
-	//log.info("[Calculations] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	def calculations = getAllCalculationsFields(messageMap.type);
-	def updates = executeCalculations(calculations,msg.instance.fields)
+	def updates = executeCalculations(calculationFields, msg.instance.fields)
     def result = actionPacks.recordm.update(messageMap.type, "recordmInstanceId:" + messageMap.instance.id, updates);
-	//log.info("[Calculations] ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
-	//log.info("[Calculations] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-}
-
-// ========================================================================================================
-def getAllCalculationsFields(definitionName) {
-	if(definitionsCalculationsCacheInvalidationTimer[definitionName] != 'disable') {     // Legacy: If not mantained by definition changes
-		if(!definitionsCalculationsCache.containsKey(definitionName)) {
-			definitionsCalculationsCache[definitionName] = getAllCurrentCalculationsFields(definitionName)
-		}
-
-		if(definitionsCalculationsCacheInvalidationTimer.containsKey(definitionName)) {  // Legacy: If not mantained by definition changes
-			definitionsCalculationsCacheInvalidationTimer[definitionName].cancel()       // Legacy: If not mantained by definition changes
-		}																				 // Legacy: If not mantained by definition changes
-		definitionsCalculationsCacheInvalidationTimer[definitionName] = new Timer()	     // Legacy: If not mantained by definition changes
-		definitionsCalculationsCacheInvalidationTimer[definitionName].runAfter(600000) { // Legacy: If not mantained by definition changes
-			definitionsCalculationsCache.clear()										 // Legacy: If not mantained by definition changes
-			log.info("[User] cleared definition '$definitionName' cache for '\$calc' fields"); // Legacy: If not mantained by definition changes
-		}																				 // Legacy: If not mantained by definition changes
-	}																					 // Legacy: If not mantained by definition changes
-	return definitionsCalculationsCache[definitionName]
-}
-
-// ========================================================================================================
-def getAllCurrentCalculationsFields(definitionName) {
-	//log.info("\$calc update calculations... ");
-
-	// Obtém detalhes da definição
-	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
-	def resp = actionPacks.rmRest.get( "recordm/definitions/name/${definitionEncoded}".toString(), [:], "");
-	JSONObject definition = new JSONObject(resp);
-
-	def fieldsSize = definition.fieldDefinitions.length();
-
-	def fields = [:]
-	(0..fieldsSize-1).each { index ->
-		def fieldDefinition  = definition.fieldDefinitions.getJSONObject(index)
-		def fieldDescription = fieldDefinition.get("description")
-		def fieldDefId       = fieldDefinition.get("id")
-		def fieldName        = fieldDefinition.get("name");
-		fields[fieldDefId]   = [name:fieldName, description: fieldDescription]
-	}
-
-	// Finalmente obtém a lista de campos que é necessário calcular
-	def calculations = [];
-	def previousId
-	fields.each { fieldId,field ->
-		if(field.description.toString() =~ /[$]calc\./) {
-			def op = getCalculationOperation(field.description)
-			def args = getCalculationArgNames(field.description)
-			argsFields = [:]
-			args.each { arg ->
-				if(arg == "previous") {
-					argsFields[arg] = [previousId]
-				} else {
-					argsFields[arg] = fields.findAll{fId,f -> f.description?.toString() =~ /.*[$]$arg.*/ }.collect { fId,f -> fId}
-				}
-			}
-			calculations << [fieldId: fieldId, name:field.name, op : op, args : argsFields]
-		}
-		previousId = fieldId
-	}
-	log.info("[Calculations] \$calc fields for '$definitionName': $calculations");	
-	return calculations
+	log.info("[\$calc] ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
 }
 
 // ==================================================
@@ -101,17 +40,17 @@ def getCalculationArgNames(fieldDescription) {
 }
 
 // ========================================================================================================
-def executeCalculations(calculations,instanceFields) {
+def executeCalculations(calculationFields,instanceFields) {
 	def updates = [:]
 	def atLeastOneChangeFlag = false;
 	def passCount = 0;
 	def temporaryResults = [:]
 	while(passCount++ == 0 || atLeastOneChangeFlag && passCount < 10) { //10 is just for security against loops
 		atLeastOneChangeFlag = false
-		calculations.each { calculation ->
+		calculationFields.each { calculation ->
 			def novoResultado = evaluateExpression(calculation,instanceFields,temporaryResults)
 			if(temporaryResults[calculation.fieldId] != novoResultado ) {
-				// log.info("[Calculations] {{passCount:${passCount}, field:${calculation.name} (${calculation.fieldId})" + 
+				// log.info("[\$calc] {{passCount:${passCount}, field:${calculation.name} (${calculation.fieldId})" + 
 				// 		", calcType:${calculation.op}(${calculation.args})" +
 				// 		", previousResult:${temporaryResults[calculation.fieldId]}" +
 				// 		", calcValue:$novoResultado}}");
@@ -161,7 +100,7 @@ def getCalculationArguments(calculation,instanceFields,temporaryResults) {
 
 // ==================================================
 def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields,temporaryResults) {
-	// log.info("[Calculations] find '$varName'($varFieldIds) in $instanceFields (temporaryResults=$temporaryResults) ");
+	// log.info("[\$calc] find '$varName'($varFieldIds) in $instanceFields (temporaryResults=$temporaryResults) ");
 	def relevantFields = instanceFields.findAll{ instField -> varFieldIds.indexOf(instField.fieldDefinition.id) >= 0 }
 	
 	def result = varFieldIds.collect { varFieldId ->
@@ -171,6 +110,51 @@ def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields,t
 			return  temporaryResults[varFieldId] = instanceFields.findAll{ instField -> varFieldId == instField.fieldDefinition.id }?.collect { it.value }
 		}
 	}
-	// log.info("[Calculations] values for '$varName'($varFieldIds) = $result (temporaryResults=$temporaryResults) " );
+	// log.info("[\$calc] values for '$varName'($varFieldIds) = $result (temporaryResults=$temporaryResults) " );
 	return result.flatten()
+}
+
+// ========================================================================================================
+def getAllCalculationFields(definitionName) {
+	log.info("[\$calc] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	log.info("[\$calc] update calculationFields for $definitionName... ");
+
+	// Obtém detalhes da definição
+	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
+	def resp = actionPacks.rmRest.get( "recordm/definitions/name/${definitionEncoded}".toString(), [:], "");
+	JSONObject definition = new JSONObject(resp);
+
+	def fieldsSize = definition.fieldDefinitions.length();
+
+	def fields = [:]
+	(0..fieldsSize-1).each { index ->
+		def fieldDefinition  = definition.fieldDefinitions.getJSONObject(index)
+		def fieldDescription = fieldDefinition.get("description")
+		def fieldDefId       = fieldDefinition.get("id")
+		def fieldName        = fieldDefinition.get("name");
+		fields[fieldDefId]   = [name:fieldName, description: fieldDescription]
+	}
+
+	// Finalmente obtém a lista de campos que é necessário calcular
+	def calculationFields = [];
+	def previousId
+	fields.each { fieldId,field ->
+		if(field.description.toString() =~ /[$]calc\./) {
+			def op = getCalculationOperation(field.description)
+			def args = getCalculationArgNames(field.description)
+			argsFields = [:]
+			args.each { arg ->
+				if(arg == "previous") {
+					argsFields[arg] = [previousId]
+				} else {
+					argsFields[arg] = fields.findAll{fId,f -> f.description?.toString() =~ /.*[$]$arg.*/ }.collect { fId,f -> fId}
+				}
+			}
+			calculationFields << [fieldId: fieldId, name:field.name, op : op, args : argsFields]
+		}
+		previousId = fieldId
+	}
+	log.info("[\$calc] fields for '$definitionName': $calculationFields");	
+	log.info("[\$calc] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	return calculationFields
 }

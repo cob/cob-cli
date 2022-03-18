@@ -2,7 +2,7 @@
 cob.custom.customize.push(function (core, utils, ui) {
     core.customizeAllInstances((instance, presenter) => 
     {
-        let userFPs = presenter.findFieldPs( fp => /[$]audit\.(creator|updater)\.(username|usermRef)/.exec(fp.field.fieldDefinition.description && fp.field.fieldDefinition.description) )
+        let userFPs = presenter.findFieldPs( fp => /[$]audit\.(creator|updater)\.(username|usermRef|time)/.exec(fp.field.fieldDefinition.description) )
         userFPs.forEach( fp => {
             fp.disable()
             if(!instance.isNew() || presenter.isGroupEdit()) return //Only update if it's on create interface (updates will only be changed by the backend)
@@ -11,6 +11,9 @@ cob.custom.customize.push(function (core, utils, ui) {
             }
             if(/[$]audit\.(creator|updater)\.usermRef/.exec(fp.field.fieldDefinition.description)) {
                 fp.setValue(core.getCurrentLoggedInUserUri())
+            }
+            if(/[$]audit\.(creator|updater)\.time/.exec(fp.field.fieldDefinition.description)) {               
+                fp.setValue(Date.now())
             }
         })
     })

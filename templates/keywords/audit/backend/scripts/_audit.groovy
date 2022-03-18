@@ -32,8 +32,13 @@ def updateUser(auditFields,instanceFields) {
 		if( auditField.op == "creator" && msg.action == "update") return
 		if( auditField.args == "usermRef") {
 			updates << [(auditField.name) : userm.getUser(msg.user).data._links.self]
-		} else {
+
+		} else if( auditField.args == "username") {
 			updates << [(auditField.name) : msg.user]
+			
+		} else if( auditField.args == "time") {
+			if(Math.abs(msg.value(auditField.name, Long.class) - msg._timestamp_) < 60000) return // Ignore changes less then 60s
+			updates << [(auditField.name) : "" + msg._timestamp_]
 		}
 	}
 	return updates
@@ -63,7 +68,7 @@ def getAuditFields(definitionName) {
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def auditFields = [];
 	fields.each { fieldId,field -> 
-		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|usermRef)/
+		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|usermRef|time)/
 		if(matcher) {
 			def op = matcher[0][1]
 			def arg = matcher[0][2]

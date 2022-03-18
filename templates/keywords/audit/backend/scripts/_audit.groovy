@@ -29,7 +29,7 @@ def updateUser(auditFields,instanceFields) {
 	def userm = actionPacks.get("userm");
 	def updates = [:]
 	auditFields.each { auditField ->
-		if( auditField.op == "creator" && msg.action == "update") return
+		if( auditField.op == "creator" && msg.action == "update" && msg.value(auditField.name) != null) return
 		if( auditField.args == "usermRef") {
 			updates << [(auditField.name) : userm.getUser(msg.user).data._links.self]
 
@@ -37,7 +37,8 @@ def updateUser(auditFields,instanceFields) {
 			updates << [(auditField.name) : msg.user]
 			
 		} else if( auditField.args == "time") {
-			if(Math.abs(msg.value(auditField.name, Long.class) - msg._timestamp_) < 60000) return // Ignore changes less then 60s
+			if(msg.action == 'add' && Math.abs(msg.value(auditField.name, Long.class)?:0 - msg._timestamp_) < 30000) return // Ignore changes less then 30s
+			if(msg.action == 'update' && !msg.diff) return // Only continues if there is at least one change
 			updates << [(auditField.name) : "" + msg._timestamp_]
 		}
 	}

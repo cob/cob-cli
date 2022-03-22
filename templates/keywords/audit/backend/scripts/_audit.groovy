@@ -30,7 +30,7 @@ def getAuditFieldsUpdates(auditFields,instanceFields) {
 	auditFields.each { auditField ->
 		if( auditField.op == "creator" && msg.action == "update" && msg.value(auditField.name) != null) return // 'creator' fields are only changed in 'update' if the previous value was empty (meaning it was a field that was not visible)
 		if( msg.action == 'update' && !msg.diff) return // Only continues if there is at least one change
-		if( auditField.args == "usermURI") {
+		if( auditField.args == "uri") {
 			updates << [(auditField.name) : actionPacks.get("userm").getUser(msg.user).data._links.self]
 
 		} else if( auditField.args == "username") {
@@ -46,8 +46,7 @@ def getAuditFieldsUpdates(auditFields,instanceFields) {
 
 // ========================================================================================================
 def getAuditFields(definitionName) {
-	/**/log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	/**/log.info("[\$audit] Update 'auditFields' for '$definitionName'... ");
+	log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
@@ -68,14 +67,14 @@ def getAuditFields(definitionName) {
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def auditFields = [];
 	fields.each { fieldId,field -> 
-		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|usermURI|time)/
+		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|uri|time)/
 		if(matcher) {
 			def op = matcher[0][1]
 			def arg = matcher[0][2]
 			auditFields << [fieldId: fieldId, name:field.name, op : op, args: arg]
 		}
 	}
-	log.info("[\$audit] fields for '$definitionName': $auditFields");
-	/**/log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+	log.info("[\$audit] Update 'auditFields' for '$definitionName': $auditFields");
+	log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	return auditFields
 }

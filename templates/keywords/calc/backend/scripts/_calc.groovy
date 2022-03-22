@@ -119,7 +119,6 @@ def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields,t
 // ========================================================================================================
 def getAllCalculationFields(definitionName) {
 	log.info("[\$calc] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	log.info("[\$calc] update 'calculationFields' for '$definitionName'... ");
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
@@ -156,7 +155,7 @@ def getAllCalculationFields(definitionName) {
 		}
 		previousId = fieldId
 	}
-	log.info("[\$calc] fields for '$definitionName': $calculationFields");	
+	log.info("[\$calc] Update 'calculationFields' for '$definitionName': $calculationFields");	
 	log.info("[\$calc] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	return calculationFields
 }

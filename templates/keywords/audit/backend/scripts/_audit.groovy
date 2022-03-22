@@ -5,40 +5,39 @@ import com.google.common.cache.*
 import java.util.concurrent.TimeUnit
 
 // ========================================================================================================
+if (msg.product != "recordm-definition" && msg.product != "recordm" ) return
+
 @Field static cacheOfAuditFieldsForDefinition = CacheBuilder.newBuilder()
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build();
 
 if (msg.product == "recordm-definition") cacheOfAuditFieldsForDefinition.invalidate(msg.type)
-def auditFields = cacheOfAuditFieldsForDefinition.get(msg.type, { getAuditFields(msg.type) })
 
 // ========================================================================================================
-
+def auditFields = cacheOfAuditFieldsForDefinition.get(msg.type, { getAuditFields(msg.type) })
 if (auditFields.size() > 0
-	&& msg.product == "recordm"
 	&& msg.user != "integrationm"
 	&& msg.action =~ "add|update" ) {
 
-	def updates = updateUser(auditFields,msg.instance.fields)
+	def updates = getAuditFieldsUpdates(auditFields,msg.instance.fields)
     def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
-	/**/log.info("[\$audit] ACTUALIZADA '${msg.type}' {{id:${msg.instance.id}, result:${result}, updates: ${updates}}}");
+	if(updates) log.info("[\$audit] UPDATE '${msg.type}' id:${msg.instance.id}, updates: ${updates}, result:${result.getStatus()} | ${result.getStatusInfo()} ");
 }
 
 // ========================================================================================================
-def updateUser(auditFields,instanceFields) {
-	def userm = actionPacks.get("userm");
+def getAuditFieldsUpdates(auditFields,instanceFields) {
 	def updates = [:]
 	auditFields.each { auditField ->
-		if( auditField.op == "creator" && msg.action == "update" && msg.value(auditField.name) != null) return
-		if( auditField.args == "usermRef") {
-			updates << [(auditField.name) : userm.getUser(msg.user).data._links.self]
+		if( auditField.op == "creator" && msg.action == "update" && msg.value(auditField.name) != null) return // 'creator' fields are only changed in 'update' if the previous value was empty (meaning it was a field that was not visible)
+		if( msg.action == 'update' && !msg.diff) return // Only continues if there is at least one change
+		if( auditField.args == "usermURI") {
+			updates << [(auditField.name) : actionPacks.get("userm").getUser(msg.user).data._links.self]
 
 		} else if( auditField.args == "username") {
 			updates << [(auditField.name) : msg.user]
 			
 		} else if( auditField.args == "time") {
 			if(msg.action == 'add' && Math.abs(msg.value(auditField.name, Long.class)?:0 - msg._timestamp_) < 30000) return // Ignore changes less then 30s
-			if(msg.action == 'update' && !msg.diff) return // Only continues if there is at least one change
 			updates << [(auditField.name) : "" + msg._timestamp_]
 		}
 	}
@@ -48,7 +47,7 @@ def updateUser(auditFields,instanceFields) {
 // ========================================================================================================
 def getAuditFields(definitionName) {
 	/**/log.info("[\$audit] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	/**/log.info("[\$audit] Update auditFields for $definitionName ... ");
+	/**/log.info("[\$audit] Update 'auditFields' for '$definitionName'... ");
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
@@ -69,7 +68,7 @@ def getAuditFields(definitionName) {
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def auditFields = [];
 	fields.each { fieldId,field -> 
-		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|usermRef|time)/
+		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|usermURI|time)/
 		if(matcher) {
 			def op = matcher[0][1]
 			def arg = matcher[0][2]

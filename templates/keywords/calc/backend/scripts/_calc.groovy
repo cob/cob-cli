@@ -7,14 +7,16 @@ import com.google.common.cache.*
 import java.util.concurrent.TimeUnit
 
 // ========================================================================================================
+if (msg.product != "recordm-definition" && msg.product != "recordm" ) return
+
 @Field static cacheOfCalcFieldsForDefinition = CacheBuilder.newBuilder()
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build();
 
 if (msg.product == "recordm-definition") cacheOfCalcFieldsForDefinition.invalidate(msg.type)
-def calculationFields = cacheOfCalcFieldsForDefinition.get(msg.type, { getAllCalculationFields(msg.type) })
 
 // ========================================================================================================
+def calculationFields = cacheOfCalcFieldsForDefinition.get(msg.type, { getAllCalculationFields(msg.type) })
 if (calculationFields.size() > 0
 	&& msg.product == "recordm"
 	&& msg.user != "integrationm"
@@ -22,7 +24,7 @@ if (calculationFields.size() > 0
 
 	def updates = executeCalculations(calculationFields, msg.instance.fields)
     def result = actionPacks.recordm.update(messageMap.type, "recordmInstanceId:" + messageMap.instance.id, updates);
-	log.info("[\$calc] ACTUALIZADA '${messageMap.type}' {{id:${messageMap.instance.id}, result:${result}, updates: ${updates}}}");
+	if(updates) log.info("[\$calc] UPDATE '${msg.type}' id:${msg.instance.id}, updates: ${updates}, result:${result.getStatus()} | ${result.getStatusInfo()} ");
 }
 
 // ==================================================
@@ -117,7 +119,7 @@ def getAllAplicableValuesForVarName(fieldId,varName,varFieldIds,instanceFields,t
 // ========================================================================================================
 def getAllCalculationFields(definitionName) {
 	log.info("[\$calc] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-	log.info("[\$calc] update calculationFields for $definitionName... ");
+	log.info("[\$calc] update 'calculationFields' for '$definitionName'... ");
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")

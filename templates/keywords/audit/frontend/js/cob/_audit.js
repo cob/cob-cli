@@ -14,6 +14,7 @@ cob.custom.customize.push(function (core, utils, ui) {
             }
             if(/[$]audit\.(creator|updater)\.time/.exec(fp.field.fieldDefinition.description)) {               
                 fp.setValue(Date.now())
+                setInterval(() =>  fp.setValue(Date.now()),15)
             }
         })
     })

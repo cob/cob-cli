@@ -16,6 +16,7 @@ if (msg.product == "recordm-definition") cacheOfAuditFieldsForDefinition.invalid
 // ========================================================================================================
 def auditFields = cacheOfAuditFieldsForDefinition.get(msg.type, { getAuditFields(msg.type) })
 if (auditFields.size() > 0
+	&& msg.product == "recordm"
 	&& msg.user != "integrationm"
 	&& msg.action =~ "add|update" ) {
 
@@ -67,7 +68,7 @@ def getAuditFields(definitionName) {
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def auditFields = [];
 	fields.each { fieldId,field -> 
-		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|uri|time)/
+		def matcher = field.description.toString() =~ /[$]audit\.(creator|updater)\.(username|uri|time)/
 		if(matcher) {
 			def op = matcher[0][1]
 			def arg = matcher[0][2]

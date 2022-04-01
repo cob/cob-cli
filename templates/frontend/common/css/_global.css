@@ -1,0 +1,12 @@
+/* Overall good practive - not column related but specialy relevant inside columns */
+.cob-app .instance-detail-container div.instance-container ol.fields > li > table > tbody > tr > td:nth-child(1) {
+    min-width: 70px;
+}
+.cob-app .instance-detail-container div.instance-container ol.fields > li > table > tbody > tr > td:nth-child(2) {
+    min-width: 160px;
+}
+.cob-app .instance-detail-container div.instance-container ol.fields  li > table > tbody > tr > td:nth-child(3),
+.cob-app .instance-detail-container div.instance-container ol.fields  li > table > tbody > tr > td:nth-child(3) input {
+    max-width: 230px;
+    width: -webkit-fill-available;
+}

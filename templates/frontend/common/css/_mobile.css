@@ -59,12 +59,8 @@
       width:30px !important;
       max-width:30px !important;
    }
-   ol.fields .custom-comentarios table > tbody > tr > td:nth-child(1) {
-      min-width:70px !important;
-      width:70px !important;
-      max-width:70px !important;
-   }
-   ol.fields table > tbody > tr > td:nth-child(2) {
+   ol.fields table > tbody > tr > td:nth-child(2),
+   ol.fields table > tbody > tr > td:nth-child(2) label {
       width:100px !important;
       min-width:100px !important;
    }
@@ -91,11 +87,7 @@
       min-width:0px !important;
       max-width:0px !important;
    }
-   /* labels constantes */
-   .cob-app .instance-detail-container div.instance-container ol.fields > li > table label {
-      max-width: 150px !important;
-      min-width: 150px !important;
-   }
+
    /* selects constantes */
    .cob-app .instance-detail-container ol.fields table > tbody > tr > td:nth-child(3) > div.inline > select,
    .cob-app .instance-detail-container select {

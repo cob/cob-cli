@@ -9,4 +9,5 @@
 .cob-app .instance-detail-container div.instance-container ol.fields  li > table > tbody > tr > td:nth-child(3) input {
     max-width: 230px;
     width: -webkit-fill-available;
+    z-index: -1;
 }

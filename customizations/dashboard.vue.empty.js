@@ -7,6 +7,6 @@ exports.option = {
     customization: function (answers) {
         const { copy } = require("../lib/task_lists/customize_copy");
         const target = "./recordm/customUI/"+answers.name+"/"
-        return copy("../../templates/cob-dashboard-vue/",target)
+        return copy("../../templates/dashboard/cob-dashboard-vue/",target)
     }
 }

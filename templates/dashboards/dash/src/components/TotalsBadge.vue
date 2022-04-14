@@ -1,9 +1,12 @@
 <template>
-    <div>
-        <a :href="badgeData.dash_info.href" :class="valueClass">
+    <div :class="{'animate-pulse':signalChange}">
+        <a :href="badgeData.dash_info.href" :class="valueClass" class="relative inline-flex">
+            <span v-html="value"/>
 
-            <i v-if="badgeData.dash_info.isLink" :class="value"></i>
-            <span v-else>{{ value }}</span>
+            <svg v-if="updating" class="absolute animate-spin -top-1 -right-1 h-2 w-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
         </a>
     </div>
 </template>
@@ -14,15 +17,37 @@ export default {
     props: {
         badgeData: Object
     },
+    data () {
+      return {
+        signalChange: false
+      }
+    },
+    watch: {
+      state(newState) {
+        if(newState == "ready") {
+            this.signalChange = true;
+            setTimeout( () => this.signalChange = false,8000)
+        }
+      }
+    },
     computed: {
+        updating() {
+            return this.badgeData.dash_info.state == "updating" || this.badgeData.dash_info.state == "loading"
+        },
         value() {
             if(this.badgeData.dash_info.state == "loading") return "L"
             if(this.badgeData.dash_info.state == "error") return "E"
-            return this.badgeData.dash_info.value
+            if(isNaN(this.badgeData.dash_info.value)) {
+                return this.badgeData.dash_info.value
+            } else {
+                return new Intl.NumberFormat('en-US', {}).format(this.badgeData.dash_info.value) 
+            }
         },
-        
+        state() {
+            return this.badgeData.dash_info.state
+        },
         valueClass() {
-            let c = "px-2 py-1 rounded-md text-center font-mono font-semibold transition border ring-offset-1 hover:ring-2"
+            let c = "relative transition ease-in-out px-2 py-1 rounded-md text-center font-mono font-semibold transition border ring-offset-1 hover:ring-2"
 
             const lookup = {
                 "Info":      "text-sky-600 border-sky-600 bg-sky-200/10 ring-sky-600",
@@ -36,9 +61,6 @@ export default {
 
             if(this.badgeData.dash_info.state == "loading") return c + " " + lookup["Warning"]
             if(this.badgeData.dash_info.state == "error") return c + " " + lookup["Important"]
-
-            if(this.badgeData.dash_info.state == "cache")
-                c += " after:content-['.'] after:text-gray-400 after:text-xs pr-0.5"
 
             return c + " " + (this.badgeData.dash_info.value == 0 ? lookup["Gray"] : lookup[this.badgeData.style] ? lookup[this.badgeData.style] : lookup["Fallback"])
         }

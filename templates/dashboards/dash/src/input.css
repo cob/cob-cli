@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reverte hide feito no dashboard.html */
+section.custom-resource {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

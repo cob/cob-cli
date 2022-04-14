@@ -6,6 +6,7 @@ exports.option = {
     name: 'choosenFollowUp',
     message: 'Which type of dashboard?',
     choices: [
+        require("./dashboard.dash").option,
         require("./dashboard.simple").option,
         require("./dashboard.vue").option
     ]}

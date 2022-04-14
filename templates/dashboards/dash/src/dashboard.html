@@ -1,0 +1,34 @@
+<% if (htmlWebpackPlugin.options.rmIntegrated == false) { %>  
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<% } %>      
+<% for (var css in htmlWebpackPlugin.files.css) { %>
+      <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="preload" as="style">
+      <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+<% } %>
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+      <link href="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>" rel="preload" as="script">
+<% } %>
+<% if (htmlWebpackPlugin.options.rmIntegrated == false) { %>  
+    </head>
+    <body>
+<% } %>
+      <style>section.custom-resource{visibility: hidden;opacity:0;}</style>
+      <div id="app"></div>
+      <script>
+            // mimes: .cob-app tem estilos globais que se aplicam a elementos vuetify que mudam o aspecto previsto
+            let section = document.getElementsByClassName("custom-resource")[0];
+            section && section.classList.remove("cob-app"); //TODO: validar que isto é a melhor opção (considerar remover class na ui-all)
+      </script>
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+      <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+<% } %>
+<% if (htmlWebpackPlugin.options.rmIntegrated == false) { %>  
+    </body>
+  </html>
+<% } %>

@@ -4,7 +4,7 @@
             Loading...
         </div>
         <div v-else-if="state=='Error'" class="text-center my-20 text-2xl text-error">
-            Error: invalid dashboard
+            {{error}}
         </div>
         <Dashboard v-else :dashboard="dashboard" />
     </div>
@@ -13,7 +13,7 @@
 <script>
 import axios from 'axios';
 import { umLoggedin } from '@cob/rest-api-wrapper';
-import { domainCount, definitionCount, fieldSum } from '@cob/dashboard-info';
+import { instancesList, domainCount, definitionCount, fieldSum } from '@cob/dashboard-info';
 import Dashboard from './Dashboard.vue'
 
 export default {
@@ -24,37 +24,39 @@ export default {
     data: () => ({
         userInfo: {},
         state: "Loading",
+        error:"",
         currentDashboardInstance: null,
         dashboard: null,
-        raw_dashboard: null
     }),
     created() {
         umLoggedin().then( userInfo => this.userInfo = userInfo )
         //At the initial load we get the dashboard instance from the url
-        this.currentDashboardInstance = document.getElementById("dash").getAttribute('data-name');
-        this.loadDashboard(this.currentDashboardInstance)
+        let page_title = document.getElementById("dash").getAttribute('data-name')
+        this.currentDashboardInstance = instancesList("Dashboard", "page_title.raw:" + page_title, 1, { changeCB: this.loadDashboard })
 
         $('section.custom-resource').on('resume', (e, params) => {
             //register this callback to every anchor navigation. In these cases we get the dashboard instance from the first param of the callback
-            const newInstance =  params[0]
-            if(this.currentDashboardInstance != newInstance) {
-                // Only load if it's a new dashboard instance
-                this.currentDashboardInstance = newInstance
-                this.loadDashboard(newInstance)
-            }
+            this.currentDashboardInstance.changeArgs({query:"page_title.raw:"+params[0]})
         });
     },
     methods: {
-        loadDashboard(instance) {
-            axios.get("/recordm/recordm/instances/" + instance)
-                .then(resp => resp.data)
-                .then(raw_dashboard => {
-                    this.raw_dashboard = raw_dashboard
-                    const dashboard_thunk = this.parseDashboard(raw_dashboard)
-                    this.dashboard = this.createDashboardFromThunk(dashboard_thunk)
-                    this.state = "Ready"
-                })
-                .catch( (e) => this.state = "Error" )
+        loadDashboard(newResult) {         
+            debugger;
+            if(newResult.value.length > 0) {
+                this.state = "Loading"
+                let instance = newResult.value[0].id
+                axios.get("/recordm/recordm/instances/" + instance)
+                    .then(resp => {
+                        let raw_dashboard = resp.data
+                        const dashboard_thunk = this.parseDashboard(raw_dashboard)
+                        this.dashboard = this.createDashboardFromThunk(dashboard_thunk)
+                        this.state = "Ready"
+                    })
+                    .catch( (e) => this.error = "Error: error getting dashboard", this.state = "Error" )
+            } else {
+                this.error = "Error: invalid dashboard"
+                this.state = "Error"
+            }
         },
         createDashboardFromThunk(dashboard) {
             dashboard.boards.forEach(b => b.components.forEach(c => {

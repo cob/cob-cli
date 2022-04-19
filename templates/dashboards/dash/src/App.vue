@@ -32,11 +32,11 @@ export default {
         umLoggedin().then( userInfo => this.userInfo = userInfo )
         //At the initial load we get the dashboard instance from the url
         let page_title = document.getElementById("dash").getAttribute('data-name')
-        this.currentDashboardInstance = instancesList("Dashboard", "page_title.raw:" + page_title, 1, { changeCB: this.loadDashboard })
+        this.currentDashboardInstance = instancesList("Dashboard", "page_title.raw:\"" + page_title+"\"", 1, { changeCB: this.loadDashboard })
 
         $('section.custom-resource').on('resume', (e, params) => {
             //register this callback to every anchor navigation. In these cases we get the dashboard instance from the first param of the callback
-            this.currentDashboardInstance.changeArgs({query:"page_title.raw:"+params[0]})
+            this.currentDashboardInstance.changeArgs({query:"page_title.raw:\""+params[0]+"\""})
         });
     },
     methods: {

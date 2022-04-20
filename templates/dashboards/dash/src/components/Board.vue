@@ -26,7 +26,13 @@ export default {
                 4:  "md:row-span-4",
                 5:  "md:row-span-5",
                 6:  "md:row-span-6",
-                full: "md:row-span-full"
+                7:  "md:row-span-7",
+                8:  "md:row-span-8",
+                9:  "md:row-span-9",
+                10: "md:row-span-10",
+                11: "md:row-span-11",
+                12: "md:row-span-12",
+                "full": "md:row-span-full"
             }
             const rspan = this.rowSpan ? " " + dynamicRowClasses[this.rowSpan] : "";
 
@@ -38,7 +44,13 @@ export default {
                 4:  "md:col-span-4",
                 5:  "md:col-span-5",
                 6:  "md:col-span-6",
-                full: "md:col-span-full"
+                7:  "md:col-span-7",
+                8:  "md:col-span-8",
+                9:  "md:col-span-9",
+                10:  "md:col-span-10",
+                11:  "md:col-span-11",
+                12:  "md:col-span-12",
+                "full": "md:col-span-full"
             }
             const cspan = this.colSpan ?  " " + dynamicColClasses[this.colSpan] : ""; 
 

@@ -41,7 +41,6 @@ export default {
     },
     methods: {
         loadDashboard(newResult) {         
-            debugger;
             if(newResult.value.length > 0) {
                 this.state = "Loading"
                 let instance = newResult.value[0].id

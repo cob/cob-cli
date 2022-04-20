@@ -1,0 +1,32 @@
+{
+  "name": "userm-easy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "dist": "rsync -av --delete dist/*  -e ssh $npm_package_config_remote_server:/etc/userm/customUI/$npm_package_config_dash_dir/dist/"
+  },
+  "dependencies": {
+    "@cob/ui-vue-components": "^2.x",
+    "core-js": "^2.6.5",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "@cob/vue-cli-plugin-dashboard": "latest",
+    "@vue/cli-plugin-babel": "^3.12.0",
+    "@vue/cli-plugin-eslint": "^3.12.0",
+    "@vue/cli-service": "^3.12.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "stylus": "^0.54.0",
+    "stylus-loader": "^3.0.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "config": {
+    "remote_server": "dogfooding.cultofbits.com",
+    "dash_dir": "easy"
+  }
+}

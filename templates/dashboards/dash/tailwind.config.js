@@ -12,6 +12,7 @@ module.exports = {
     safelist: [
         {
             pattern: /.*/,
+            variants: ['md','hover'],
         },
     ],
     plugins: [],

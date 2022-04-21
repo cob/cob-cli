@@ -7,6 +7,7 @@ exports.option = {
     message: 'Select one?',
     choices: [
         require("./frontend.common").option,
+        require("./frontend.easy").option,
         require("./frontend.formatList").option
     ]}
   ]

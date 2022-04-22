@@ -1,0 +1,24 @@
+{
+  "name": "docs",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/plugin-medium-zoom": "^1.8.2",
+    "vuepress": "^1.8.2",
+    "vuepress-plugin-reading-time": "^0.1.1"
+  },
+  "dependencies": {
+    "@cob/rest-api-wrapper": "^2.1.6",
+    "axios": "^0.21.4",
+    "markdown-it-prism": "^2.2.3",
+    "tinycolor2": "^1.4.2",
+    "vue-mermaid-string": "^2.2.6",
+    "vuepress-bar": "^0.4.2"
+  }
+}

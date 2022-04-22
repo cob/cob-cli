@@ -6,6 +6,7 @@ exports.option = {
     name: 'choosenFollowUp',
     message: 'Select one?',
     choices: [
+        require("./backend.vuepress").option,
         require("./backend.email").option,
         require("./backend.updateField").option
     ]}

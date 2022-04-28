@@ -1,0 +1,31 @@
+{
+    "server": "learning.cultofbits.com",
+    "contentDefinition": 66,
+    "title": "CoB",
+    "nav": [
+        { "text": "Users",      "link": "/site/users/" },
+        { "text": "Admins",     "link": "/site/managers/" },
+        { "text": "Developers", "link": "/site/developers/" },
+        { "text": "Solutions",  "link": "/site/solutions/" },
+        { "text": "Login",      "link": "/recordm/index.html#/login", "ifLoggedIn": false, "target": "_self" },
+        { "text": "Backend",    "link": "/recordm/#/domain/1",                                               "ifLoggedIn": true }
+    ],
+    "titlePT": "CoB",
+    "navPT": [
+        { "text": "Utilizadores",    "link": "/site/users/" },
+        { "text": "Administradores", "link": "/site/managers/" },
+        { "text": "Programadores",   "link": "/site/developers/" },
+        { "text": "Soluções",        "link": "/site/solutions/" },
+        { "text": "Login",           "link": "/recordm/index.html#/login", "ifLoggedIn": false, "target": "_self" },
+        { "text": "Backend",         "link": "/recordm/#/domain/1",                                               "ifLoggedIn": true }
+    ],
+    "titleES": "CoB",
+    "navES": [
+        { "text": "Usuários",        "link": "/site/users/" },
+        { "text": "Administradores", "link": "/site/managers/" },
+        { "text": "Desarrolladores", "link": "/site/developers/" },
+        { "text": "Soluciones",      "link": "/site/solutions/" },
+        { "text": "Acceso",          "link": "/recordm/index.html#/login", "ifLoggedIn": false, "target": "_self" },
+        { "text": "Backend",         "link": "/recordm/#/domain/1",                                               "ifLoggedIn": true }
+    ]
+}

@@ -57,7 +57,7 @@ export default {
   created() {
     let lang = this.$localePath.match(/^\/([^\/]*)(\/)?$/)[1]
     let preferredLangPostfix = lang ? "-"+lang : ""
-    axios.get('/recordm/recordm/definitions/search/7?q=-chapter -.wip.*',{params: {sort:"sortablefield", size: 310}}) 
+    axios.get('/recordm/recordm/definitions/search/66?q=-chapter -.wip.*',{params: {sort:"sortablefield", size: 310}}) 
     .then( answer => {
       for(let content of answer.data.hits.hits.reverse()) {
         for(let langPostfix of [preferredLangPostfix,"","-pt","-es"] ) {

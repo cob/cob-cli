@@ -17,5 +17,19 @@ exports.option = {
         //TODO: indicar que é necessário configurar o ./other/vuepress/config.js
         //TODO: build 
         //TODO: deploy
+        /*
+        Sequência:
+            1. cob-cli customize backend.vuepress 
+            2. git add .; git commit -m “chore: cob-cli customize backend.vuepress"
+            2. cob-cli deploy
+            2. ln -s /opt/others/vuepress/nginx/dist/ /usr/share/nginx/html/docs (na máquina)
+            3. install Contents definition
+            4. add permissions
+            5. config server.json
+            6. create contents:
+                 .site.
+                 .site.home. 
+                 .site.home.sitemap
+        */
     }
 }

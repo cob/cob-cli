@@ -1,6 +1,6 @@
 <template>
     <div :class="{'animate-pulse':signalChange}">
-        <a :href="badgeData.dash_info.href" :class="valueClass" class="relative inline-flex">
+        <a :href="valueData.dash_info.href" :class="valueClass" class="relative inline-flex">
             <span v-html="value"/>
 
             <svg v-if="updating" class="absolute animate-spin -top-1 -right-1 h-2 w-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -15,7 +15,7 @@
 
 export default {
     props: {
-        badgeData: Object
+        valueData: Object
     },
     data () {
       return {
@@ -32,19 +32,19 @@ export default {
     },
     computed: {
         updating() {
-            return this.badgeData.dash_info.state == "updating" || this.badgeData.dash_info.state == "loading"
+            return this.valueData.dash_info.state == "updating" || this.valueData.dash_info.state == "loading"
         },
         value() {
-            if(this.badgeData.dash_info.state == "loading") return "L"
-            if(this.badgeData.dash_info.state == "error") return "E"
-            if(isNaN(this.badgeData.dash_info.value)) {
-                return this.badgeData.dash_info.value
+            if(this.valueData.dash_info.state == "loading") return "L"
+            if(this.valueData.dash_info.state == "error") return "E"
+            if(isNaN(this.valueData.dash_info.value)) {
+                return this.valueData.dash_info.value
             } else {
-                return new Intl.NumberFormat('en-US', {}).format(this.badgeData.dash_info.value) 
+                return new Intl.NumberFormat('en-US', {}).format(this.valueData.dash_info.value) 
             }
         },
         state() {
-            return this.badgeData.dash_info.state
+            return this.valueData.dash_info.state
         },
         valueClass() {
             let c = "relative transition ease-in-out px-2 py-1 rounded-md text-center font-mono font-semibold transition border ring-offset-1 hover:ring-2"
@@ -59,10 +59,10 @@ export default {
                 "Fallback":   "text-slate-700 ring-slate-700",
             }
 
-            if(this.badgeData.dash_info.state == "loading") return c + " " + lookup["Warning"]
-            if(this.badgeData.dash_info.state == "error") return c + " " + lookup["Important"]
+            if(this.valueData.dash_info.state == "loading") return c + " " + lookup["Warning"]
+            if(this.valueData.dash_info.state == "error") return c + " " + lookup["Important"]
 
-            return c + " " + (this.badgeData.dash_info.value == 0 ? lookup["Gray"] : lookup[this.badgeData.style] ? lookup[this.badgeData.style] : lookup["Fallback"])
+            return c + " " + (this.valueData.dash_info.value == 0 ? lookup["Gray"] : lookup[this.valueData.style] ? lookup[this.valueData.style] : lookup["Fallback"])
         }
     }
 }

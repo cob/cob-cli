@@ -10,10 +10,10 @@
         <tbody>
             <tr v-for="(line, i) in lines" :key="'line'+i"
                 class="text-slate-700">
-                <td :class="'py-2 ' + line.text_style">{{ line.text }}</td>
-                <td v-for="(badge, j) in line.values" :key="'badge'+j"
+                <td :class="'py-2 ' + line.style">{{ line.name }}</td>
+                <td v-for="(value, j) in line.values" :key="'value'+j"
                     class="py-2 text-right">
-                    <TotalsBadge :badge-data="badge" />
+                    <TotalsValue :value-data="value" />
                 </td>
             </tr>
         </tbody>
@@ -21,11 +21,24 @@
 </template>
 
 <script>
-import TotalsBadge from './TotalsBadge.vue'
+import TotalsValue from './TotalsValue.vue'
 export default {
-    components: { TotalsBadge },
+    components: { TotalsValue },
     props: { componentData: Object },
     computed: {
+        headers() { 
+            return this.componentData['Header'][0]['Text'].filter(x => !!x).map(h => h['Text']) 
+        },
+        headers_style() { 
+            return this.componentData['Header'][0]['Style Header'] 
+        },
+        lines() { 
+            return this.componentData['Line'].map( l => ({
+                name : l['Line'],
+                style : l['Style Line'],
+                values: l['Value']
+            }))
+        },
         valuesGridClass() {
             const dynamicClasses = {
                 1: "grid-cols-1",
@@ -44,10 +57,7 @@ export default {
             }
             // Grid with cols == amount of values
             return "grid " + dynamicClasses[this.lines[0].values.length]
-        },
-        headers() { return this.componentData.headers.filter(x => !!x) },
-        headers_style() { return this.componentData.headers_style },
-        lines() { return this.componentData.lines }
+        }
     }
 }
 </script>

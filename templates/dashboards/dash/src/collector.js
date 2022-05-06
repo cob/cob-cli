@@ -1,4 +1,5 @@
 import * as dashFunctions from '@cob/dashboard-info';
+dashFunctions["link"] = (url, icon) => {    return { value: icon, href: url, state: undefined, isLink: true } }
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj))
 

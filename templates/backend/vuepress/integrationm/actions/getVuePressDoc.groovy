@@ -54,7 +54,10 @@ def getVuePressDocs() {
 }
 
 def addToFrontmatter(content,expression) {
-    def frontmatterEval = content?.split("---\n")
+    // Acrescentado um \n à avaliação do conteúdo para compensar o caso em que,
+    // quando só há frontmatter no conteúdo, o RM remove os trailing \n 
+    // (terminando o conteúdo em --- e por isso depois não fazia match no split) 
+    def frontmatterEval = (content+"\n")?.split("---")  
     if(frontmatterEval?.size()>2) {
         frontmatterEval[1] += expression + "\n"
         content = frontmatterEval.join("---\n")

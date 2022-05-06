@@ -1,5 +1,6 @@
 import * as dashFunctions from '@cob/dashboard-info';
-dashFunctions["link"] = (url, icon) => {    return { value: icon, href: url, state: undefined, isLink: true } }
+const linkFunction = (url, icon) => {    return { value: icon, href: url, state: undefined, isLink: true } }
+// dashFunctions["link"] = linkFunction // does not work on brower after deploy (only on localhost dev)
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj))
 
@@ -106,8 +107,9 @@ function parseDashboard(raw_dashboard){
                     if(v.Arg[2] && v.Arg[2].startsWith("{")) {
                         v.Arg[2] = JSON.parse(v.Arg[2])
                     }
+                    const valueFunction = v.Value != "link" ?  dashFunctions[v.Value] : linkFunction
                     return ({
-                        dash_info: dashFunctions[v.Value].apply(this, v['Arg'].map( a => a['Arg'])), // Return DashInfo, which is used by the component
+                        dash_info: valueFunction.apply(this, v['Arg'].map( a => a['Arg'])), // Return DashInfo, which is used by the component
                         style: v["Style Value"]
                     })
                 })

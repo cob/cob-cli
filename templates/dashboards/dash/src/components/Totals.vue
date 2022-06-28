@@ -1,63 +1,45 @@
 <template>
-    <table class="w-full table-auto">
-        <thead v-if="headers.length > 0">
-            <tr class="uppercase text-xs text-slate-700 tracking-wider underline underline-offset-4">
-                <td :class="'py-2 ' + headers_style">{{ headers[0] }}</td>
-                <td v-for="header in headers.slice(1)" :key="header"
-                    :class="'py-2 text-right ' + headers_style">{{ header }}</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(line, i) in lines" :key="'line'+i"
-                class="text-slate-700">
-                <td :class="'py-2 ' + line.style">{{ line.name }}</td>
-                <td v-for="(value, j) in line.values" :key="'value'+j"
-                    class="py-2 text-right">
-                    <TotalsValue :value-data="value" />
-                </td>
-            </tr>
-        </tbody>
+    <table :class="classes">
+        <tr v-for="(line, i) in lines" :key="'line'+i" :class="line.lineClasses">
+            <td  :class="line.titleClasses">
+                {{ line.title }}
+            </td>
+            <td v-for="(value, j) in line.values" :key="'value'+i+'-'+j">
+                <TotalsValue :value-data="value"/>
+            </td>
+        </tr>
     </table>
 </template>
 
 <script>
-import TotalsValue from './TotalsValue.vue'
-export default {
-    components: { TotalsValue },
-    props: { componentData: Object },
-    computed: {
-        headers() { 
-            return this.componentData['Header'][0]['Text'].filter(x => !!x).map(h => h['Text']) 
+    import TotalsValue from './TotalsValue.vue'
+
+    export default {
+        components: { TotalsValue },
+        props: { component: Object },
+        computed: {
+            options()     { return this.component['TotalsCustomize'][0] },
+            classes()     { return this.options['TotalsClasses'] || "w-full table-auto" },
+            inputs()      { return this.options['InputVarTotals'].map(v => v['InputVarTotals']) },
+            inputFilter() { return this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]).join(" ")},
+            lines() {
+                return this.component['Line'].map( l => ({
+                    title :       l['Line']                             || "",
+                    lineClasses:  l["LineCustomize"][0]["LineClasses"]  || "text-right transition ease-in-out ring-sky-600 ring-offset-1 hover:ring-2 rounded-md",
+                    titleClasses: l["LineCustomize"][0]["TitleClasses"] || "text-left p-2",
+                    values:       l['Value']
+            }))}
         },
-        headers_style() { 
-            return this.componentData['Header'][0]['Style Header'] 
-        },
-        lines() { 
-            return this.componentData['Line'].map( l => ({
-                name : l['Line'],
-                style : l['Style Line'],
-                values: l['Value']
-            }))
-        },
-        valuesGridClass() {
-            const dynamicClasses = {
-                1: "grid-cols-1",
-                2: "grid-cols-2",
-                3: "grid-cols-3",
-                4: "grid-cols-4",
-                5: "grid-cols-5",
-                6: "grid-cols-6",
-                7: "grid-cols-7",
-                8: "grid-cols-8",
-                9: "grid-cols-9",
-                10: "grid-cols-10",
-                11: "grid-cols-11",
-                12: "grid-cols-12",
-                none: "grid-cols-none"
+        watch: {
+            inputFilter(newValue) {
+                if(newValue == "") return //PRESSUPOSTO IMPORTANTE: se newValue é vazio é porque estamos em transições (porque usamos sempre um valor, nem que seja *) e o melhor é usar o valor antigo para o valor não mudar momentaneamente (e ainda desperdicar uma pesquisa). Se o pressuposto for quebrado vamos impedir a actualização do inputFilter quando o valor é ""
+                this.lines.forEach(l => {
+                    l.values.forEach(v => {
+                        let newFilter = ((v.Arg[1] || "") + newValue.trim()) || "*"
+                        if(v.dash_info) v.dash_info.changeArgs({query: newFilter  })
+                    });
+                });
             }
-            // Grid with cols == amount of values
-            return "grid " + dynamicClasses[this.lines[0].values.length]
         }
     }
-}
 </script>

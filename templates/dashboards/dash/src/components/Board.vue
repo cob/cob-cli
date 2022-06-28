@@ -1,61 +1,30 @@
 <template>
-    <li :class="wrapperClass">
-        <div class="py-4 px-5 space-y-2">
-            <slot></slot>
-        </div>
-    </li>
+    <div :class="classes" :style="image" >
+        <template v-for="(item, i) in components">
+            <Label  v-if="item['Component'] == 'Label'"  :component="item" :key="i" />
+            <Menu   v-if="item['Component'] == 'Menu'"   :component="item" :key="i" />
+            <Totals v-if="item['Component'] == 'Totals'" :component="item" :key="i" />
+            <Kibana v-if="item['Component'] == 'Kibana'" :component="item" :key="i" />
+            <Filtro v-if="item['Component'] == 'Filter'" :component="item" :key="i" />
+        </template>
+    </div>
 </template>
 
 <script>
-export default {
-    props: {
-        rowSpan: String,
-        colSpan: String,
-        title: String,
-        showTitle: Boolean
-    },
-    computed: {
-        wrapperClass() {
-            const c = "w-full bg-cobbg rounded-md border border-cobline" // hover:ring-1 ring-slate-400/50 ring-offset-1;
+    import Label  from './Label.vue'
+    import Menu   from './Menu.vue'
+    import Totals from './Totals.vue'
+    import Kibana from './Kibana.vue'
+    import Filtro from './Filter.vue'
 
-            // Force possible dynamic classes to be loaded
-            const dynamicRowClasses = {
-                1:  "md:row-span-1",
-                2:  "md:row-span-2",
-                3:  "md:row-span-3",
-                4:  "md:row-span-4",
-                5:  "md:row-span-5",
-                6:  "md:row-span-6",
-                7:  "md:row-span-7",
-                8:  "md:row-span-8",
-                9:  "md:row-span-9",
-                10: "md:row-span-10",
-                11: "md:row-span-11",
-                12: "md:row-span-12",
-                "full": "md:row-span-full"
-            }
-            const rspan = this.rowSpan ? " " + dynamicRowClasses[this.rowSpan] : "";
-
-            // Force possible dynamic classes to be loaded
-            const dynamicColClasses = {
-                1:  "md:col-span-1",
-                2:  "md:col-span-2",
-                3:  "md:col-span-3",
-                4:  "md:col-span-4",
-                5:  "md:col-span-5",
-                6:  "md:col-span-6",
-                7:  "md:col-span-7",
-                8:  "md:col-span-8",
-                9:  "md:col-span-9",
-                10:  "md:col-span-10",
-                11:  "md:col-span-11",
-                12:  "md:col-span-12",
-                "full": "md:col-span-full"
-            }
-            const cspan = this.colSpan ?  " " + dynamicColClasses[this.colSpan] : ""; 
-
-            return c + rspan + cspan;
+    export default {
+        components: { Label, Menu, Totals, Kibana, Filtro },
+        props: { board: Object },
+        computed: {
+            options()    { return this.board['BoardCustomize'][0] },
+            components() { return this.board['Component'] },
+            classes()    { return this.options['BoardClasses'] || "md:col-span-4 rounded-md border border-gray-300 p-4 m-1" },
+            image()      { return this.options['Image'] ? "background-image: url(" + this.options['Image'] +  ");" : "" }
         }
     }
-}
 </script>

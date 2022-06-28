@@ -1,6 +1,5 @@
 import * as dashFunctions from '@cob/dashboard-info';
 const linkFunction = (url, icon) => {    return { value: icon, href: url, state: undefined, isLink: true } }
-// dashFunctions["link"] = linkFunction // does not work on brower after deploy (only on localhost dev)
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj))
 
@@ -29,13 +28,18 @@ function collect(bucket, source) {
                     // Means it's additional source matches
                     initialBucketCopy = clone(bucket[sourceName][0].Initial_Template) // we use a copy of the previously copied template
                 } 
+                initialBucketCopy.instanceId = bucket.instanceId  //needed to build $file url 
                 children.reduce(collect,initialBucketCopy)    // collect values from the children
                 initialBucketCopy[sourceName] = source.value  // Add extra field with original name of the source
                 bucket[sourceName].push(initialBucketCopy)    // Add to bucket collector
             }
         } else {
             // Means it's not an array and we can collect the final value
-            bucket[sourceName] = source.value; 
+            if(source.value && source.fieldDefinition.description && source.fieldDefinition.description.indexOf("$file") >= 0) {
+                bucket[sourceName] = "/recordm/recordm/instances/" + bucket.instanceId + "/files/" + source.fieldDefinition.id + "/" + source.value
+            } else {
+                bucket[sourceName] = source.value; 
+            }
         }
     } else if (children.length > 0) {
         // Means it didn't find a match. Continue looking in the children
@@ -46,49 +50,95 @@ function collect(bucket, source) {
     return bucket;
 }
 
-function parseDashboard(raw_dashboard){
+function parseDashboard(raw_dashboard, userInfo){
     let dash = {
-        "Page Title": "",
-        "Grid Columns": "",
-        "Max Width": "",
-        "Board Title": [{
-            "Col Span": "",
-            "Row Span": "",
+        "Name": "",
+        "DashboardCustomize": [{
+            "Grid": "",
+            "Width": "",
+            "DashboardClasses": "",
+            "Image": "",
+            "GroupAccess": [{}]
+        }],
+        "Board": [{
+            "BoardCustomize": [{
+                "BoardClasses": "",
+                "Image": ""
+            }],
             "Component": []
         }],
     };
 
+    dash.instanceId = ""+raw_dashboard.id //needed to build $file url
     raw_dashboard.fields.reduce(collect, dash);
 
     const ComponentsTemplates = {
-        "Title": {
-            "Title": ""
+        "Label": {
+            "LabelCustomize": [{
+                "LabelClasses": "",
+                "Image": ""
+            }],
+            "Label": "",
+        },
+        "Menu": {
+            "MenuCustomize": [{
+                "MenuClasses": ""
+            }],
+            "Text": [{
+                "Link": "",
+                "TextCustomize": [{
+                    "TextClasses": "",
+                    "Icon": "",
+                    "TextAttention": "",
+                    "GroupVisibility": [{}]
+                }],
+            }],
         },
         "Totals" : {
-            "Header": [{
-                "Text": [{}],
-                "Style Header": ""
+            "TotalsCustomize": [{
+                "TotalsClasses": "",
+                "InputVarTotals": [{}],
             }],
             "Line": [{
-                "Style Line": "",
+                "LineCustomize": [{
+                    "LineClasses": "",
+                    "TitleClasses": "",
+                }],
                 "Value": [{
+                    "ValueCustomize": [{
+                        "ValueClasses": "",
+                        "View": "",
+                        "ValueAttention": "",
+                        "AttentionClasses": "",
+                        "Unit": "",
+                    }],
                     "Style Value": "",
                     "Arg": [{}]
                 }]
-            }]
+            }],
         },
-        "Menu": {
-            "Text": [{
-                "Link": "",
-                "Style Text": ""
-            }]
+        "Kibana": {
+            "KibanaCustomize": [{
+                "KibanaClasses": "",
+                "OutputVarKibana": "",
+                "InputVarKibana": [{}],
+            }],
+            "ShareLink": "",
+        },
+        "Filter": {
+            "FilterCustomize": [{
+                "FilterClasses": ""
+            }],
+            "OutputVarFilter": "",
         }
     }
     
-    for( let board of dash["Board Title"]) {
+    for( let board of dash["Board"]) {
         let componentsList = clone([])
         for( let component of board["Component"]) {
+            if(component["Component"] == null) continue
             let componentTemplate = clone(ComponentsTemplates[component["Component"]])
+            componentTemplate.instanceId = ""+raw_dashboard.id //needed to $build file url
             component.fields.reduce(collect,componentTemplate)
             componentTemplate["Component"] = component.Component
             componentsList.push(componentTemplate)
@@ -96,28 +146,50 @@ function parseDashboard(raw_dashboard){
         board["Component"] = componentsList
     }
 
-    // remove all Initial_Templates added
-    dash = JSON.parse(JSON.stringify(dash, (k,v) => (k === 'Initial_Template')? undefined : v))
+    
+    
+    // remove all 'Initial_Templates' and 'instanceId' added for processing
+    dash = JSON.parse(JSON.stringify(dash, (k,v) => (k === 'Initial_Template' || k === 'instanceId')? undefined : v))
+    dash.vars = {} //Available to every components in component.vars
+    
+    // Add extra info to structure
+    dash["Board"].forEach(b => b.Component.forEach(c => {
+        // Add user info for permission evaluations
+        c.userInfo = userInfo
+        c.vars = dash.vars
 
-    // replace values in Totals by dashboard-info
-    dash["Board Title"].forEach(b => b.Component.forEach(c => {
-        if (c.Component == "Totals") {
+        if (c.Component == "Menu") {
+            c.Text.forEach(t => {
+                // If Attention is configured for this menu line then add attention status as user check
+                if(t["TextCustomize"][0]["TextAttention"]) {
+                    t["TextCustomize"][0].AttentionInfo = dashFunctions.instancesList("Dashboard-Attention","name.raw:" + t["TextCustomize"][0]["TextAttention"],1,0,{validity:30})
+                }
+            })
+        } else if (c.Component == "Totals") {
             c.Line.forEach(l => {
                 l.Value = l.Value.map(v => {
-                    if(v.Arg[2] && v.Arg[2].startsWith("{")) {
+                    if(v.Arg[2] && (v.Arg[2]+"").startsWith("{")) {
                         v.Arg[2] = JSON.parse(v.Arg[2])
                     }
-                    const valueFunction = v.Value != "link" ?  dashFunctions[v.Value] : linkFunction
-                    return ({
-                        dash_info: valueFunction.apply(this, v['Arg'].map( a => a['Arg'])), // Return DashInfo, which is used by the component
-                        style: v["Style Value"]
-                    })
+                    // If Attention is configured for this value line then add attention status as user check
+                    if(v["ValueCustomize"][0]["ValueAttention"]) {
+                        v["ValueCustomize"][0].AttentionInfo = dashFunctions.instancesList("Dashboard-Attention","name.raw:" + v["ValueCustomize"][0]["ValueAttention"],1,0,{validity:10})
+                    }
+
+                    if(v.Value == 'Label') {
+                        v.dash_info = {value: v.Arg[0].Arg, state:"ready"}
+                    } else if(v.Value == 'link') {
+                        v.dash_info = { value: icon, href: url, state: undefined, isLink: true }
+                    } else {
+                        // add dash-info values in Totals
+                        v.dash_info = dashFunctions[v.Value].apply(this, v['Arg'].map( a => a['Arg'])) // Return DashInfo, which is used by the component
+                    }
+                    return v
                 })
             })
         }
     }))
     return dash
-
 }
 
 export { parseDashboard, clone, collect }

@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@cob/dashboard-info": "^2.4.1",
+    "@cob/dashboard-info": "^2.6.0",
     "@cob/rest-api-wrapper": "^2.1.6",
     "tailwindcss": "^3.0.23",
     "vue": "^2.6.11"

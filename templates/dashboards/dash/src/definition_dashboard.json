@@ -1,0 +1,741 @@
+{
+    "id": null,
+    "name": "Dashboard",
+    "description": null,
+    "duplicable": null,
+    "state": "enabled",
+    "fieldDefinitions": [
+      {
+        "id": null,
+        "name": "Dashboard Info",
+        "required": null,
+        "description": "$group",
+        "condition": null,
+        "duplicable": false,
+        "fields": [],
+        "order": 0,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      },
+      {
+        "id": null,
+        "name": "Name",
+        "required": null,
+        "description": "$expanded $instanceLabel",
+        "condition": null,
+        "duplicable": false,
+        "fields": [],
+        "order": 1,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      },
+      {
+        "id": null,
+        "name": "DashboardCustomize",
+        "required": null,
+        "description": "$[Classes,Image,Width,Grid,Access] $multiple $help[Select the defaults to change] $style[hide] ",
+        "condition": null,
+        "duplicable": false,
+        "fields": [
+          {
+            "id": null,
+            "name": "DashboardClasses",
+            "required": null,
+            "description": "$default(h-full bg-cover bg-center overflow-auto p-3) Default: h-full bg-cover bg-center overflow-auto p-3",
+            "condition": "=Classes",
+            "duplicable": false,
+            "fields": [],
+            "order": 3,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": "h-full bg-cover bg-center overflow-auto p-3"
+          },
+          {
+            "id": null,
+            "name": "Image",
+            "required": null,
+            "description": "$file Default:none",
+            "condition": "=Image",
+            "duplicable": false,
+            "fields": [],
+            "order": 4,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": null
+          },
+          {
+            "id": null,
+            "name": "Width",
+            "required": null,
+            "description": "Default: max-w-6xl mx-auto ",
+            "condition": "=Width",
+            "duplicable": false,
+            "fields": [],
+            "order": 5,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": null
+          },
+          {
+            "id": null,
+            "name": "Grid",
+            "required": null,
+            "description": "$default(grid grid-flow-row-dense md:grid-cols-12) Default: grid grid-flow-row-dense md:grid-cols-12",
+            "condition": "=Grid",
+            "duplicable": false,
+            "fields": [],
+            "order": 6,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": "grid grid-flow-row-dense md:grid-cols-12"
+          },
+          {
+            "id": null,
+            "name": "GroupAccess",
+            "required": null,
+            "description": "$instanceDescription Group allowed to access this dashboard",
+            "condition": "=Access",
+            "duplicable": true,
+            "fields": [],
+            "order": 7,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": null
+          }
+        ],
+        "order": 2,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      },
+      {
+        "id": null,
+        "name": "URL",
+        "required": null,
+        "description": "$link $auto.text(id).join('/recordm/index.html#/cob.custom-resource/',id,'/dash') $instanceDescription",
+        "condition": null,
+        "duplicable": false,
+        "fields": [],
+        "order": 8,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      },
+      {
+        "id": null,
+        "name": "Boards",
+        "required": null,
+        "description": "$group",
+        "condition": null,
+        "duplicable": false,
+        "fields": [],
+        "order": 9,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      },
+      {
+        "id": null,
+        "name": "Board",
+        "required": null,
+        "description": null,
+        "condition": null,
+        "duplicable": true,
+        "fields": [
+          {
+            "id": null,
+            "name": "BoardCustomize",
+            "required": null,
+            "description": "$[Classes,Image] $multiple $help[Select the defaults to change] $style[hide] ",
+            "condition": null,
+            "duplicable": false,
+            "fields": [
+              {
+                "id": null,
+                "name": "BoardClasses",
+                "required": null,
+                "description": "$default(md:col-span-4 rounded-md border border-gray-300 p-4 m-1) Default: md:col-span-4 rounded-md border border-gray-300 p-4 m-1",
+                "condition": "=Classes",
+                "duplicable": false,
+                "fields": [],
+                "order": 12,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": "md:col-span-4 rounded-md border border-gray-300 p-4 m-1"
+              },
+              {
+                "id": null,
+                "name": "Image",
+                "required": null,
+                "description": "$file Default: none",
+                "condition": "=Image",
+                "duplicable": false,
+                "fields": [],
+                "order": 13,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              }
+            ],
+            "order": 11,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": null
+          },
+          {
+            "id": null,
+            "name": "Component",
+            "required": null,
+            "description": "$[Label,Menu,Totals,Kibana,Filter] $instanceDescription $style[singleColumn] ",
+            "condition": null,
+            "duplicable": true,
+            "fields": [
+              {
+                "id": null,
+                "name": "LabelCustomize",
+                "required": null,
+                "description": "$[Classes,Image] $multiple $help[Select the defaults to change] $style[hide] ",
+                "condition": "=Label",
+                "duplicable": false,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "LabelClasses",
+                    "required": null,
+                    "description": "$default(text-center) Default: text-center",
+                    "condition": "=Classes",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 16,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": "text-center"
+                  },
+                  {
+                    "id": null,
+                    "name": "Image",
+                    "required": null,
+                    "description": "$file Default: none",
+                    "condition": "=Image",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 17,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  }
+                ],
+                "order": 15,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "Label",
+                "required": null,
+                "description": null,
+                "condition": "=Label",
+                "duplicable": false,
+                "fields": [],
+                "order": 18,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "MenuCustomize",
+                "required": null,
+                "description": "$[Classes] $multiple $help[Select the defaults to change] $style[hide] ",
+                "condition": "=Menu",
+                "duplicable": false,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "MenuClasses",
+                    "required": null,
+                    "description": "$default(flex flex-col gap-y-2) Default: flex flex-col gap-y-2",
+                    "condition": "=Classes",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 20,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": "flex flex-col gap-y-2"
+                  }
+                ],
+                "order": 19,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "Text",
+                "required": null,
+                "description": null,
+                "condition": "=Menu",
+                "duplicable": true,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "TextCustomize",
+                    "required": null,
+                    "description": "$[Classes,Icon,Attention,Visibility] $multiple $help[Select the defaults to change] $style[hide] ",
+                    "condition": null,
+                    "duplicable": false,
+                    "fields": [
+                      {
+                        "id": null,
+                        "name": "TextClasses",
+                        "required": null,
+                        "description": "$default(transition ease-in-out duration-300 rounded-md border border-gray-300 border-l-2 border-l-sky-600 shadow-sm transform hover:translate-x-0.5 p-2) Default: transition ease-in-out duration-300 rounded-md border border-gray-300 border-l-2 border-l-sky-600 shadow-sm transform hover:translate-x-0.5 p-2",
+                        "condition": "=Classes",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 23,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": "transition ease-in-out duration-300 rounded-md border border-gray-300 border-l-2 border-l-sky-600 shadow-sm transform hover:translate-x-0.5 p-2"
+                      },
+                      {
+                        "id": null,
+                        "name": "Icon",
+                        "required": null,
+                        "description": "Default: none Example: fa-solid fa-circle-chevron-left",
+                        "condition": "=Icon",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 24,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      },
+                      {
+                        "id": null,
+                        "name": "TextAttention",
+                        "required": null,
+                        "description": "Crisis:<=-5, ActionableBad:-4 .. -1, No action Required:0, ActionableGood:1..4,Extraordinary:>=5",
+                        "condition": "=Attention",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 25,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      },
+                      {
+                        "id": null,
+                        "name": "GroupVisibility",
+                        "required": null,
+                        "description": "Group allowed to view this menu line",
+                        "condition": "=Visibility",
+                        "duplicable": true,
+                        "fields": [],
+                        "order": 26,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      }
+                    ],
+                    "order": 22,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  },
+                  {
+                    "id": null,
+                    "name": "Link",
+                    "required": null,
+                    "description": null,
+                    "condition": null,
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 27,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  }
+                ],
+                "order": 21,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "TotalsCustomize",
+                "required": null,
+                "description": "$[Classes,InputVar] $multiple $help[Select the defaults to change] $style[hide] ",
+                "condition": "=Totals",
+                "duplicable": false,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "TotalsClasses",
+                    "required": null,
+                    "description": "$default(w-full table-auto) Default: w-full table-auto",
+                    "condition": "=Classes",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 29,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": "w-full table-auto"
+                  },
+                  {
+                    "id": null,
+                    "name": "InputVarTotals",
+                    "required": null,
+                    "description": null,
+                    "condition": "=InputVar",
+                    "duplicable": true,
+                    "fields": [],
+                    "order": 30,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  }
+                ],
+                "order": 28,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "Line",
+                "required": null,
+                "description": null,
+                "condition": "=Totals",
+                "duplicable": true,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "LineCustomize",
+                    "required": null,
+                    "description": "$[LineClasses,TitleClasses] $multiple $help[Select the defaults to change] $style[hide] ",
+                    "condition": null,
+                    "duplicable": false,
+                    "fields": [
+                      {
+                        "id": null,
+                        "name": "LineClasses",
+                        "required": null,
+                        "description": "$default(text-right) Default: text-right",
+                        "condition": "=LineClasses",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 33,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": "text-right"
+                      },
+                      {
+                        "id": null,
+                        "name": "TitleClasses",
+                        "required": null,
+                        "description": "$default(text-left p-2) Default: text-left p-2",
+                        "condition": "=TitleClasses",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 34,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": "text-left p-2"
+                      }
+                    ],
+                    "order": 32,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  },
+                  {
+                    "id": null,
+                    "name": "Value",
+                    "required": null,
+                    "description": "$[*Label,definitionCount,domainCount,fieldSum,link] ",
+                    "condition": null,
+                    "duplicable": true,
+                    "fields": [
+                      {
+                        "id": null,
+                        "name": "ValueCustomize",
+                        "required": null,
+                        "description": "$[Classes,View,Attention,AttentionClasses,Unit] $multiple $help[Select the defaults to change] $style[hide]",
+                        "condition": null,
+                        "duplicable": false,
+                        "fields": [
+                          {
+                            "id": null,
+                            "name": "ValueClasses",
+                            "required": null,
+                            "description": "$default(w-0 p-2) Default: w-0 p-2",
+                            "condition": "=Classes",
+                            "duplicable": false,
+                            "fields": [],
+                            "order": 37,
+                            "restricted": false,
+                            "rootField": false,
+                            "defaultValue": "w-0 p-2"
+                          },
+                          {
+                            "id": null,
+                            "name": "View",
+                            "required": null,
+                            "description": "Default: none",
+                            "condition": "=View",
+                            "duplicable": false,
+                            "fields": [],
+                            "order": 38,
+                            "restricted": false,
+                            "rootField": false,
+                            "defaultValue": null
+                          },
+                          {
+                            "id": null,
+                            "name": "ValueAttention",
+                            "required": null,
+                            "description": "Crisis:<=-5, ActionableBad:-4 .. -1, No action Required:0, ActionableGood:1..4,Extraordinary:>=5",
+                            "condition": "=Attention",
+                            "duplicable": false,
+                            "fields": [],
+                            "order": 39,
+                            "restricted": false,
+                            "rootField": false,
+                            "defaultValue": null
+                          },
+                          {
+                            "id": null,
+                            "name": "ValueAttentionClasses",
+                            "required": null,
+                            "description": "$default(fa-solid fa-circle pr-1 animate-pulse text-lg align-middle) Default: fa-solid fa-circle pr-1 animate-pulse text-lg align-middle",
+                            "condition": "=AttentionClasses",
+                            "duplicable": false,
+                            "fields": [],
+                            "order": 40,
+                            "restricted": false,
+                            "rootField": false,
+                            "defaultValue": "fa-solid fa-circle pr-1 animate-pulse text-lg align-middle"
+                          },
+                          {
+                            "id": null,
+                            "name": "Unit",
+                            "required": null,
+                            "description": null,
+                            "condition": "=Unit",
+                            "duplicable": false,
+                            "fields": [],
+                            "order": 41,
+                            "restricted": false,
+                            "rootField": false,
+                            "defaultValue": null
+                          }
+                        ],
+                        "order": 36,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      },
+                      {
+                        "id": null,
+                        "name": "Arg",
+                        "required": null,
+                        "description": null,
+                        "condition": null,
+                        "duplicable": true,
+                        "fields": [],
+                        "order": 42,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      }
+                    ],
+                    "order": 35,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": "Label"
+                  }
+                ],
+                "order": 31,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "KibanaCustomize",
+                "required": null,
+                "description": "$[Classes,InputVar,OutputVar] $multiple $help[Select the defaults to change] $style[hide] ",
+                "condition": "=Kibana",
+                "duplicable": false,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "KibanaClasses",
+                    "required": null,
+                    "description": null,
+                    "condition": "=Classes",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 44,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  },
+                  {
+                    "id": null,
+                    "name": "InputVarKibana",
+                    "required": null,
+                    "description": null,
+                    "condition": "=InputVar",
+                    "duplicable": true,
+                    "fields": [],
+                    "order": 45,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  },
+                  {
+                    "id": null,
+                    "name": "OutputVarKibana",
+                    "required": null,
+                    "description": null,
+                    "condition": "=OutputVar",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 46,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  }
+                ],
+                "order": 43,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "ShareLink",
+                "required": null,
+                "description": null,
+                "condition": "=Kibana",
+                "duplicable": false,
+                "fields": [],
+                "order": 47,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "FilterCustomize",
+                "required": null,
+                "description": "$[Classes,Type] $multiple $help[Select the defaults to change] $style[hide] ",
+                "condition": "=Filter",
+                "duplicable": false,
+                "fields": [
+                  {
+                    "id": null,
+                    "name": "FilterClasses",
+                    "required": null,
+                    "description": null,
+                    "condition": "=Classes",
+                    "duplicable": false,
+                    "fields": [],
+                    "order": 49,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  },
+                  {
+                    "id": null,
+                    "name": "Type",
+                    "required": null,
+                    "description": "$[Text,List,Date]",
+                    "condition": "=Type",
+                    "duplicable": false,
+                    "fields": [
+                      {
+                        "id": null,
+                        "name": "Alternatives",
+                        "required": null,
+                        "description": null,
+                        "condition": "=List",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 51,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      },
+                      {
+                        "id": null,
+                        "name": "DateFilterType",
+                        "required": null,
+                        "description": null,
+                        "condition": "=Date",
+                        "duplicable": false,
+                        "fields": [],
+                        "order": 52,
+                        "restricted": false,
+                        "rootField": false,
+                        "defaultValue": null
+                      }
+                    ],
+                    "order": 50,
+                    "restricted": false,
+                    "rootField": false,
+                    "defaultValue": null
+                  }
+                ],
+                "order": 48,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "OutputVarFilter",
+                "required": null,
+                "description": null,
+                "condition": "=Filter",
+                "duplicable": false,
+                "fields": [],
+                "order": 53,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              },
+              {
+                "id": null,
+                "name": "Query",
+                "required": null,
+                "description": null,
+                "condition": "=MD List",
+                "duplicable": false,
+                "fields": [],
+                "order": 54,
+                "restricted": false,
+                "rootField": false,
+                "defaultValue": null
+              }
+            ],
+            "order": 14,
+            "restricted": false,
+            "rootField": false,
+            "defaultValue": null
+          }
+        ],
+        "order": 10,
+        "restricted": false,
+        "rootField": true,
+        "defaultValue": null
+      }
+    ],
+    "version": null
+  }  

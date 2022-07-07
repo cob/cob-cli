@@ -7,7 +7,7 @@ cob.custom.customize.push(function (core, utils, ui) {
 
         if ( (dev == true || dev == "true")  
             && (   $(".custom-hide").size() 
-                || $("custom-hide-in-edit").size() 
+                || $(".custom-hide-in-edit").size()
                 || $(".custom-hide-in-group-edit").size() 
                 || $(".custom-hide-in-new-instance").size() 
                )

@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        props: { 
+        props: {
             attentionInfo: Object,
             classes: String
         },
@@ -14,9 +14,9 @@
                 let attentionInfo = this.attentionInfo
                 if(attentionInfo && attentionInfo.value && attentionInfo.value[0]) {
                     let severity =  attentionInfo.value[0].severity &&  attentionInfo.value[0].severity[0] || 0
-                    if (severity == 0) return ""
-                    
-                    let baseColor = severity > 0 ? "lime" : "red" 
+                    if (severity === 0) return ""
+
+                    let baseColor = severity > 0 ? "lime" : "red"
                     let severityAbs = Math.abs(severity)
                     let colorIntensity = severityAbs > 4 ?  500 : severityAbs * 100
                     let valenceColor = baseColor + (colorIntensity ? "-" + colorIntensity: "")

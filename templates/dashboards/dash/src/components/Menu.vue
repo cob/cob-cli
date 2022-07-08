@@ -34,7 +34,7 @@
                 }))
                 // Filter out lines that have groupVisibility AND the user does not have any of the groups
                 let userGroups = this.component.userInfo.groups.map(g => g.name)
-                return lines.filter(l => l.groups.length == 0 || l.groups.filter(g => userGroups.includes(g)).length != 0 )
+                return lines.filter(l => l.groups.length === 0 || l.groups.filter(g => userGroups.includes(g)).length !== 0 )
             }
         }
     }

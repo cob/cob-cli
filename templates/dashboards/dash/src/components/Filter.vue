@@ -29,15 +29,15 @@
         },
         updated() {
             // Necessário para quando fazemos back para uma página com o inputContent preenchido mas que não está actualizada nas variáveis
-            if(this.activeFilter !== this.component.vars[this.outputVar]) {
+            if(this.activeFilter != this.component.vars[this.outputVar]) {
                 this.applyFilter()
             }
         },
         computed: {
-            options()   { return this.component['FilterCustomize'][0] },
-            outputVar() { return this.component['OutputVarFilter'] || "" },
-            placeholder() { return this.options['Placeholder']     || "Pesquisar ..." },
-            classes()   { return this.options['FilterClasses']     || "w-full max-w-xs resize-none min-h-min h-min border border-slate-300 rounded-md py-2 px-2 outline-slate-300 leading-5" },
+            options()     { return this.component['FilterCustomize'][0] },
+            outputVar()   { return this.component['OutputVarFilter'] || "" },
+            placeholder() { return this.options['Placeholder']       || "Pesquisar ..." },
+            classes()     { return this.options['FilterClasses']     || "w-full max-w-xs resize-none min-h-min h-min border border-slate-300 rounded-md py-2 px-2 outline-slate-300 leading-5" },
         },
         methods: {
             applyFilter: function() {

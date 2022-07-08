@@ -6,6 +6,7 @@
             <Totals v-if="item['Component'] === 'Totals'" :component="item" :key="i" :userInfo="userInfo"/>
             <Kibana v-if="item['Component'] === 'Kibana'" :component="item" :key="i" :userInfo="userInfo"/>
             <Filtro v-if="item['Component'] === 'Filter'" :component="item" :key="i" />
+            <Calendar v-if="item['Component'] === 'Calendar'" :component="item" :key="i" />
         </template>
     </div>
 </template>

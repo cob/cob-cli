@@ -11,7 +11,7 @@ function collect(bucket, source) {
         //Means that found one key in current source
         if (Array.isArray(bucket[sourceName])) {
             // Means type of value to collect is array
-            if( bucket[sourceName].length == 0  || bucket[sourceName][0]["Mark"] == "JUST COPY" ) {
+            if(bucket[sourceName].length === 0 || bucket[sourceName][0]["Mark"] === "JUST COPY" ) {
                 //Means the bucket template only specify to get the raw elements that match (empty array in bucket template or having first element signaled that it was originally an empty array)
                 source["Mark"] = "JUST COPY"       // Signal it was an empty array
                 source[sourceName] = source.value  // Add extra field with original name of the source
@@ -122,12 +122,14 @@ function parseDashboard(raw_dashboard, userInfo){
                 "KibanaClasses": "",
                 "OutputVarKibana": "",
                 "InputVarKibana": [{}],
+                "InputQueryKibana": ""
             }],
             "ShareLink": "",
         },
         "Filter": {
             "FilterCustomize": [{
-                "FilterClasses": ""
+                "FilterClasses": "",
+                "Placeholder": ""
             }],
             "OutputVarFilter": "",
         }
@@ -158,14 +160,14 @@ function parseDashboard(raw_dashboard, userInfo){
         c.userInfo = userInfo
         c.vars = dash.vars
 
-        if (c.Component == "Menu") {
+        if (c.Component === "Menu") {
             c.Text.forEach(t => {
                 // If Attention is configured for this menu line then add attention status as user check
                 if(t["TextCustomize"][0]["TextAttention"]) {
                     t["TextCustomize"][0].AttentionInfo = dashFunctions.instancesList("Dashboard-Attention","name.raw:" + t["TextCustomize"][0]["TextAttention"],1,0,{validity:30})
                 }
             })
-        } else if (c.Component == "Totals") {
+        } else if (c.Component === "Totals") {
             c.Line.forEach(l => {
                 l.Value = l.Value.map(v => {
                     if(v.Arg[2] && (v.Arg[2]+"").startsWith("{")) {
@@ -176,17 +178,23 @@ function parseDashboard(raw_dashboard, userInfo){
                         v["ValueCustomize"][0].AttentionInfo = dashFunctions.instancesList("Dashboard-Attention","name.raw:" + v["ValueCustomize"][0]["ValueAttention"],1,0,{validity:10})
                     }
 
-                    if(v.Value == 'Label') {
+                    if(v.Value === 'Label') {
                         v.dash_info = {value: v.Arg[0].Arg, state:"ready"}
-                    } else if(v.Value == 'link') {
+                    } else if(v.Value === 'link') {
                         v.dash_info = { value: icon, href: url, state: undefined, isLink: true }
                     } else {
                         // add dash-info values in Totals
-                        v.dash_info = dashFunctions[v.Value].apply(this, v['Arg'].map( a => a['Arg'])) // Return DashInfo, which is used by the component
+                        v.dash_info = dashFunctions[v.Value].apply(this, v['Arg'].map( a =>
+                            a['Arg'].replaceAll("__USERNAME__",c.userInfo.username)
+                        )) // Return DashInfo, which is used by the component
                     }
                     return v
                 })
             })
+        }else if (c.Component === "Kibana") {
+            if (c["KibanaCustomize"][0]["InputQueryKibana"] !== null) {
+                c["KibanaCustomize"][0]["InputQueryKibana"] = c["KibanaCustomize"][0]["InputQueryKibana"].replaceAll("__USERNAME__", c.userInfo.username)
+            }
         }
     }))
     return dash

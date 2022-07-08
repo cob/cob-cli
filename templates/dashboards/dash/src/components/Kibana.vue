@@ -4,7 +4,10 @@
 
 <script>
     export default {
-        props: { component: Object },
+        props: {
+          component: Object,
+          userInfo: Object
+        },
         data: () => ({
             iFrame: null,
             outputFilter: ""
@@ -27,8 +30,13 @@
             options()     { return this.component['KibanaCustomize'][0] },
             shareLink()   { return this.component['ShareLink']   || "" },
             classes()     { return this.options['KibanaClasses'] || "" },
+            fixedQuery()  { return this.options['InputQueryKibana']|| "" },
             inputs()      { return this.options['InputVarKibana'].map(v => v['InputVarKibana']) },
-            inputFilter() { return this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]).join(" ")},
+            inputFilter() {
+              let filters = this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]);
+              if (this.fixedQuery !== "") filters.push(" AND (" + this.fixedQuery + ")");
+              return filters.join(" ")
+            },
             outputVar()   { return this.options['OutputVarKibana']     || "" },
         },
         methods: {
@@ -98,7 +106,8 @@
                         //O Kibana já está pronto mas ainda está a carregar dados. Voltar a tentar em 100ms
                         setTimeout(this.updateKibanaQuery, 100)
                     } else {
-                        this.iFrame.contentWindow.postMessage({"query":{ "query_string":{ "query": this.inputFilter || "*" } }}, '*');                  
+                        console.debug("KIBANA QUERY: ", this.inputFilter.replaceAll("__USERNAME__",this.userInfo.username) );
+                        this.iFrame.contentWindow.postMessage({"query":{ "query_string":{ "query": this.inputFilter.replaceAll("__USERNAME__",this.userInfo.username) || "*" } }}, '*');                  
                     }
                 }
             }

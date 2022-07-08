@@ -6,7 +6,7 @@
         <div v-else-if="dashboardState=='Error'" class="text-center my-20 text-2xl text-red-500">
             {{error}}
         </div>
-        <Dashboard v-else :dashboard="dashboardParsed" />
+        <Dashboard v-else :dashboard="dashboardParsed" :userInfo="userInfo" />
     </div>
 </template>
 

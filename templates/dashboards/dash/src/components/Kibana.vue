@@ -4,7 +4,10 @@
 
 <script>
     export default {
-        props: { component: Object },
+        props: {
+          component: Object,
+          userInfo: Object
+        },
         data: () => ({
             iFrame: null,
             outputFilter: ""
@@ -103,7 +106,8 @@
                         //O Kibana já está pronto mas ainda está a carregar dados. Voltar a tentar em 100ms
                         setTimeout(this.updateKibanaQuery, 100)
                     } else {
-                        this.iFrame.contentWindow.postMessage({"query":{ "query_string":{ "query": this.inputFilter || "*" } }}, '*');                  
+                        console.debug("KIBANA QUERY: ", this.inputFilter.replaceAll("__USERNAME__",this.userInfo.username) );
+                        this.iFrame.contentWindow.postMessage({"query":{ "query_string":{ "query": this.inputFilter.replaceAll("__USERNAME__",this.userInfo.username) || "*" } }}, '*');                  
                     }
                 }
             }

@@ -27,8 +27,13 @@
             options()     { return this.component['KibanaCustomize'][0] },
             shareLink()   { return this.component['ShareLink']   || "" },
             classes()     { return this.options['KibanaClasses'] || "" },
+            fixedQuery()  { return this.options['InputQueryKibana']|| "" },
             inputs()      { return this.options['InputVarKibana'].map(v => v['InputVarKibana']) },
-            inputFilter() { return this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]).join(" ")},
+            inputFilter() {
+              let filters = this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]);
+              if (this.fixedQuery !== "") filters.push(" AND (" + this.fixedQuery + ")");
+              return filters.join(" ")
+            },
             outputVar()   { return this.options['OutputVarKibana']     || "" },
         },
         methods: {

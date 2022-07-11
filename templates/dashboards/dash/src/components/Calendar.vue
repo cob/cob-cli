@@ -76,17 +76,18 @@ export default {
     }
   },
   mounted() {
-    this.queryEvents()
+    this.loadEvents()
   },
   methods: {
     getQuery() {
       const baseQuery = this.component['EventsQuery'] || ""
       const options = this.component['CalendarCustomize'][0]
       const inputVars = new Set(options['InputVarCalendar'].map(inputVar => inputVar['InputVarCalendar']));
-      return `${baseQuery} ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`
+      const finalQuery = `${baseQuery} ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`.trim()
+      return finalQuery ? finalQuery : "*"
     },
-    queryEvents: function() {
-      let query = this.getQuery() || "*"
+    loadEvents: function() {
+      let query = this.getQuery()
       this.calendarInfo = dashFunctions.instancesList(this.component['Definition'], query, 255, 0, {validity: 30})
     },
     textToRGB: function(text) {

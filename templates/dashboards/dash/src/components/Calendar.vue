@@ -10,14 +10,19 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import * as dashFunctions from '@cob/dashboard-info';
 
+const MAX_VISIBLE_DAY_EVENTS = 3
+
 export default {
   components: {
     FullCalendar
   },
+
   props: {component: Object},
+
   data() {
     return {
-      calendarInfo: {},
+      boardInfo: {},
+
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, listPlugin],
         initialView: 'dayGridMonth',
@@ -29,66 +34,88 @@ export default {
         buttonText: {
           today: 'Today',
           month: 'Month',
-          week: 'Week',
-          day: 'Day',
           list: 'List',
         },
+        height: "auto",
         aspectRatio: 2,
+        validRange: {
+          start: '2017-01-01'
+        },
       }
     }
   },
+
   computed: {
-    stateLoaded() {
-      return this.calendarInfo.results && !this.calendarInfo.results.state
+    boardState() {
+      return this.boardInfo.results.state
+    },
+    boardResults() {
+      if (!this.boardInfo.results) return []
+      return this.boardInfo.results.value || []
     },
     options() {
       return this.component['CalendarCustomize'][0]
+    },
+    events() {
+      return this.boardResults
+          .filter(event => {
+            const title = event[this.component['DescriptionEventField']] || [event.id]
+            const date = event[this.component['DateEventField']]
+
+            return !!(title && date)
+          })
+          .map(event => {
+            const title = event[this.component['DescriptionEventField']] || [event.id]
+            const date = event[this.component['DateEventField']]
+
+            return {
+              id: event.id,
+              url: `/recordm/#/instance/${event.id}`,
+              title: title[0] + (title.length > 1 ? `(${title.length})` : ""),
+              start: new Date(parseInt(date[0])),
+              allDay: true,
+              backgroundColor: this.component['StateEventField'] && event[this.component['StateEventField']]
+                               ? this.textToRGB(event[this.component['StateEventField']][0])
+                               : "#0e7bbe",
+            }
+          })
     }
   },
+
   watch: {
-    stateLoaded: function(newValue) {
-      if (!newValue) return
+    events: function(newEvents) {
       const calendarApi = this.$refs.fullCalendar.getApi()
       calendarApi.getEvents().forEach(event => event.remove())
+      newEvents.forEach(event => calendarApi.addEvent(event))
 
-      const events = this.calendarInfo.results.value || []
-      for (let i = 0; i < events.length; i++) {
-        const event = events[i];
-        const title = event[this.component['DescriptionEventField']] || ["unknow"]
-        const date = event[this.component['DateEventField']]
-
-        if (!title || !date) continue
-        calendarApi.addEvent({
-          id: event.id,
-          url: `/recordm/#/instance/${event.id}`,
-          title: title[0] + (title.length > 1 ? `(${title.length})` : ""),
-          start: new Date(parseInt(date[0])),
-          allDay: true,
-          backgroundColor: this.component['StateEventField'] && event[this.component['StateEventField']] ? this.textToRGB(event[this.component['StateEventField']][0]) : "#0e7bbe",
-        })
-      }
     },
     'component.vars': {
       handler() {
-        this.queryEvents()
+        this.loadEvents()
       },
       deep: true
     }
   },
+
   mounted() {
+    const calendarApi = this.$refs.fullCalendar.getApi()
+    calendarApi.gotoDate(new Date(2021, 10, 11))
+
+    const dayMaxEvents = this.options['MaxVisibleDayEvents'] || MAX_VISIBLE_DAY_EVENTS
+    calendarApi.setOption('dayMaxEvents', dayMaxEvents === -1 ? false : parseInt(dayMaxEvents, 10))
+
     this.loadEvents()
   },
+
   methods: {
     getQuery() {
       const baseQuery = this.component['EventsQuery'] || ""
-      const options = this.component['CalendarCustomize'][0]
-      const inputVars = new Set(options['InputVarCalendar'].map(inputVar => inputVar['InputVarCalendar']));
+      const inputVars = new Set(this.options['InputVarCalendar'].map(inputVar => inputVar['InputVarCalendar']));
       const finalQuery = `${baseQuery} ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`.trim()
       return finalQuery ? finalQuery : "*"
     },
     loadEvents: function() {
-      let query = this.getQuery()
-      this.calendarInfo = dashFunctions.instancesList(this.component['Definition'], query, 255, 0, {validity: 30})
+      this.boardInfo = dashFunctions.instancesList(this.component['Definition'], this.getQuery(), 255, 0, {validity: 30})
     },
     textToRGB: function(text) {
       let hash = 0;

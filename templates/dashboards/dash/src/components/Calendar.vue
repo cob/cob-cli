@@ -1,6 +1,6 @@
 <template>
-  <div class="relative">
-    <div class="absolute"></div>
+  <div :class="['relative', classes]">
+    <Waiting :waiting="showWaiting"/>
     <div>
       <div class="mb-4 text-center text-4xl">{{ monthTitle }} {{ yearTitle }}</div>
       <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
@@ -16,18 +16,23 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import * as dashFunctions from '@cob/dashboard-info';
+import Waiting from './shared/Waiting.vue'
+import debounce from 'lodash.debounce';
 
 const DEFAULT_EVENT_COLOR = "#0e7bbe"
 const MAX_VISIBLE_DAY_EVENTS = 3
 
 export default {
   components: {
-    FullCalendar
+    FullCalendar,
+    Waiting,
   },
 
   props: {component: Object},
 
   data: () => ({
+    showWaiting: false,
+
     monthTitle: null,
     yearTitle: null,
 
@@ -65,11 +70,14 @@ export default {
     options() {
       return this.component['CalendarCustomize'][0]
     },
+    classes() {
+      return this.options['CalendarClasses'] || "p-4"
+    },
     query() {
       if (!this.dateRange) return ""
 
       let dateRangeQuery = `${this.component['DateStartEventField']}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
-      if(this.component['DateEndEventField']){
+      if (this.component['DateEndEventField']) {
         dateRangeQuery += ` OR ${this.component['DateEndEventField']}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
       }
 
@@ -104,7 +112,7 @@ export default {
                                : DEFAULT_EVENT_COLOR,
             }
           })
-    }
+    },
   },
 
   watch: {
@@ -114,6 +122,8 @@ export default {
         calendarApi.getEvents().forEach(event => event.remove())
         newEvents.forEach(event => calendarApi.addEvent(event))
       })
+
+      this.showWaiting = false
     },
     query: function(newQuery) {
       if (!newQuery) return
@@ -137,13 +147,23 @@ export default {
 
   mounted() {
     const calendarApi = this.$refs.fullCalendar.getApi()
+
+    // const lazyDateChangeHandler = debounce(this.updateDateRange, 1000)
+    const lazyEventsLoadHandler = debounce((dateInfo) => this.updateDateRange(dateInfo), 300)
     calendarApi.setOption('datesSet', (dateInfo) => {
-      this.updateDateRange(dateInfo)
+
+      // Reflect immediately the change in the title
+      const currentDate = calendarApi.getDate()
+      this.monthTitle = currentDate.toLocaleString('default', {month: 'long'});
+      this.yearTitle = currentDate.getFullYear()
+
+      // leave for later the events loading
+      lazyEventsLoadHandler(dateInfo)
     })
-    calendarApi.setOption('locale', this.getLocale())
 
     const dayMaxEvents = this.options['MaxVisibleDayEvents'] || MAX_VISIBLE_DAY_EVENTS
     calendarApi.setOption('dayMaxEvents', dayMaxEvents === -1 ? false : parseInt(dayMaxEvents, 10))
+    calendarApi.setOption('locale', this.getLocale())
   },
 
   beforeDestroy() {
@@ -154,15 +174,13 @@ export default {
 
   methods: {
     updateDateRange(dateInfo) {
+      this.showWaiting = true
+
       const calendarApi = this.$refs.fullCalendar.getApi()
 
       calendarApi.batchRendering(() => {
         calendarApi.getEvents().forEach(event => event.remove())
       })
-
-      const currentDate = calendarApi.getDate()
-      this.monthTitle = currentDate.toLocaleString('default', { month: 'long' });
-      this.yearTitle = currentDate.getFullYear()
 
       this.dateRange = [dateInfo.start, dateInfo.end]
     },

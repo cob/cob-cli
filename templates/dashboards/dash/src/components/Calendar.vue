@@ -2,7 +2,7 @@
   <div class="relative">
     <div class="absolute"></div>
     <div>
-      <div class="mb-4 text-center text-4xl">{{ month }} {{ year }}</div>
+      <div class="mb-4 text-center text-4xl">{{ monthTitle }} {{ yearTitle }}</div>
       <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
     </div>
 
@@ -17,6 +17,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import * as dashFunctions from '@cob/dashboard-info';
 
+const DEFAULT_EVENT_COLOR = "#0e7bbe"
 const MAX_VISIBLE_DAY_EVENTS = 3
 
 export default {
@@ -27,8 +28,9 @@ export default {
   props: {component: Object},
 
   data: () => ({
-    month: null,
-    year: null,
+    monthTitle: null,
+    yearTitle: null,
+
     dateRange: null, // array: [initDate, endDate]
     dashInfo: null, // Object, the result of new DashInfo(...)
 
@@ -65,21 +67,31 @@ export default {
     },
     query() {
       if (!this.dateRange) return ""
-      const baseQuery = `${this.component['EventsQuery'] || "*"} AND ${this.component['DateEventField']}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
+
+      let dateRangeQuery = `${this.component['DateStartEventField']}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
+      if(this.component['DateEndEventField']){
+        dateRangeQuery += ` OR ${this.component['DateEndEventField']}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
+      }
+
+      const baseQuery = `${this.component['EventsQuery'] || "*"} AND (${dateRangeQuery})`
       const inputVars = new Set(this.options['InputVarCalendar'].map(inputVar => inputVar['InputVarCalendar']));
-      return `${baseQuery}  ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`.trim()
+      const finalQuery = `${baseQuery}  ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`.trim()
+
+      console.debug("[dash][Calendar] query:", finalQuery)
+      return finalQuery
+
     },
     events() {
       return this.dashResults
           .filter(event => {
             const title = event[this.component['DescriptionEventField']] || [event.id]
-            const date = event[this.component['DateEventField']]
+            const date = event[this.component['DateStartEventField']]
 
             return !!(title && date)
           })
           .map(event => {
             const title = event[this.component['DescriptionEventField']] || [event.id]
-            const date = event[this.component['DateEventField']]
+            const date = event[this.component['DateStartEventField']]
 
             return {
               id: event.id,
@@ -89,7 +101,7 @@ export default {
               allDay: true,
               backgroundColor: this.component['StateEventField'] && event[this.component['StateEventField']]
                                ? this.textToRGB(event[this.component['StateEventField']][0])
-                               : "#0e7bbe",
+                               : DEFAULT_EVENT_COLOR,
             }
           })
     }
@@ -108,7 +120,7 @@ export default {
 
       if (!this.dashInfo) {
         console.debug("[dash][Calendar] New dashInfo created")
-        this.dashInfo = dashFunctions.instancesList(this.component['Definition'], this.query, 1000, 0, {validity: 30})
+        this.dashInfo = dashFunctions.instancesList(this.component['Definition'], this.query, 2000, 0, {validity: 30})
 
       } else {
         console.debug("[dash][Calendar] Updating dash info query")
@@ -125,13 +137,13 @@ export default {
 
   mounted() {
     const calendarApi = this.$refs.fullCalendar.getApi()
-    calendarApi.setOption('datesSet', () => {this.updateDateRange()})
+    calendarApi.setOption('datesSet', (dateInfo) => {
+      this.updateDateRange(dateInfo)
+    })
     calendarApi.setOption('locale', this.getLocale())
 
     const dayMaxEvents = this.options['MaxVisibleDayEvents'] || MAX_VISIBLE_DAY_EVENTS
     calendarApi.setOption('dayMaxEvents', dayMaxEvents === -1 ? false : parseInt(dayMaxEvents, 10))
-
-    this.updateDateRange()
   },
 
   beforeDestroy() {
@@ -141,7 +153,7 @@ export default {
   },
 
   methods: {
-    updateDateRange() {
+    updateDateRange(dateInfo) {
       const calendarApi = this.$refs.fullCalendar.getApi()
 
       calendarApi.batchRendering(() => {
@@ -149,10 +161,10 @@ export default {
       })
 
       const currentDate = calendarApi.getDate()
-      this.month = currentDate.toLocaleString('default', { month: 'long' });
-      this.year = currentDate.getFullYear()
+      this.monthTitle = currentDate.toLocaleString('default', { month: 'long' });
+      this.yearTitle = currentDate.getFullYear()
 
-      this.dateRange = [new Date(currentDate.getFullYear(), currentDate.getMonth(), 1), new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)]
+      this.dateRange = [dateInfo.start, dateInfo.end]
     },
     getLocale() {
       if (navigator.languages !== undefined) return navigator.languages[0];

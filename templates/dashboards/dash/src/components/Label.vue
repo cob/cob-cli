@@ -8,7 +8,7 @@
         computed: {
             options() { return this.component['LabelCustomize'][0] },
             label()   { return this.component['Label']      || "" },
-            classes() { return this.options['LabelClasses'] || "text-center" },
+            classes() { return this.options['LabelClasses'] || "text-center font-bold pb-2 " },
             image()   { return this.options['Image'] ? "background-image: url(" + this.options['Image'] +  ");" : "" }
         }
     }

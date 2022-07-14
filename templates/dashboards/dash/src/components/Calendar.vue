@@ -15,10 +15,12 @@ import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
+import allLocales from '@fullcalendar/core/locales-all';
 import * as dashFunctions from '@cob/dashboard-info';
 import Waiting from './shared/Waiting.vue'
 import debounce from 'lodash.debounce';
 import {toEsFieldName} from "@cob/rest-api-wrapper/src/utils/ESHelper";
+import rmListDefinitions from "@cob/rest-api-wrapper/src/rmListDefinitions";
 
 const DEFAULT_EVENT_COLOR = "#0e7bbe"
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -34,6 +36,8 @@ export default {
   data: () => ({
     showWaiting: false,
 
+    definitionId: null,
+
     monthTitle: null,
     yearTitle: null,
 
@@ -42,6 +46,7 @@ export default {
 
     calendarOptions: {
       plugins: [dayGridPlugin, interactionPlugin, listPlugin],
+      locales: allLocales,
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'today prev next',
@@ -68,6 +73,7 @@ export default {
     options() { return this.component['CalendarCustomize'][0] },
     classes() { return this.options['CalendarClasses'] || "p-4" },
     inputVarCalendar() { return this.options['InputVarCalendar'] || [] },
+    allowCreateInstances() { return this.options['AllowCreateInstances'] === "TRUE" || false},
     dayMaxEvents() {
       try {
         return parseInt(this.options['MaxVisibleDayEvents'], 10) || MAX_VISIBLE_DAY_EVENTS
@@ -77,7 +83,7 @@ export default {
     },
 
     // Calendar component model
-    definitionField() { return this.component['Definition'] },
+    definition() { return this.component['Definition'] },
     descriptionEventField() { return toEsFieldName(this.component['DescriptionEventField']) },
     startDateField() { return toEsFieldName(this.component['DateStartEventField']) },
     endDateField() { return toEsFieldName(this.component['DateEndEventField']) },
@@ -100,13 +106,12 @@ export default {
       return finalQuery
 
     },
-    dashResults() {
+    events() {
       if (!this.dashInfo) return []
       if (!this.dashInfo.results) return []
-      return this.dashInfo.results.value || []
-    },
-    events() {
-      return this.dashResults
+      if (!this.dashInfo.results.value) return []
+
+      return this.dashInfo.results.value
           .filter(event => {
             const title = event[this.descriptionEventField] || [event.id]
             const date = event[this.startDateField]
@@ -115,13 +120,15 @@ export default {
           })
           .map(event => {
             const title = event[this.descriptionEventField] || [event.id]
-            const date = event[this.startDateField]
+            const startDate = new Date(parseInt(event[this.startDateField][0], 10))
+            const endDate = this.endDateField ? new Date(parseInt(event[this.startDateField][0], 10)) : null
 
             return {
               id: event.id,
               url: `/recordm/#/instance/${event.id}`,
               title: title[0] + (title.length > 1 ? `(${title.length})` : ""),
-              start: new Date(parseInt(date[0])),
+              start: startDate,
+              end: endDate,
               allDay: true,
               backgroundColor: this.stateField ? this.textToRGB(event[this.stateField][0]) : DEFAULT_EVENT_COLOR,
             }
@@ -145,7 +152,7 @@ export default {
 
       if (!this.dashInfo) {
         console.debug("[dash][Calendar] New dashInfo created")
-        this.dashInfo = dashFunctions.instancesList(this.definitionField, this.query, 2000, 0, {validity: 30})
+        this.dashInfo = dashFunctions.instancesList(this.definition, this.query, 2000, 0, {validity: 30})
 
       } else {
         this.showWaiting = true
@@ -153,20 +160,24 @@ export default {
         console.debug("[dash][Calendar] Updating dash info query")
         this.dashInfo.changeArgs({query: newQuery})
       }
-    },
-    'component.vars': {
-      handler() {
-        console.log("new input vars")
-      },
-      deep: true
     }
   },
 
-  mounted() {
+  async mounted() {
+
+    // Get the definition id to allow instance creation
+    const definitions = await rmListDefinitions({name: this.definition, includeDisabled: true})
+    if (!definitions.length) {
+      cob.ui.notification.showError(`Unable to find definition ${this.definition}`)
+      return null
+    }
+    this.definitionId = definitions[0].id
+
+
+    // Finish calendar configuration
     const calendarApi = this.$refs.fullCalendar.getApi()
 
-    // const lazyDateChangeHandler = debounce(this.updateDateRange, 1000)
-    const lazyEventsLoadHandler = debounce((dateInfo) => this.updateDateRange(dateInfo), 300)
+    const lazyEventsLoader = debounce((dateInfo) => this.updateDateRange(dateInfo), 300)
     calendarApi.setOption('datesSet', (dateInfo) => {
 
       // Reflect immediately the change in the title
@@ -175,11 +186,14 @@ export default {
       this.yearTitle = currentDate.getFullYear()
 
       // leave for later the events loading
-      lazyEventsLoadHandler(dateInfo)
+      lazyEventsLoader(dateInfo)
     })
 
     calendarApi.setOption('dayMaxEvents', this.dayMaxEvents === -1 ? false : this.dayMaxEvents)
     calendarApi.setOption('locale', this.getLocale())
+    calendarApi.setOption('selectMinDistance', !this.endDateField ? 1 : 0) //only allow to select on day if no end date field is available
+    calendarApi.setOption('selectable', this.allowCreateInstances)
+    calendarApi.setOption('select', (dateInfo) => {this.createNewEvent(dateInfo)})
   },
 
   beforeDestroy() {
@@ -217,6 +231,19 @@ export default {
 
       let color = ((red << 16) + (green << 8) + blue).toString(16).toUpperCase();
       return `#${"00000".substring(0, 6 - color.length) + color}`
+    },
+    createNewEvent(dateInfo) {
+      const fields = []
+      fields.push({fieldDefinition: {name: this.component['DateStartEventField']}, value: dateInfo.start.getTime()})
+
+      if (this.component['DateEndEventField']) {
+        fields.push({fieldDefinition: {name: this.component['DateEndEventField']}, value: dateInfo.end.getTime()})
+      }
+
+      cob.app.navigateTo("/recordm/index.html#/instance/create/" + this.definitionId + "/data=" + JSON.stringify({
+        opts: {'auto-paste-if-empty': true},
+        fields,
+      }));
     }
   }
 }

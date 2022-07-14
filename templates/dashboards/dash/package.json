@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@cob/dashboard-info": "^2.6.0",
-    "@cob/rest-api-wrapper": "^2.1.6",
+    "@cob/rest-api-wrapper": "^2.3.0",
     "@fullcalendar/core": "^5.11.0",
     "@fullcalendar/daygrid": "^5.11.0",
     "@fullcalendar/interaction": "^5.11.0",

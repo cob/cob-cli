@@ -796,6 +796,19 @@
                   "rootField": false,
                   "restricted": false,
                   "defaultValue": null
+                },
+                {
+                  "id": null,
+                  "name": "AllowCreateInstances",
+                  "required": "mandatory",
+                  "description": "$[TRUE,FALSE] $default(FALSE)",
+                  "condition": "=Settings",
+                  "duplicable": false,
+                  "fields": [],
+                  "order": 61,
+                  "rootField": false,
+                  "restricted": false,
+                  "defaultValue": "FALSE"
                 }
               ],
               "order": 57,
@@ -811,7 +824,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 61,
+              "order": 62,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -824,7 +837,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 62,
+              "order": 63,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -837,7 +850,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 63,
+              "order": 64,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -850,7 +863,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 64,
+              "order": 65,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -863,7 +876,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 65,
+              "order": 66,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -876,7 +889,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 66,
+              "order": 67,
               "rootField": false,
               "restricted": false,
               "defaultValue": null

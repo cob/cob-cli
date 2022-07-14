@@ -137,15 +137,17 @@ function parseDashboard(raw_dashboard, userInfo) {
                 "CalendarClasses": "",
                 "InputVarCalendar": [{}],
                 "MaxVisibleDayEvents": "",
+                "AllowCreateInstances":""
             }],
             "Definition": "",
-            "DateEventField": "",
+            "DateStartEventField": "",
+            "DateEndEventField": "",
             "DescriptionEventField": "",
             "StateEventField": "",
             "EventsQuery": "",
         }
     }
-    
+
     for( let board of dash["Board"]) {
         let componentsList = clone([])
         for( let component of board["Component"]) {

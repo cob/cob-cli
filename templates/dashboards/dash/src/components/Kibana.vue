@@ -79,19 +79,40 @@
                 // Só vale a pena reagir aos eventos de mudança de filtro no Kibana
                 if(event && event.data && event.data.filters) {
                     var filters = []
-                    for(let filter of event.data.filters) {
-                        var queryStr;
-                        var negateStr = filter.meta.negate ? "-" : "";
-                        var enabled = !filter.meta.disabled;
+                    for (let filter of event.data.filters) {
+                        let queryStr = "";
+                        let negateStr = filter.meta.negate ? "-" : "";
+                        let enabled = !filter.meta.disabled;
+                        let key;
 
-                        if(filter.query.query_string) {
-                            queryStr = filter.query.query_string.query;
-                        } else if (filter.query.match_phrase) {
-                            var key = Object.keys(filter.query.match_phrase)[0];
-                            queryStr = key + ':"' + filter.query.match_phrase[key] + '"';
+                        let query = filter.query;
+
+                        if (query.query_string) {
+                            // condições incluídas no próprio dashboard via query DSL
+                            queryStr = query.query_string.query;
+
+                        } else if (query.query) {
+                            queryStr = query.query;
+
+                        } else if (query.match) {
+                            key = Object.keys(query.match)[0];
+                            queryStr = key + ':"' + query.match[key] + '"';
+
+                        } else if (query.match_phrase) {
+                            key = Object.keys(query.match_phrase)[0];
+                            let _phrase = query.match_phrase[key];
+                            queryStr = key + ':"' + (_phrase instanceof Object ? _phrase.query : _phrase) + '"';
+
+                        } else if (query.bool && query.bool.must.length === 1 && query.bool.must[0].query_string) {
+                            // filtros adicionados a partir de visualizações com splits por filtros
+                            queryStr = query.bool.must[0].query_string.query;
+
+                        } else {
+                            window.console.error('COB', "unknown filter, can't send to RM", filter);
                         }
-                        if (enabled) filters.push(negateStr + "(" +queryStr + ")");
-                    };
+
+                        if (enabled) filters.push(negateStr + "(" + queryStr + ")");
+                    }
                     this.outputFilter = filters.length > 0 ? filters.join(" AND ") : ""
                     this.$set(this.component.vars, this.outputVar, this.outputFilter)
                 }

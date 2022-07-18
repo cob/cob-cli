@@ -73,6 +73,7 @@ export default {
     options() { return this.component['CalendarCustomize'][0] },
     classes() { return this.options['CalendarClasses'] || "p-4" },
     inputVarCalendar() { return this.options['InputVarCalendar'] || [] },
+    outputVar()   { return this.options['OutputVarCalendar'] || "" },
     allowCreateInstances() { return this.options['AllowCreateInstances'] === "TRUE" || false},
     dayMaxEvents() {
       try {
@@ -90,7 +91,7 @@ export default {
     stateField() { return toEsFieldName(this.component['StateEventField']) },
     eventsQuery() { return this.component['EventsQuery'] || "*" },
 
-    query() {
+    dateRangeQuery() {
       if (!this.dateRange) return null
 
       let dateRangeQuery = `${this.startDateField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
@@ -98,13 +99,17 @@ export default {
         dateRangeQuery += ` OR ${this.endDateField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
       }
 
-      const baseQuery = `${this.eventsQuery} AND (${dateRangeQuery})`
+      return dateRangeQuery
+    },
+    query() {
+      if (!this.dateRangeQuery) return null
+
+      const baseQuery = `${this.eventsQuery} AND (${this.dateRangeQuery})`
       const inputVars = new Set(this.inputVarCalendar.map(inputVar => inputVar['InputVarCalendar']));
       const finalQuery = `${baseQuery} ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(" ")}`.trim()
 
       console.debug("[dash][Calendar] query:", finalQuery)
       return finalQuery
-
     },
     events() {
       if (!this.dashInfo) return []
@@ -206,6 +211,7 @@ export default {
     updateDateRange(dateInfo) {
       this.showWaiting = true
       this.dateRange = [dateInfo.start, dateInfo.end]
+      this.$set(this.component.vars, this.outputVar, this.dateRangeQuery)
     },
     getLocale() {
       if (navigator.languages !== undefined) return navigator.languages[0];

@@ -754,7 +754,7 @@
               "id": null,
               "name": "CalendarCustomize",
               "required": null,
-              "description": "$[Classes,InputVar,Settings] $multiple $help[Select the defaults to change] $style[hide] ",
+              "description": "$[Classes,InputVar,OutputVar,Settings] $multiple $help[Select the defaults to change] $style[hide] ",
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [
@@ -809,6 +809,19 @@
                   "rootField": false,
                   "restricted": false,
                   "defaultValue": "FALSE"
+                },
+                {
+                  "id": null,
+                  "name": "OutputVarCalendar",
+                  "required": null,
+                  "description": null,
+                  "condition": "=OutputVar",
+                  "duplicable": false,
+                  "fields": [],
+                  "order": 62,
+                  "rootField": false,
+                  "restricted": false,
+                  "defaultValue": null
                 }
               ],
               "order": 57,
@@ -824,7 +837,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 62,
+              "order": 63,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -837,7 +850,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 63,
+              "order": 64,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -850,7 +863,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 64,
+              "order": 65,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -863,7 +876,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 65,
+              "order": 66,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -876,7 +889,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 66,
+              "order": 67,
               "rootField": false,
               "restricted": false,
               "defaultValue": null
@@ -889,7 +902,7 @@
               "condition": "=Calendar",
               "duplicable": false,
               "fields": [],
-              "order": 67,
+              "order": 68,
               "rootField": false,
               "restricted": false,
               "defaultValue": null

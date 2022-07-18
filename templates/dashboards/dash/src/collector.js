@@ -136,6 +136,7 @@ function parseDashboard(raw_dashboard, userInfo) {
             "CalendarCustomize": [{
                 "CalendarClasses": "",
                 "InputVarCalendar": [{}],
+                "OutputVarCalendar": "",
                 "MaxVisibleDayEvents": "",
                 "AllowCreateInstances":""
             }],

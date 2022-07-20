@@ -65,8 +65,8 @@
                         s.id = "cobKibanaStyle";
                         s.appendChild(document.createTextNode([
                             "html, .kbnWelcomeView { background-color: #ffffff00 !important }"
-                            , (this.classes.indexOf("kibanaEmbPanelTransparent") != -1 ? ".euiPanel { background-color: #ffffff00 !important; border:none; box-shadow: none }" : "")
-                            , (this.classes.indexOf("kibanaNoNavMenu") != -1 ? ".kbnTopNavMenu__wrapper { display: none }" : "")
+                            , (this.classes.indexOf("kibanaEmbPanelTransparent") !== -1 ? ".euiPanel { background-color: #ffffff00 !important; border:none; box-shadow: none }" : "")
+                            , (this.classes.indexOf("kibanaNoNavMenu") !== -1 ? ".kbnTopNavMenu__wrapper { display: none }" : "")
                             ,".visLegend__toggle { display: none!important; }"
 
                         ].join("\n")));

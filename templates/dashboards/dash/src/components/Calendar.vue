@@ -63,6 +63,7 @@ export default {
 
     allowTooltipHover: false,
     tooltipInstances: null,
+    activeTooltip: null,
 
     dashInfo: null, // Object, the result of new DashInfo(...)
     definitionId: null,
@@ -206,20 +207,6 @@ export default {
     }
   },
 
-  created() {
-    this.tooltipSingleton = createSingleton([], {
-      delay: 100,
-      duration: this.allowTooltipHover ? [300, 250] : 0,
-      allowHTML: true,
-      interactive: true,
-      trigger: this.allowTooltipHover ? 'mouseenter' : 'click',
-      offset: [0, 10],
-      overrides: ['placement'],
-    });
-
-    window.tippySingleton = this.tooltipSingleton
-  },
-
   async mounted() {
 
     // Get the definition id to allow instance creation
@@ -254,14 +241,18 @@ export default {
     calendarApi.setOption('viewDidMount', (viewInfo) => {this.activeView = viewInfo.view.type})
 
     calendarApi.setOption('eventClick', (eventInfo) => {
-      // The way that tippy adds the content it will cause that the click will be on the list event and not in the tooltip
-      // because the tooltip content will be apended as a child node of the first 'a' element
-      // So for the list we need to allow all clicks in the tooltip to work as default
-      if (this.isListViewActive && !eventInfo.jsEvent.target.classList.contains("js-tooltip-hook")) {
+      if (eventInfo.jsEvent.target.classList.contains("js-instance-label")) {
+        // It's not a selection but the user cliecked in the instance label in the tooltip
         return
       }
 
       eventInfo.jsEvent.preventDefault()
+
+      if (this.activeTooltip) {
+        this.activeTooltip.hide()
+      }
+
+      this.tooltipInstances[eventInfo.event.id].show()
     })
 
     calendarApi.setOption('moreLinkClick', () => {
@@ -269,6 +260,7 @@ export default {
           setTimeout(() => this.updateTooltipInstances(), 100)
         }
     )
+
     calendarApi.setOption('eventDidMount', (eventInfo) => {
       let tooltipHook = eventInfo.el
 
@@ -322,6 +314,11 @@ export default {
       return `#${'00000'.substring(0, 6 - color.length) + color}`
     },
     createNewEvent(dateInfo) {
+      if (dateInfo.jsEvent.target.classList.contains("js-instance-label")) {
+        // It's not a create operation but the user cliecked in the instance label in the tooltip
+        return
+      }
+
       const fields = []
       fields.push({fieldDefinition: {name: this.component['DateStartEventField']}, value: dateInfo.start.getTime()})
 
@@ -336,7 +333,8 @@ export default {
     },
 
     getEventInstanceLabel(esInstance) {
-      if (!esInstance._definitionInfo.instanceLabel) return this.event.id
+      if (!esInstance._definitionInfo.instanceLabel) return esInstance.id
+      if (!esInstance._definitionInfo.instanceLabel.length) return esInstance.id
 
       const fieldDefinitionName = esInstance._definitionInfo.instanceLabel[0].name;
       return esInstance[toEsFieldName(fieldDefinitionName)][0]
@@ -358,24 +356,35 @@ export default {
       return `tooltip-${eventId}`
     },
     updateTooltipInstances() {
-      if (this.tooltipInstances) {
-        this.tooltipInstances.forEach(i => i.destroy())
-      }
+      this.destroyTooltipInstances()
 
-      this.tooltipInstances = tippy(document.querySelectorAll('.js-tooltip-hook[data-event-id]'), {
-        content: (reference) => {
-          const tooltipId = this.getTooltipId(reference.getAttribute('data-event-id'));
-          return document.getElementById(tooltipId).innerHTML
-        },
-        placement: this.isListViewActive ? 'right' : 'top',
-      });
-      this.tooltipSingleton.setInstances(this.tooltipInstances)
+      this.tooltipInstances = [...document.querySelectorAll('.js-tooltip-hook[data-event-id]')]
+          .reduce((map, el) => {
+            const eventId = el.getAttribute('data-event-id')
+            const tooltipId = this.getTooltipId(eventId)
+
+            map[eventId] = tippy(el, {
+              content: document.getElementById(tooltipId).innerHTML,
+              allowHTML: true,
+              delay: 100,
+              duration: this.allowTooltipHover ? [300, 250] : 0,
+              placement: this.isListViewActive ? 'right' : 'top',
+              interactive: true,
+              trigger: 'manual',
+              offset: [0, 10],
+              onShow(instance) {
+                this.activeTooltip = instance
+              }
+            })
+
+            return map
+          }, {})
     },
     destroyTooltipInstances() {
-      if (this.tooltipInstances) {
-        this.tooltipInstances.forEach(i => i.destroy())
+      let instances = Object.values(this.tooltipInstances || {});
+      if (instances.length) {
+        instances.forEach(i => i.destroy())
       }
-      this.tooltipSingleton.destroy()
     }
   }
 }

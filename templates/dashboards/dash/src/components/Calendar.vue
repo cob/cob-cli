@@ -11,8 +11,8 @@
     <div class='tooltips hidden'>
       <div v-for='event in events' :id='getTooltipId(event.id)'>
         <div class='flex flex-col p-4 rounded border-2 border-zinc-300 bg-zinc-50 text-sm calendar-tooltip'>
-          <a :href='event.url'
-             class='mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>{{
+          <a :href='event.instanceUrl'
+             class='max-w-fit mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>{{
               event.instanceLabel
             }}</a>
           <div class='details flex flex-col flex-wrap justify-start'>
@@ -45,7 +45,7 @@ import Waiting from './shared/Waiting.vue'
 import debounce from 'lodash.debounce';
 import {toEsFieldName} from '@cob/rest-api-wrapper/src/utils/ESHelper';
 import rmListDefinitions from '@cob/rest-api-wrapper/src/rmListDefinitions';
-import tippy, {createSingleton} from 'tippy.js';
+import tippy from 'tippy.js';
 
 const DEFAULT_EVENT_COLOR = '#0e7bbe'
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -63,7 +63,6 @@ export default {
 
     allowTooltipHover: false,
     tooltipInstances: null,
-    activeTooltip: null,
 
     dashInfo: null, // Object, the result of new DashInfo(...)
     definitionId: null,
@@ -157,7 +156,6 @@ export default {
 
             return {
               id: `calendar-event-${esInstance.id}`,
-              url: `/recordm/#/instance/${esInstance.id}`,
               title: title[0] + (title.length > 1 ? `(${title.length})` : ''),
               start: startDate,
               end: endDate,
@@ -169,6 +167,7 @@ export default {
               // FullCalendar will not modify or delete these fields. For example, developers often include a description
               // field for use in callbacks like event render hooks. Any non-standard properites are moved into the
               // extendedProps hash during event parsing.
+              instanceUrl: `#/instance/${esInstance.id}`,
               instanceLabel: this.getEventInstanceLabel(esInstance),
               instanceDescriptions: this.getEventInstanceDescriptions(esInstance),
             }
@@ -177,7 +176,12 @@ export default {
   },
 
   watch: {
-    events: function(newEvents) {
+    events: function(newEvents, oldEvents) {
+      if (newEvents && oldEvents && JSON.stringify(newEvents) === JSON.stringify(oldEvents)) {
+        this.showWaiting = false
+        return
+      }
+
       const calendarApi = this.$refs.fullCalendar.getApi()
 
       calendarApi.batchRendering(() => {
@@ -186,7 +190,7 @@ export default {
       })
 
       this.$nextTick(() => {
-        this.updateTooltipInstances()
+        this.generateTooltips()
         this.showWaiting = false
       })
 
@@ -221,7 +225,7 @@ export default {
     // Finish calendar configuration
     const calendarApi = this.$refs.fullCalendar.getApi()
 
-    const lazyEventsLoader = debounce((dateInfo) => this.updateDateRange(dateInfo), 300)
+    const lazyEventsLoader = debounce((dateInfo) => this.updateDateRange(dateInfo), 900)
     calendarApi.setOption('datesSet', (dateInfo) => {
 
       // Reflect immediately the change in the title
@@ -240,24 +244,9 @@ export default {
     calendarApi.setOption('select', this.createNewEvent)
     calendarApi.setOption('viewDidMount', (viewInfo) => {this.activeView = viewInfo.view.type})
 
-    calendarApi.setOption('eventClick', (eventInfo) => {
-      if (eventInfo.jsEvent.target.classList.contains("js-instance-label")) {
-        // It's not a selection but the user cliecked in the instance label in the tooltip
-        return
-      }
-
-      eventInfo.jsEvent.preventDefault()
-
-      if (this.activeTooltip) {
-        this.activeTooltip.hide()
-      }
-
-      this.tooltipInstances[eventInfo.event.id].show()
-    })
-
     calendarApi.setOption('moreLinkClick', () => {
           // Couldn't find a better way to know when the popup is open, there is no event sent when that happen
-          setTimeout(() => this.updateTooltipInstances(), 100)
+          setTimeout(() => this.generateTooltips(), 100)
         }
     )
 
@@ -270,6 +259,7 @@ export default {
       }
 
       tooltipHook.classList.add('js-tooltip-hook')
+      tooltipHook.classList.add('cursor-pointer')
       tooltipHook.setAttribute('data-event-id', eventInfo.event.id)
     })
   },
@@ -326,7 +316,7 @@ export default {
         fields.push({fieldDefinition: {name: this.component['DateEndEventField']}, value: dateInfo.end.getTime()})
       }
 
-      cob.app.navigateTo('/recordm/index.html#/instance/create/' + this.definitionId + '/data=' + JSON.stringify({
+      cob.app.navigateTo('#/instance/create/' + this.definitionId + '/data=' + JSON.stringify({
         opts: {'auto-paste-if-empty': true},
         fields,
       }));
@@ -355,8 +345,14 @@ export default {
     getTooltipId(eventId) {
       return `tooltip-${eventId}`
     },
-    updateTooltipInstances() {
+    generateTooltips() {
       this.destroyTooltipInstances()
+
+      const calendarApi = this.$refs.fullCalendar.getApi()
+
+      // Need the debouncer to delay the change of the calendar option to make a day selectable because it's impossible to know if
+      // there is a tooltip open.
+      const lazyCalendarConfigurer = debounce((enable) => calendarApi.setOption('selectable', enable), 500)
 
       this.tooltipInstances = [...document.querySelectorAll('.js-tooltip-hook[data-event-id]')]
           .reduce((map, el) => {
@@ -370,11 +366,17 @@ export default {
               duration: this.allowTooltipHover ? [300, 250] : 0,
               placement: this.isListViewActive ? 'right' : 'top',
               interactive: true,
-              trigger: 'manual',
+              trigger: 'click',
               offset: [0, 10],
-              onShow(instance) {
-                this.activeTooltip = instance
-              }
+              onShown: () => {
+                lazyCalendarConfigurer(false)
+              },
+              onHidden: () => {
+                lazyCalendarConfigurer(this.allowCreateInstances)
+              },
+              onDestroy: () => {
+                lazyCalendarConfigurer(this.allowCreateInstances)
+              },
             })
 
             return map

@@ -3,28 +3,6 @@
 
     <Waiting :waiting='showWaiting'/>
 
-    <!--
-      Have to pre generate all the tooltips so that I can link with the tootlip target elements.
-      Alternatives would be to move this to a function but that will cause more work on update since
-      we would need to recalculate all tooltips
-     -->
-    <div class='tooltips hidden'>
-      <div v-for='event in events' :id='getTooltipId(event.id)'>
-        <div class='flex flex-col p-4 rounded border-2 border-zinc-300 bg-zinc-50 text-sm calendar-tooltip'>
-          <a :href='event.instanceUrl'
-             class='max-w-fit mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>{{
-              event.instanceLabel
-            }}</a>
-          <div class='details flex flex-col flex-wrap justify-start'>
-            <div v-for='description in event.instanceDescriptions' class='flex flex-row mr-4 field-group max-w-xs'>
-              <div class='whitespace-nowrap mr-1 text-gray-400 field'>{{ description.name }}:</div>
-              <div class='whitespace-nowrap text-ellipsis overflow-hidden value'>{{ description.value }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div>
       <div class='mb-4 text-center text-4xl'>{{ monthTitle }} {{ yearTitle }}</div>
       <FullCalendar ref='fullCalendar' :options='calendarOptions'/>
@@ -46,6 +24,7 @@ import debounce from 'lodash.debounce';
 import {toEsFieldName} from '@cob/rest-api-wrapper/src/utils/ESHelper';
 import rmListDefinitions from '@cob/rest-api-wrapper/src/rmListDefinitions';
 import tippy from 'tippy.js';
+import Instance from "@/components/shared/Instance";
 
 const DEFAULT_EVENT_COLOR = '#0e7bbe'
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -60,9 +39,6 @@ export default {
 
   data: () => ({
     showWaiting: false,
-
-    allowTooltipHover: false,
-    tooltipInstances: null,
 
     dashInfo: null, // Object, the result of new DashInfo(...)
     definitionId: null,
@@ -93,7 +69,10 @@ export default {
       validRange: {
         start: '2017-01-01'
       }
-    }
+    },
+    // Need the debouncer to delay the change of the calendar option to make a day selectable because it's impossible
+    // to know if there is a tooltip open.
+    lazyCalendarConfigurer: debounce((calendarApi, enable) => calendarApi.setOption('selectable', enable), 500),
   }),
 
   computed: {
@@ -143,58 +122,16 @@ export default {
       console.debug('[dash][Calendar] query:', finalQuery)
       return finalQuery
     },
-    events() {
+    dashInfoResults() {
       if (!this.dashInfo) return []
       if (!this.dashInfo.results) return []
       if (!this.dashInfo.results.value) return []
 
       return this.dashInfo.results.value
-          .map(esInstance => {
-            const title = esInstance[this.descriptionEventField] || [esInstance.id]
-            const startDate = new Date(parseInt(esInstance[this.startDateField][0], 10))
-            const endDate = this.endDateField ? new Date(parseInt(esInstance[this.startDateField][0], 10)) : null
-
-            return {
-              id: `calendar-event-${esInstance.id}`,
-              title: title[0] + (title.length > 1 ? `(${title.length})` : ''),
-              start: startDate,
-              end: endDate,
-              allDay: true,
-              backgroundColor: this.stateField ? this.textToRGB(esInstance[this.stateField][0]) : DEFAULT_EVENT_COLOR,
-
-              // from: https://fullcalendar.io/docs/event-object
-              // In addition to the fields above, you may also include your own non-standard fields in each Event object.
-              // FullCalendar will not modify or delete these fields. For example, developers often include a description
-              // field for use in callbacks like event render hooks. Any non-standard properites are moved into the
-              // extendedProps hash during event parsing.
-              instanceUrl: `#/instance/${esInstance.id}`,
-              instanceLabel: this.getEventInstanceLabel(esInstance),
-              instanceDescriptions: this.getEventInstanceDescriptions(esInstance),
-            }
-          })
-    },
+    }
   },
 
   watch: {
-    events: function(newEvents, oldEvents) {
-      if (newEvents && oldEvents && JSON.stringify(newEvents) === JSON.stringify(oldEvents)) {
-        this.showWaiting = false
-        return
-      }
-
-      const calendarApi = this.$refs.fullCalendar.getApi()
-
-      calendarApi.batchRendering(() => {
-        calendarApi.getEvents().forEach(event => event.remove())
-        newEvents.forEach(event => calendarApi.addEvent(event))
-      })
-
-      this.$nextTick(() => {
-        this.generateTooltips()
-        this.showWaiting = false
-      })
-
-    },
     query: function(newQuery) {
       if (!newQuery) return
 
@@ -208,6 +145,17 @@ export default {
         console.debug('[dash][Calendar] Updating dash info query')
         this.dashInfo.changeArgs({query: newQuery})
       }
+    },
+    dashInfoResults: function(newEvents) {
+      const newCalendarEvents = this.buildCalendarEvents(newEvents)
+
+      const calendarApi = this.$refs.fullCalendar.getApi()
+      calendarApi.batchRendering(() => {
+        calendarApi.getEvents().forEach(event => event.remove())
+        newCalendarEvents.forEach(event => calendarApi.addEvent(event))
+      })
+
+      this.showWaiting = false
     }
   },
 
@@ -244,29 +192,28 @@ export default {
     calendarApi.setOption('select', this.createNewEvent)
     calendarApi.setOption('viewDidMount', (viewInfo) => {this.activeView = viewInfo.view.type})
 
-    calendarApi.setOption('moreLinkClick', () => {
-          // Couldn't find a better way to know when the popup is open, there is no event sent when that happen
-          setTimeout(() => this.generateTooltips(), 100)
-        }
-    )
+    calendarApi.setOption('eventClick', (eventClickInfo) => {
+      // Check if there is already a tooltip instance associated to the element
+      // if not let's create one, otherwise tippy will show handle hide and show of existing tooltips
+      if (!eventClickInfo.el._tippy) {
+
+        // When list view is active I have to look for a different tooltip anchor
+        const element = this.isListViewActive
+                        ? eventClickInfo.el.getElementsByClassName('fc-list-event-title')[0].children[0]
+                        : eventClickInfo.el
+
+        this.buildTooltipInstance(element, eventClickInfo.event.extendedProps.esInstance).show()
+      }
+    })
 
     calendarApi.setOption('eventDidMount', (eventInfo) => {
-      let tooltipHook = eventInfo.el
-
-      // When list view is active I have to look for a different tooltip anchor
-      if (this.isListViewActive) {
-        tooltipHook = eventInfo.el.getElementsByClassName('fc-list-event-title')[0].children[0]
-      }
-
+      const tooltipHook = eventInfo.el
       tooltipHook.classList.add('js-tooltip-hook')
       tooltipHook.classList.add('cursor-pointer')
-      tooltipHook.setAttribute('data-event-id', eventInfo.event.id)
     })
   },
 
   beforeDestroy() {
-    this.destroyTooltipInstances()
-
     if (this.dashInfo) {
       this.dashInfo.stopUpdates()
     }
@@ -322,72 +269,54 @@ export default {
       }));
     },
 
-    getEventInstanceLabel(esInstance) {
-      if (!esInstance._definitionInfo.instanceLabel) return esInstance.id
-      if (!esInstance._definitionInfo.instanceLabel.length) return esInstance.id
+    buildCalendarEvents(instances) {
+      return instances
+          .map(esInstance => {
+            const title = esInstance[this.descriptionEventField] || [esInstance.id]
+            const startDate = new Date(parseInt(esInstance[this.startDateField][0], 10))
+            const endDate = this.endDateField ? new Date(parseInt(esInstance[this.startDateField][0], 10)) : null
 
-      const fieldDefinitionName = esInstance._definitionInfo.instanceLabel[0].name;
-      return esInstance[toEsFieldName(fieldDefinitionName)][0]
-    },
-    getEventInstanceDescriptions(esInstance) {
-      if (!esInstance._definitionInfo.instanceDescription) return null
-
-      return esInstance._definitionInfo.instanceDescription
-          .filter(fieldDefinition => esInstance[toEsFieldName(fieldDefinition.name)])
-          .map(fieldDefinition => {
             return {
-              name: fieldDefinition.name,
-              value: esInstance[toEsFieldName(fieldDefinition.name)].join(', ')
+              id: `calendar-event-${esInstance.id}`,
+              title: title[0] + (title.length > 1 ? `(${title.length})` : ''),
+              start: startDate,
+              end: endDate,
+              allDay: true,
+              backgroundColor: this.stateField ? this.textToRGB(esInstance[this.stateField][0]) : DEFAULT_EVENT_COLOR,
+
+              // from: https://fullcalendar.io/docs/event-object
+              // In addition to the fields above, you may also include your own non-standard fields in each Event object.
+              // FullCalendar will not modify or delete these fields. For example, developers often include a description
+              // field for use in callbacks like event render hooks. Any non-standard properites are moved into the
+              // extendedProps hash during event parsing.
+              esInstance,
             }
-          });
+          })
     },
 
-    getTooltipId(eventId) {
-      return `tooltip-${eventId}`
-    },
-    generateTooltips() {
-      this.destroyTooltipInstances()
-
+    buildTooltipInstance(el, esInstance) {
       const calendarApi = this.$refs.fullCalendar.getApi()
 
-      // Need the debouncer to delay the change of the calendar option to make a day selectable because it's impossible to know if
-      // there is a tooltip open.
-      const lazyCalendarConfigurer = debounce((enable) => calendarApi.setOption('selectable', enable), 500)
-
-      this.tooltipInstances = [...document.querySelectorAll('.js-tooltip-hook[data-event-id]')]
-          .reduce((map, el) => {
-            const eventId = el.getAttribute('data-event-id')
-            const tooltipId = this.getTooltipId(eventId)
-
-            map[eventId] = tippy(el, {
-              content: document.getElementById(tooltipId).innerHTML,
-              allowHTML: true,
-              delay: 100,
-              duration: this.allowTooltipHover ? [300, 250] : 0,
-              placement: this.isListViewActive ? 'right' : 'top',
-              interactive: true,
-              trigger: 'click',
-              offset: [0, 10],
-              onShown: () => {
-                lazyCalendarConfigurer(false)
-              },
-              onHidden: () => {
-                lazyCalendarConfigurer(this.allowCreateInstances)
-              },
-              onDestroy: () => {
-                lazyCalendarConfigurer(this.allowCreateInstances)
-              },
-            })
-
-            return map
-          }, {})
+      return tippy(el, {
+        content: new Vue(Object.assign({propsData: {esInstance}}, Instance)).$mount().$el,
+        allowHTML: true,
+        delay: 100,
+        duration: 0,
+        placement: this.isListViewActive ? 'right' : 'top',
+        interactive: true,
+        trigger: 'click',
+        offset: [0, 10],
+        onShown: () => {
+          this.lazyCalendarConfigurer(calendarApi, false)
+        },
+        onHidden: () => {
+          this.lazyCalendarConfigurer(calendarApi, this.allowCreateInstances)
+        },
+        onDestroy: () => {
+          this.lazyCalendarConfigurer(calendarApi, this.allowCreateInstances)
+        },
+      })
     },
-    destroyTooltipInstances() {
-      let instances = Object.values(this.tooltipInstances || {});
-      if (instances.length) {
-        instances.forEach(i => i.destroy())
-      }
-    }
   }
 }
 </script>

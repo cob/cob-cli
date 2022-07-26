@@ -71,7 +71,7 @@ export default {
                 if(instanceInfoState === "loading" || instanceInfoState === "updating") {
                   this.dashboardState = "Loading"
 
-                } else if(instanceInfoState === "cache") {
+                } else if(instanceInfoState === "cache" && this.dashboardParsed) {
                   this.dashboardState = "Ready"
 
                 } else if(instanceInfoState === "error") {

@@ -1,23 +1,24 @@
 <template>
     <div class="h-full w-full">
-        <div v-if="dashboardState=='Loading'" class="text-center my-20 text-2xl text-slate-500">
+        <div v-if="dashboardState === 'Loading'" class="text-center my-20 text-2xl text-slate-500">
             Loading...
         </div>
-        <div v-else-if="dashboardState=='Error'" class="text-center my-20 text-2xl text-red-500">
+        <div v-else-if="dashboardState === 'Error'" class="text-center my-20 text-2xl text-red-500">
             {{error}}
         </div>
-        <Dashboard v-else :dashboard="dashboardParsed" :userInfo="userInfo" />
+        <Dashboard v-else :dashboard="dashboardParsed" :userInfo="userInfo" :instanceState="dashboardInstanceState"/>
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
-    import { umLoggedin } from '@cob/rest-api-wrapper';
-    import { instancesList } from '@cob/dashboard-info';
-    import { parseDashboard } from './collector.js'
-    import Dashboard from './components/Dashboard.vue'
+import axios from 'axios';
+import {umLoggedin} from '@cob/rest-api-wrapper';
+import {instancesList} from '@cob/dashboard-info';
+import {parseDashboard} from './collector.js'
+import Dashboard from './components/Dashboard.vue'
+import DashboardInstanceState from "@/model/DashboardInstanceState";
 
-    export default {
+export default {
         name: 'App',
         components: { Dashboard },
         data: () => ({
@@ -26,28 +27,37 @@
             error:"",
             dashboardInstance: null,
             dashboardParsed: null,
+            dashboardInstanceState: null, // an instance of DashboardInstanceState
             dashboardState: "Loading"
         }),
         created() {
             // At the initial load we get the dashboard instance name from the url
             umLoggedin().then( userInfo => {
-                let name =  document.getElementsByClassName("custom-resource")[0].getAttribute('data-name')
-                this.dashboardInstance = instancesList("Dashboard", this.getDashboardQuery(name , userInfo), 1)
+                const dashInfo =  document.getElementsByClassName("custom-resource")[0].getAttribute('data-name')
+                this.dashboardInstanceState = new DashboardInstanceState(dashInfo)
+                this.dashboardInstance = instancesList("Dashboard", this.getDashboardQuery(this.dashboardInstanceState.name, userInfo), 1)
             })
 
             // Upon anchor navigation we get the dashboard instance name from the first param to the 'resume' callback.
             $('section.custom-resource').on('resume', (e, params) => {
                 //Recheck user (the user might have changed or his groups might have changed after previous load)
-                umLoggedin().then( userInfo => {
-                    this.dashboardInstance.changeArgs({query: this.getDashboardQuery(params[0], userInfo) })
+                umLoggedin().then(userInfo => {
+                  this.dashboardInstanceState = new DashboardInstanceState(params[0])
+
+                  if(this.userInfo.username !== userInfo.username || this.dashboardInstanceState.name !== this.name){
+                    this.dashboardInstance.changeArgs({query: this.getDashboardQuery(this.dashboardInstanceState.name, userInfo) })
+                  }
                 })
             });
-        }, 
+        },
         methods: {
-            getDashboardQuery(name,userInfo) {
+            getDashboardQuery(name, userInfo) {
                 this.userInfo = userInfo
                 this.name = name
-                document.title = "Recordm["+name+"]" 
+
+                // TODO this is wrong we should only set the dashboard name after we pull it from recordm.
+                // there is no guarantee that dashboard exists
+                document.title = "Recordm[" + name + "]"
                 let groups = userInfo.groups.map(g=> "\"" + g.name + "\"").join(" OR ")
 
                 let nameQuery = "name.raw:\"" + name + "\" "
@@ -58,14 +68,18 @@
         watch: {
             // Monitor state changes to the searching of the Dashboard instance
             'dashboardInstance.state'(instanceInfoState) {
-                if(instanceInfoState == "loading" || instanceInfoState == "updating") {
-                    this.dashboardState = "Loading"
-                } else if(instanceInfoState == "error") {
+                if(instanceInfoState === "loading" || instanceInfoState === "updating") {
+                  this.dashboardState = "Loading"
+
+                } else if(instanceInfoState === "cache") {
+                  this.dashboardState = "Ready"
+
+                } else if(instanceInfoState === "error") {
                     // Special treatment for 430 (unauthorized) error:
-                    if(this.dashboardInstance.errorCode == 403) {
+                    if(this.dashboardInstance.errorCode === 403) {
                         // check who's the new user:
                         umLoggedin().then( userInfo => {
-                            if(userInfo.username == "anonymous") {
+                            if(userInfo.username === "anonymous") {
                                 // If the user is anonymous it means we timed out the cookie validity - reload at the same url
                                 document.location.reload()
                             } else {
@@ -78,43 +92,44 @@
                         this.dashboardState = "Error"
                         this.error = "Error: error getting dashboard (" + this.dashboardInstance.errorCode + ")"
                     }
-                } else if( this.dashboardInstance.value.length == 0) {
+                } else if( this.dashboardInstance.value.length === 0) {
                     this.dashboardState = "Error"
                     this.error = "Error: a dashboard '" + this.name + "' was not found for your user"
                 }
             },
-            
+
             // Monitor value changes to the values of the Dashboard instance
             'dashboardInstance.value'(newDashboards) {
-                if(newDashboards.length == 0) {
+                if(newDashboards.length === 0) {
                     this.dashboardState = "Error"
                     this.error = "Error: dashboard '" + this.name + "' was not found for your user"
                     return
                 }
+
                 //Instance(s) found (from ES) but we still need to get the raw instance of the 1st result(from RM) and parse it
                 let firstDashId = newDashboards[0].id
                 axios
-                .get("/recordm/recordm/instances/" + firstDashId)
-                .then(resp => {
-                    try {
-                        this.dashboardParsed = parseDashboard(resp.data, this.userInfo)
-                        this.dashboardState = "Ready"
-                    }
-                    catch(e) {
-                        this.error = "Error: error parsing dashboard " + firstDashId
-                        this.dashboardState = "Error"
-                        console.error(e)
-                    }
-                })
-                .catch( (e) => {
-                    if( e.response && e.response.status && e.response.status == 403) {
-                        this.error = "New authorization required..."
-                    } else {
-                        this.error = "Error: error getting dashboard " + firstDashId
-                    }
-                    this.dashboardState = "Error"
-                    console.error(e)
-                })
+                  .get("/recordm/recordm/instances/" + firstDashId)
+                  .then(resp => {
+                      try {
+                          this.dashboardParsed = parseDashboard(resp.data, this.userInfo)
+                          this.dashboardState = "Ready"
+                      }
+                      catch(e) {
+                          this.error = "Error: error parsing dashboard " + firstDashId
+                          this.dashboardState = "Error"
+                          console.error(e)
+                      }
+                  })
+                  .catch( (e) => {
+                      if( e.response && e.response.status && e.response.status === 403) {
+                          this.error = "New authorization required..."
+                      } else {
+                          this.error = "Error: error getting dashboard " + firstDashId
+                      }
+                      this.dashboardState = "Error"
+                      console.error(e)
+                  })
             }
         }
     };

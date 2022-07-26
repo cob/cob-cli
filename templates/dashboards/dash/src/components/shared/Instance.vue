@@ -1,9 +1,9 @@
 <template>
   <div class='flex flex-col p-4 rounded border-2 border-zinc-300 bg-zinc-50 text-sm calendar-tooltip'>
-    <a :href='instanceLabel'
-       class='max-w-fit mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>{{
-        instanceLabel
-      }}</a>
+    <a :href='instanceUrl'
+       class='max-w-fit mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>
+      {{ instanceLabel }}
+    </a>
     <div class='details flex flex-col flex-wrap justify-start'>
       <div v-for='description in instanceDescriptions'
            class='flex flex-row mr-4 field-group max-w-xs'>
@@ -30,8 +30,8 @@ export default {
       if (!this.esInstance._definitionInfo.instanceLabel) return this.esInstance.id
       if (!this.esInstance._definitionInfo.instanceLabel.length) return this.esInstance.id
 
-      const fieldDefinitionName = this.esInstance._definitionInfo.instanceLabel[0].name;
-      return this.esInstance[toEsFieldName(fieldDefinitionName)][0]
+      const fieldDefinition = this.esInstance._definitionInfo.instanceLabel[0];
+      return this.getFieldValue(this.esInstance, fieldDefinition)[0]
     },
 
     instanceDescriptions() {
@@ -42,10 +42,16 @@ export default {
           .map(fieldDefinition => {
             return {
               name: fieldDefinition.name,
-              value: this.esInstance[toEsFieldName(fieldDefinition.name)].join(', ')
+              value: this.getFieldValue(this.esInstance, fieldDefinition).join(', ')
             }
           });
     },
   },
+  methods: {
+    getFieldValue(esInstance, fieldDefinition) {
+      let esFieldName = toEsFieldName(fieldDefinition.name);
+      return (esInstance[`${esFieldName}_reference`] || esInstance[esFieldName])
+    }
+  }
 }
 </script>

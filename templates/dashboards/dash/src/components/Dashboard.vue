@@ -1,7 +1,7 @@
 <template>
     <div :class="classes" :style="image" >
         <div :class="width + ' ' + grid">
-            <Board v-for="(board,i) in boards" :board="board" :key="i" :userInfo="userInfo"/>
+            <Board v-for="(board,i) in boards" :board="board" :key="i" :userInfo="userInfo" :instanceState="instanceState"/>
         </div>
     </div>
 </template>
@@ -13,7 +13,8 @@
         components: { Board },
         props: {
           dashboard: Object,
-          userInfo: Object
+          userInfo: Object,
+          instanceState: Object,
         },
         computed: {
             options() { return this.dashboard['DashboardCustomize'][0] },

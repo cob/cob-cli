@@ -25,6 +25,7 @@ import {toEsFieldName} from '@cob/rest-api-wrapper/src/utils/ESHelper';
 import rmListDefinitions from '@cob/rest-api-wrapper/src/rmListDefinitions';
 import tippy from 'tippy.js';
 import Instance from "@/components/shared/Instance";
+import Vue from "vue";
 
 const DEFAULT_EVENT_COLOR = '#0e7bbe'
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -35,7 +36,10 @@ export default {
     Waiting,
   },
 
-  props: {component: Object},
+  props: {
+    component: Object,
+    instanceState: Object,
+  },
 
   data: () => ({
     showWaiting: false,
@@ -45,11 +49,11 @@ export default {
 
     monthTitle: null,
     yearTitle: null,
-    activeView: 'dayGridMonth',
     dateRange: null, // array: [initDate, endDate]
 
     calendarOptions: {
       plugins: [dayGridPlugin, interactionPlugin, listPlugin],
+      timeZone: 'UTC',
       locales: allLocales,
       // Take in consideration updating the initial state value of `activeView` if you change this value
       initialView: 'dayGridMonth',
@@ -67,9 +71,11 @@ export default {
       contentHeight: 'auto',
       aspectRatio: 2,
       validRange: {
-        start: '2017-01-01'
+        start: '1970-01-01'
       }
     },
+    calendarApi: null,
+
     // Need the debouncer to delay the change of the calendar option to make a day selectable because it's impossible
     // to know if there is a tooltip open.
     lazyCalendarConfigurer: debounce((calendarApi, enable) => calendarApi.setOption('selectable', enable), 500),
@@ -97,10 +103,6 @@ export default {
     endDateField() { return toEsFieldName(this.component['DateEndEventField']) },
     stateField() { return toEsFieldName(this.component['StateEventField']) },
     eventsQuery() { return this.component['EventsQuery'] || '*' },
-
-    isListViewActive() {
-      return this.activeView.match(/list.*/)
-    },
 
     dateRangeQuery() {
       if (!this.dateRange) return null
@@ -131,7 +133,84 @@ export default {
     }
   },
 
+  created() {
+    const state = this.instanceState.getState(this.component.id)
+    if (state) {
+      console.debug('[dash][Calendar] Loaded new state for board', this.component.id, state)
+      if (state.initialDate) this.calendarOptions.initialDate = state.initialDate
+      if (state.activeView) this.calendarOptions.initialView = state.activeView
+    }
+  },
+
+  async mounted() {
+
+    // Get the definition id to allow instance creation
+    const definitions = await rmListDefinitions({name: this.definitionName, includeDisabled: true})
+    if (!definitions.length) {
+      cob.ui.notification.showError(`Unable to find definition ${this.definition}`)
+      return null
+    }
+    this.definitionId = definitions[0].id
+
+
+    // Finish calendar configuration
+    const calendarApi = this.$refs.fullCalendar.getApi()
+
+    const lazyEventsLoader = debounce((dateInfo) => {
+      this.updateBoardState(dateInfo)
+      this.updateDateRange(dateInfo)
+    }, 900)
+
+    calendarApi.setOption('datesSet', (dateInfo) => {
+      // Reflect immediately the change in the title
+      const currentDate = calendarApi.getDate()
+      this.monthTitle = currentDate.toLocaleString('default', {month: 'long'});
+      this.yearTitle = currentDate.getFullYear()
+
+      // leave for later the events loading
+      lazyEventsLoader(dateInfo)
+    })
+
+    calendarApi.setOption('dayMaxEvents', this.dayMaxEvents === -1 ? false : this.dayMaxEvents)
+    calendarApi.setOption('locale', this.getLocale())
+    calendarApi.setOption('selectMinDistance', !this.endDateField ? 1 : 0) //only allow to select on day if no end date field is available
+    calendarApi.setOption('selectable', this.allowCreateInstances)
+    calendarApi.setOption('select', this.redirectToNewInstance)
+    calendarApi.setOption('viewDidMount', this.updateBoardState)
+
+    calendarApi.setOption('eventClick', (eventClickInfo) => {
+      // Check if there is already a tooltip instance associated to the element
+      // if not let's create one, otherwise tippy will show handle hide and show of existing tooltips
+      if (!eventClickInfo.el._tippy) {
+
+        // When list view is active I have to look for a different tooltip anchor
+        let listViewActive = this.isListViewActive(eventClickInfo.view);
+        const element = listViewActive
+                        ? eventClickInfo.el.getElementsByClassName('fc-list-event-title')[0].children[0]
+                        : eventClickInfo.el
+
+        this.buildTooltipInstance(element, eventClickInfo.event.extendedProps.esInstance, listViewActive).show()
+      }
+    })
+
+    this.calendarApi = this.$refs.fullCalendar.getApi()
+    window.calendarApi = this.calendarApi
+  },
+
   watch: {
+    instanceState: {
+      handler(newState, oldState) {
+        const newConfig = newState ? newState.getState(this.component.id) : {}
+        const oldConfig = oldState ? oldState.getState(this.component.id) : {}
+
+        if (JSON.stringify(newConfig) === JSON.stringify(oldConfig)) return
+
+        if (newConfig) {
+          if (newConfig.initialDate) this.calendarApi.gotoDate(newConfig.initialDate)
+          if (newConfig.activeView) this.calendarApi.changeView(newConfig.activeView)
+        }
+      },
+    },
     query: function(newQuery) {
       if (!newQuery) return
 
@@ -159,60 +238,6 @@ export default {
     }
   },
 
-  async mounted() {
-
-    // Get the definition id to allow instance creation
-    const definitions = await rmListDefinitions({name: this.definitionName, includeDisabled: true})
-    if (!definitions.length) {
-      cob.ui.notification.showError(`Unable to find definition ${this.definition}`)
-      return null
-    }
-    this.definitionId = definitions[0].id
-
-
-    // Finish calendar configuration
-    const calendarApi = this.$refs.fullCalendar.getApi()
-
-    const lazyEventsLoader = debounce((dateInfo) => this.updateDateRange(dateInfo), 900)
-    calendarApi.setOption('datesSet', (dateInfo) => {
-
-      // Reflect immediately the change in the title
-      const currentDate = calendarApi.getDate()
-      this.monthTitle = currentDate.toLocaleString('default', {month: 'long'});
-      this.yearTitle = currentDate.getFullYear()
-
-      // leave for later the events loading
-      lazyEventsLoader(dateInfo)
-    })
-
-    calendarApi.setOption('dayMaxEvents', this.dayMaxEvents === -1 ? false : this.dayMaxEvents)
-    calendarApi.setOption('locale', this.getLocale())
-    calendarApi.setOption('selectMinDistance', !this.endDateField ? 1 : 0) //only allow to select on day if no end date field is available
-    calendarApi.setOption('selectable', this.allowCreateInstances)
-    calendarApi.setOption('select', this.createNewEvent)
-    calendarApi.setOption('viewDidMount', (viewInfo) => {this.activeView = viewInfo.view.type})
-
-    calendarApi.setOption('eventClick', (eventClickInfo) => {
-      // Check if there is already a tooltip instance associated to the element
-      // if not let's create one, otherwise tippy will show handle hide and show of existing tooltips
-      if (!eventClickInfo.el._tippy) {
-
-        // When list view is active I have to look for a different tooltip anchor
-        const element = this.isListViewActive
-                        ? eventClickInfo.el.getElementsByClassName('fc-list-event-title')[0].children[0]
-                        : eventClickInfo.el
-
-        this.buildTooltipInstance(element, eventClickInfo.event.extendedProps.esInstance).show()
-      }
-    })
-
-    calendarApi.setOption('eventDidMount', (eventInfo) => {
-      const tooltipHook = eventInfo.el
-      tooltipHook.classList.add('js-tooltip-hook')
-      tooltipHook.classList.add('cursor-pointer')
-    })
-  },
-
   beforeDestroy() {
     if (this.dashInfo) {
       this.dashInfo.stopUpdates()
@@ -220,10 +245,32 @@ export default {
   },
 
   methods: {
+    updateBoardState() {
+      const currentDate = this.calendarApi.getDate()
+      const state = {
+        initialDate: `${currentDate.getFullYear()}-${("0" + (currentDate.getMonth() + 1)).slice(-2)}-01`,
+        activeView: this.calendarApi.view.type
+      }
+
+      this.instanceState.setState(this.component.id, state)
+    },
     updateDateRange(dateInfo) {
+      if (this.dateRange
+          && this.dateRange[0].getTime() <= dateInfo.start.getTime()
+          && this.dateRange[1].getTime() >= dateInfo.end.getTime()) {
+        // We are in two conditions
+        // 1. The period is a subset of the last date range
+        // 2. The date range hasn't changed
+        // We don't need to do any query. We already have all the events that we need
+        return
+      }
+
       this.showWaiting = true
       this.dateRange = [dateInfo.start, dateInfo.end]
       this.$set(this.component.vars, this.outputVar, this.dateRangeQuery)
+    },
+    isListViewActive(view) {
+      return view.type.match(/list.*/)
     },
     getLocale() {
       if (navigator.languages !== undefined) return navigator.languages[0];
@@ -250,7 +297,7 @@ export default {
       let color = ((red << 16) + (green << 8) + blue).toString(16).toUpperCase();
       return `#${'00000'.substring(0, 6 - color.length) + color}`
     },
-    createNewEvent(dateInfo) {
+    redirectToNewInstance(dateInfo) {
       if (dateInfo.jsEvent.target.classList.contains("js-instance-label")) {
         // It's not a create operation but the user cliecked in the instance label in the tooltip
         return
@@ -294,7 +341,7 @@ export default {
           })
     },
 
-    buildTooltipInstance(el, esInstance) {
+    buildTooltipInstance(el, esInstance, listViewActive) {
       const calendarApi = this.$refs.fullCalendar.getApi()
 
       return tippy(el, {
@@ -302,7 +349,7 @@ export default {
         allowHTML: true,
         delay: 100,
         duration: 0,
-        placement: this.isListViewActive ? 'right' : 'top',
+        placement: listViewActive ? 'right' : 'top',
         interactive: true,
         trigger: 'click',
         offset: [0, 10],
@@ -334,6 +381,12 @@ export default {
   border-radius: 50%;
   color: #000;
   font-weight: 700;
+}
+
+.fc .fc-daygrid .fc-event,
+.fc .fc-list-table a,
+.fc .fc-popover .fc-event-title {
+  cursor: pointer;
 }
 
 .fc .fc-daygrid-day-top {

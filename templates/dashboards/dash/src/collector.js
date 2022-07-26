@@ -157,6 +157,8 @@ function parseDashboard(raw_dashboard, userInfo) {
             componentTemplate.instanceId = "" + raw_dashboard.id //needed to $build file url
             component.fields.reduce(collect, componentTemplate)
             componentTemplate["Component"] = component.Component
+            // Assign the field identifier as the componentId
+            componentTemplate.id = component.id
             componentsList.push(componentTemplate)
         }
         board["Component"] = componentsList

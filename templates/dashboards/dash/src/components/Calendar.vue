@@ -26,6 +26,7 @@ import rmListDefinitions from '@cob/rest-api-wrapper/src/rmListDefinitions';
 import tippy from 'tippy.js';
 import Instance from "@/components/shared/Instance";
 import Vue from "vue";
+import {getValue} from "@/utils/EsInstanceUtils";
 
 const DEFAULT_EVENT_COLOR = '#0e7bbe'
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -324,7 +325,7 @@ export default {
     buildCalendarEvents(instances) {
       return instances
           .map(esInstance => {
-            const title = esInstance[this.descriptionEventField] || [esInstance.id]
+            const title = getValue(esInstance, {name: this.descriptionEventField}) || [esInstance.id]
             const startDate = new Date(parseInt(esInstance[this.startDateField][0], 10))
             const endDate = this.endDateField ? new Date(parseInt(esInstance[this.startDateField][0], 10)) : null
 
@@ -334,7 +335,7 @@ export default {
               start: startDate,
               end: endDate,
               allDay: true,
-              backgroundColor: this.stateField ? this.textToRGB(esInstance[this.stateField][0]) : DEFAULT_EVENT_COLOR,
+              backgroundColor: this.stateField && esInstance[this.stateField] ? this.textToRGB(esInstance[this.stateField][0]) : DEFAULT_EVENT_COLOR,
 
               // from: https://fullcalendar.io/docs/event-object
               // In addition to the fields above, you may also include your own non-standard fields in each Event object.

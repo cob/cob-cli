@@ -16,6 +16,7 @@
 
 <script>
 import {toEsFieldName} from "@cob/rest-api-wrapper/src/utils/ESHelper";
+import {getValue} from "@/utils/EsInstanceUtils";
 
 export default {
   props: {
@@ -49,8 +50,7 @@ export default {
   },
   methods: {
     getFieldValue(esInstance, fieldDefinition) {
-      let esFieldName = toEsFieldName(fieldDefinition.name);
-      return (esInstance[`${esFieldName}_reference`] || esInstance[esFieldName])
+      return getValue(esInstance, fieldDefinition)
     }
   }
 }

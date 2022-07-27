@@ -72,7 +72,8 @@ export default {
       aspectRatio: 2,
       validRange: {
         start: '1970-01-01'
-      }
+      },
+      noEventsContent: {html: '<div>&nbsp;</div>'}
     },
     calendarApi: null,
 
@@ -143,7 +144,6 @@ export default {
   },
 
   async mounted() {
-
     // Get the definition id to allow instance creation
     const definitions = await rmListDefinitions({name: this.definitionName, includeDisabled: true})
     if (!definitions.length) {
@@ -155,6 +155,7 @@ export default {
 
     // Finish calendar configuration
     const calendarApi = this.$refs.fullCalendar.getApi()
+    this.calendarApi = calendarApi
 
     const lazyEventsLoader = debounce((dateInfo) => {
       this.updateBoardState(dateInfo)
@@ -180,7 +181,7 @@ export default {
 
     calendarApi.setOption('eventClick', (eventClickInfo) => {
       // Check if there is already a tooltip instance associated to the element
-      // if not let's create one, otherwise tippy will show handle hide and show of existing tooltips
+      // if not let's create one,
       if (!eventClickInfo.el._tippy) {
 
         // When list view is active I have to look for a different tooltip anchor
@@ -189,44 +190,41 @@ export default {
                         ? eventClickInfo.el.getElementsByClassName('fc-list-event-title')[0].children[0]
                         : eventClickInfo.el
 
+        // tippy will handle hide and show of existing tooltips. We just need to trigger the show
         this.buildTooltipInstance(element, eventClickInfo.event.extendedProps.esInstance, listViewActive).show()
       }
     })
-
-    this.calendarApi = this.$refs.fullCalendar.getApi()
-    window.calendarApi = this.calendarApi
   },
 
   watch: {
-    instanceState: {
-      handler(newState, oldState) {
-        const newConfig = newState ? newState.getState(this.component.id) : {}
-        const oldConfig = oldState ? oldState.getState(this.component.id) : {}
+    instanceState: function(newState, oldState) {
+      const newConfig = newState ? newState.getState(this.component.id) : {}
+      const oldConfig = oldState ? oldState.getState(this.component.id) : {}
 
-        if (JSON.stringify(newConfig) === JSON.stringify(oldConfig)) return
+      if (JSON.stringify(newConfig) === JSON.stringify(oldConfig)) return
 
-        if (newConfig) {
-          if (newConfig.initialDate) this.calendarApi.gotoDate(newConfig.initialDate)
-          if (newConfig.activeView) this.calendarApi.changeView(newConfig.activeView)
-        }
-      },
+      if (newConfig) {
+        if (newConfig.initialDate) this.calendarApi.gotoDate(newConfig.initialDate)
+        if (newConfig.activeView) this.calendarApi.changeView(newConfig.activeView)
+      }
     },
     query: function(newQuery) {
       if (!newQuery) return
+
+      this.showWaiting = true
+      this.calendarApi.setOption('noEventsContent', {html: '<div>&nbsp;</div>'})
 
       if (!this.dashInfo) {
         console.debug('[dash][Calendar] New dashInfo created')
         this.dashInfo = dashFunctions.instancesList(this.definitionName, this.query, 2000, 0, {validity: 30})
 
       } else {
-        this.showWaiting = true
-
         console.debug('[dash][Calendar] Updating dash info query')
         this.dashInfo.changeArgs({query: newQuery})
       }
     },
-    dashInfoResults: function(newEvents) {
-      const newCalendarEvents = this.buildCalendarEvents(newEvents)
+    dashInfoResults: function(esInstances) {
+      const newCalendarEvents = this.buildCalendarEvents(esInstances)
 
       const calendarApi = this.$refs.fullCalendar.getApi()
       calendarApi.batchRendering(() => {
@@ -234,8 +232,15 @@ export default {
         newCalendarEvents.forEach(event => calendarApi.addEvent(event))
       })
 
-      this.showWaiting = false
-    }
+      if (this.dashInfo.currentState !== 'loading') {
+        // Only hide the show waiting component if we have passed the initial state of the dash info.
+        this.showWaiting = false
+
+        if (esInstances.length === 0) {
+          this.calendarApi.setOption('noEventsContent', {html: '<div>No events to display</div>'})
+        }
+      }
+    },
   },
 
   beforeDestroy() {

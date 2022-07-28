@@ -15,12 +15,13 @@
 <script>
     import Attention from './Attention.vue'
     const specialClasses = {
-        "Info":      "border border-sky-600 bg-sky-200/10 ring-sky-600 ",
-        "Success":   "border border-lime-500 bg-lime-200/10 ring-lime-500 ",
-        "Warning":   "border border-amber-500 bg-amber-200/10 ring-amber-500 ",
-        "Important": "border border-rose-600 bg-rose-200/10 ring-rose-600 ",
-        "Gray":      "text-gray-400 border-gray-200 bg-gray-200/10 ring-gray-200 ",
+        "Info":      "border border-sky-600 bg-sky-200/10 ring-sky-600 bg-white ",
+        "Success":   "border border-lime-500 bg-lime-200/10 ring-lime-500 bg-white ",
+        "Warning":   "border border-amber-500 bg-amber-200/10 ring-amber-500 bg-white ",
+        "Important": "border border-rose-600 bg-rose-200/10 ring-rose-600 bg-white ",
+        "Gray":      "text-gray-400 border-gray-200 bg-gray-200/10 ring-gray-200 bg-white ",
         "Default":   "inline-block "                                                    // para poder conter internamente o Attention sem ser noutra linha
+                    +"bg-white  "                                                       // Para ficar legível
                     +"whitespace-nowrap "                                               // Para não partir o texto + attention
                     +"font-mono font-semibold "                                         // Estilo default para o texto
                     +"px-2 py-1 "                                                       // Espaçamento horizontal e vertical

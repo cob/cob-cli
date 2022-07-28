@@ -29,7 +29,7 @@
         computed: {
             options()    { return this.board['BoardCustomize'][0] },
             components() { return this.board['Component'] },
-            classes()    { return this.options['BoardClasses'] || "md:col-span-4 rounded-md border border-gray-300 p-4 m-1" },
+            classes()    { return this.options['BoardClasses'] || "col-span-12 md:col-span-4 rounded-md border border-gray-300 bg-white bg-opacity-70 p-4 m-1" },
             image()      { return this.options['Image'] ? "background-image: url(" + this.options['Image'] +  ");" : "" }
         }
     }

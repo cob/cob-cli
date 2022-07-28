@@ -4,11 +4,8 @@ module.exports = {
     },
     safelist: [
         {
-            pattern: /.*/
-        },
-        {
-            pattern: /(col-span|text|ring|grid-col|w-|flex-col|flex-row|space-x-).*/,
-            variants: ['sm','md','lg','xl','2xl'],
+            pattern: /.*/,
+            variants: ['sm','md','lg','xl','2xl']
         },
     ],
     plugins: [],

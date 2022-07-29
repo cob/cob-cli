@@ -1,5 +1,5 @@
 <template>
-  <div class='flex flex-col p-4 rounded border-2 border-zinc-300 bg-zinc-50 text-sm calendar-tooltip'>
+  <div class='flex flex-col p-4 rounded border-2 border-zinc-300 bg-zinc-50 calendar-tooltip'>
     <a :href='instanceUrl'
        class='max-w-fit mb-4 text-sky-500 uppercase no-underline hover:underline js-instance-label main-info'>
       {{ instanceLabel }}

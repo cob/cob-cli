@@ -31,7 +31,7 @@
               if (state.value) this.inputContent = state.value
             }
 
-            this.applyFilter()
+            this.$nextTick(this.applyFilter)
         },
         mounted() {
             this.resize()

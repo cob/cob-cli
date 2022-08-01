@@ -35,7 +35,7 @@
         },
         watch: {
             inputFilter(newValue) {
-                if(newValue == "") return //PRESSUPOSTO IMPORTANTE: se newValue é vazio é porque estamos em transições (porque usamos sempre um valor, nem que seja *) e o melhor é usar o valor antigo para o valor não mudar momentaneamente (e ainda desperdicar uma pesquisa). Se o pressuposto for quebrado vamos impedir a actualização do inputFilter quando o valor é ""
+                if(newValue === "") return //PRESSUPOSTO IMPORTANTE: se newValue é vazio é porque estamos em transições (porque usamos sempre um valor, nem que seja *) e o melhor é usar o valor antigo para o valor não mudar momentaneamente (e ainda desperdicar uma pesquisa). Se o pressuposto for quebrado vamos impedir a actualização do inputFilter quando o valor é ""
                 this.lines.forEach(l => {
                     l.values.forEach(v => {
                       let arg = (v.Arg[1] instanceof Object ? v.Arg[1].Arg : v.Arg[1])

@@ -25,9 +25,9 @@ class DashboardInstanceState {
         hashParts[2] = `${this._name}:${JSON.stringify(this._config)}`
         hashParts[3] = 'dash'
 
-        const newDestination = hashParts.join("/").substring(2)
+        const newDestination = hashParts.join("/")
         console.debug('[dash][Calendar] navigatingTo:', newDestination)
-        cob.app.navigateTo(newDestination)
+        window.location.hash = newDestination
     }
 }
 

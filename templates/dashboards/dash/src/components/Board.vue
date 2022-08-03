@@ -1,12 +1,12 @@
 <template>
     <div :class="classes" :style="image" >
         <template v-for="(item, i) in components">
-            <Label  v-if="item['Component'] === 'Label'"  :component="item" :key="i" :instanceState="instanceState" />
-            <Menu   v-if="item['Component'] === 'Menu'"   :component="item" :key="i" :instanceState="instanceState" />
-            <Totals v-if="item['Component'] === 'Totals'" :component="item" :key="i" :instanceState="instanceState" :userInfo="userInfo"/>
-            <Kibana v-if="item['Component'] === 'Kibana'" :component="item" :key="i" :instanceState="instanceState" :userInfo="userInfo"/>
-            <Filtro v-if="item['Component'] === 'Filter'" :component="item" :key="i" :instanceState="instanceState"/>
-            <Calendar v-if="item['Component'] === 'Calendar'" :component="item" :key="i" :instanceState="instanceState" />
+            <Label    v-if="item['Component'] === 'Label'"    :component="item" :key="i" />
+            <Menu     v-if="item['Component'] === 'Menu'"     :component="item" :key="i" />
+            <Totals   v-if="item['Component'] === 'Totals'"   :component="item" :key="i" :userInfo="userInfo"/>
+            <Kibana   v-if="item['Component'] === 'Kibana'"   :component="item" :key="i" :userInfo="userInfo"/>
+            <Filtro   v-if="item['Component'] === 'Filter'"   :component="item" :key="i" />
+            <Calendar v-if="item['Component'] === 'Calendar'" :component="item" :key="i" />
         </template>
     </div>
 </template>
@@ -24,7 +24,6 @@
         props: {
           board: Object,
           userInfo: Object,
-          instanceState: Object,
         },
         computed: {
             options()    { return this.board['BoardCustomize'][0] },

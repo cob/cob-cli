@@ -27,6 +27,7 @@ import tippy from 'tippy.js';
 import Instance from "@/components/shared/Instance";
 import Vue from "vue";
 import {getValue} from "@/utils/EsInstanceUtils";
+import DashboardComponentState from "@/model/DashboardComponentState";
 
 const DEFAULT_EVENT_COLOR = '#0e7bbe'
 const MAX_VISIBLE_DAY_EVENTS = 3
@@ -38,8 +39,7 @@ export default {
   },
 
   props: {
-    component: Object,
-    instanceState: Object,
+    component: Object
   },
 
   data: () => ({
@@ -81,6 +81,7 @@ export default {
     // Need the debouncer to delay the change of the calendar option to make a day selectable because it's impossible
     // to know if there is a tooltip open.
     lazyCalendarConfigurer: debounce((calendarApi, enable) => calendarApi.setOption('selectable', enable), 500),
+    hashState: Object,
   }),
 
   computed: {
@@ -136,11 +137,12 @@ export default {
   },
 
   created() {
-    const state = this.instanceState.getState(this.component.id)
-    if (state) {
-      console.debug('[dash][Calendar] Loaded new state for board', this.component.id, state)
-      if (state.initialDate) this.calendarOptions.initialDate = state.initialDate
-      if (state.activeView) this.calendarOptions.initialView = state.activeView
+    this.hashState = new DashboardComponentState(this.component.id)
+    const initialState = this.hashState.content
+    if (initialState) {
+      console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, initialState)
+      if (initialState.initialDate) this.calendarOptions.initialDate = initialState.initialDate
+      if (initialState.activeView) this.calendarOptions.initialView = initialState.activeView
     }
   },
 
@@ -198,15 +200,10 @@ export default {
   },
 
   watch: {
-    instanceState: function(newState, oldState) {
-      const newConfig = newState ? newState.getState(this.component.id) : {}
-      const oldConfig = oldState ? oldState.getState(this.component.id) : {}
-
-      if (JSON.stringify(newConfig) === JSON.stringify(oldConfig)) return
-
-      if (newConfig) {
-        if (newConfig.initialDate) this.calendarApi.gotoDate(newConfig.initialDate)
-        if (newConfig.activeView) this.calendarApi.changeView(newConfig.activeView)
+    "hashState.content"(newContent) {
+      if (this.calendarApi && newContent) {
+        if (newContent.initialDate) this.calendarApi.gotoDate(newContent.initialDate)
+        if (newContent.activeView) this.calendarApi.changeView(newContent.activeView)
       }
     },
     query: function(newQuery) {
@@ -253,12 +250,12 @@ export default {
   methods: {
     updateBoardState() {
       const currentDate = this.calendarApi.getDate()
-      const state = {
+      const newState = {
         initialDate: `${currentDate.getFullYear()}-${("0" + (currentDate.getMonth() + 1)).slice(-2)}-01`,
         activeView: this.calendarApi.view.type
       }
 
-      this.instanceState.setState(this.component.id, state)
+      this.hashState.content = newState
     },
     updateDateRange(dateInfo) {
       if (this.dateRange
@@ -273,7 +270,7 @@ export default {
 
       this.showWaiting = true
       this.dateRange = [dateInfo.start, dateInfo.end]
-      this.$set(this.component.vars, this.outputVar, this.dateRangeQuery)
+      if (this.outputVar) this.$set(this.component.vars, this.outputVar, this.dateRangeQuery)
     },
     isListViewActive(view) {
       return view.type.match(/list.*/)

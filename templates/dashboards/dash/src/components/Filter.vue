@@ -3,38 +3,39 @@
         <textarea :class="classes"
             v-model="inputContent"
             ref="textarea"
-            @keyup.enter="updateFilter"
+            @keydown.enter.exact.prevent
+            @keyup.enter.exact="applyFilter"
             @focus="resize"
             @keyup="resize"
             :placeholder="placeholder"
         ></textarea>
-        <button @click="updateFilter" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
+        <button @click="applyFilter" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
     </div>
 </template>
 
 <script>
+    import DashboardComponentState from "@/model/DashboardComponentState";
+
     export default {
         props: {
           component: Object,
-          instanceState: Object,
         },
         data: () => ({
             inputContent: "",
-            activeFilter: ""
+            hashState: Object
         }),
         created() {
-            const state = this.instanceState.getState(this.component.id)
-            if (state) {
-              console.debug('[dash][Filter] Loaded new state for board ', this.component.id,  state)
-              if (state.value) this.inputContent = state.value
-            }
-
+            this.hashState = new DashboardComponentState(this.component.id)
+            this.inputContent = this.hashState.content || ""
             this.$nextTick(this.applyFilter)
         },
         mounted() {
             this.resize()
+        },
+        beforeDestroy() {
+          this.hashState.stop()
         },
         computed: {
             options()     { return this.component['FilterCustomize'][0] },
@@ -43,32 +44,16 @@
             classes()     { return this.options['FilterClasses']     || "w-full max-w-xs resize-none min-h-min h-min border border-slate-300 rounded-md py-2 px-2 outline-slate-300 leading-5" },
         },
         watch: {
-          instanceState: {
-            handler(newState, oldState) {
-              const newConfig = newState ? newState.getState(this.component.id) : {}
-              const oldConfig = oldState ? oldState.getState(this.component.id) : {}
-
-              if (JSON.stringify(newConfig) === JSON.stringify(oldConfig)) return
-
-              if (newConfig) {
-                if (state.value) this.inputContent = state.value
-              }
-            },
+          "hashState.content"(newContent) {
+              this.inputContent = newContent || ""
+              this.applyFilter()
           },
         },
         methods: {
-            updateFilter() {
-              this.applyFilter()
-              this.updateBoardState()
-            },
             applyFilter() {
-                this.inputContent = this.inputContent.trim()
-                this.activeFilter = "(" + (this.inputContent ? this.inputContent.replace(/\n/,' ') : "*") +")"
-                this.$set(this.component.vars, this.outputVar, this.activeFilter)
-            },
-            updateBoardState() {
-              const state = {value: this.inputContent.trim()}
-              this.instanceState.setState(this.component.id, state)
+              let esFilter = "(" + (this.inputContent ? this.inputContent.replace(/\n/,' ') : "*") +")"
+              this.$set(this.component.vars, this.outputVar, esFilter)
+              this.hashState.content = this.inputContent
             },
             resize() {
                 const { textarea } = this.$refs;

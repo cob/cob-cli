@@ -6,7 +6,7 @@
         <div v-else-if="dashboardState === 'Error'" class="text-center my-20 text-2xl text-red-500">
             {{error}}
         </div>
-        <Dashboard v-else :dashboard="dashboardParsed" :userInfo="userInfo" :instanceState="dashboardInstanceState"/>
+        <Dashboard v-else :dashboard="dashboardParsed" :userInfo="userInfo"/>
     </div>
 </template>
 
@@ -16,7 +16,6 @@ import {umLoggedin} from '@cob/rest-api-wrapper';
 import {instancesList} from '@cob/dashboard-info';
 import {parseDashboard} from './collector.js'
 import Dashboard from './components/Dashboard.vue'
-import DashboardInstanceState from "@/model/DashboardInstanceState";
 
 export default {
         name: 'App',
@@ -27,25 +26,23 @@ export default {
             error:"",
             dashboardInstance: null,
             dashboardParsed: null,
-            dashboardInstanceState: null, // an instance of DashboardInstanceState
             dashboardState: "Loading"
         }),
         created() {
             // At the initial load we get the dashboard instance name from the url
             umLoggedin().then( userInfo => {
-                const dashInfo =  document.getElementsByClassName("custom-resource")[0].getAttribute('data-name')
-                this.dashboardInstanceState = new DashboardInstanceState(dashInfo)
-                this.dashboardInstance = instancesList("Dashboard", this.getDashboardQuery(this.dashboardInstanceState.name, userInfo), 1)
+                let name = document.getElementsByClassName("custom-resource")[0].getAttribute('data-name').split(":")[0]
+                this.dashboardInstance = instancesList("Dashboard", this.getDashboardQuery(name, userInfo), 1)
             })
 
             // Upon anchor navigation we get the dashboard instance name from the first param to the 'resume' callback.
             $('section.custom-resource').on('resume', (e, params) => {
                 //Recheck user (the user might have changed or his groups might have changed after previous load)
                 umLoggedin().then(userInfo => {
-                  this.dashboardInstanceState = new DashboardInstanceState(params[0])
+                  let name = params[0].split(":")[0]
 
-                  if(this.userInfo.username !== userInfo.username || this.dashboardInstanceState.name !== this.name){
-                    this.dashboardInstance.changeArgs({query: this.getDashboardQuery(this.dashboardInstanceState.name, userInfo) })
+                  if(this.userInfo.username !== userInfo.username || name !== this.name){
+                    this.dashboardInstance.changeArgs({query: this.getDashboardQuery(name, userInfo) })
                   }
                 })
             });

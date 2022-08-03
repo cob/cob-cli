@@ -1,8 +1,7 @@
 class DashboardComponentState {
     constructor(id) {
         this._id = id
-        this._content = null
-        this._updateStateFromHash()
+        this.content = this._getStateFromHash()
         window.addEventListener('hashchange', this._updateStateFromHash.bind(this), false);
     }
     
@@ -20,6 +19,10 @@ class DashboardComponentState {
         window.removeEventListener('hashchange',this._updateStateFromHash.bind(this))
     }
 
+    _updateStateFromHash() {
+        this.content = this._getStateFromHash()
+    }
+    
     _getStateFromHash() {
         const hashParts = window.location.hash.split("/")
         const [name, ...rest] = hashParts[2].split(":")
@@ -36,19 +39,13 @@ class DashboardComponentState {
         statesInHash[this._id] = this._content
 
         hashParts[2] = `${name}:${JSON.stringify(statesInHash)}`
-
         const newDestination = hashParts.join("/")
-        console.debug('[dash][Calendar] navigatingTo:', newDestination)
         if(history.pushState) {
             history.pushState(null, null, newDestination);
         }
         else {
             location.hash = newDestination;
         }
-    }
-
-    _updateStateFromHash() {
-        this.content = this._getStateFromHash()
     }
 }
 

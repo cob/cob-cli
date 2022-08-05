@@ -53,7 +53,12 @@ class DashboardComponentState {
             hashParts[2] = Object.keys(statesInHash).length > 0 ? `${name}:${JSON.stringify(statesInHash)}` : name
     
             const newDestination = hashParts.join("/")
-            cob.app.navigateTo(newDestination.substring(1))
+            if(history.pushState) {
+                history.pushState(null, null, newDestination);
+            }
+            else {
+                location.hash = newDestination;
+            }
         }
     }
 }

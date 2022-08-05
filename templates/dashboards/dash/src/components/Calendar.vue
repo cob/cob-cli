@@ -237,11 +237,10 @@ export default {
 
   methods: {
     updateComponentFromState(newContent) {
-      if (this.calendarApi && newContent) {
-        console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, newContent)
-        this.calendarApi.gotoDate(newContent.initialDate ? newContent.initialDate : this.initialDate )
-        this.calendarApi.changeView(newContent.activeView ? newContent.activeView : this.calendarOptions.initialView )
-      }
+      newContent = newContent || {}
+      console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, newContent)
+      this.calendarApi.gotoDate(newContent.initialDate ? newContent.initialDate : this.initialDate )
+      this.calendarApi.changeView(newContent.activeView ? newContent.activeView : this.calendarOptions.initialView )
     },
     updateStateFromComponent() {
       const activeView = this.calendarApi.view.type

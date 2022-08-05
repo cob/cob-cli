@@ -4,12 +4,12 @@
             v-model="inputContent"
             ref="textarea"
             @keydown.enter.exact.prevent
-            @keyup.enter.exact="applyFilter"
+            @keyup.enter.exact="activateFromInputContent"
             @focus="resize"
             @keyup="resize"
             :placeholder="placeholder"
         ></textarea>
-        <button @click="applyFilter" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
+        <button @click="activateFromInputContent" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
     </div>
@@ -20,19 +20,15 @@
 
     export default {
         props: {
-          component: Object,
+          component: Object
         },
         data: () => ({
             inputContent: "",
+            activeContent: "",
             hashState: Object
         }),
         created() {
-            this.hashState = new DashboardComponentState(this.component.id)
-            this.inputContent = this.hashState.content || ""
-            this.$nextTick(this.applyFilter)
-        },
-        mounted() {
-            this.resize()
+            this.hashState = new DashboardComponentState(this.component.id, this.activateFromStateContent)
         },
         beforeDestroy() {
           this.hashState.stop()
@@ -44,16 +40,19 @@
             classes()     { return this.options['FilterClasses']     || "w-full max-w-xs resize-none min-h-min h-min border border-slate-300 rounded-md py-2 px-2 outline-slate-300 leading-5" },
         },
         watch: {
-          "hashState.content"(newContent) {
-              this.inputContent = newContent || ""
-              this.applyFilter()
-          },
+            activeContent(newActiveContent) {
+              let cleanContent = newActiveContent.replace(/\n/g,' ').trim()
+              let esFilter = cleanContent ? "(" + cleanContent +")" : "*"
+              this.$set(this.component.vars, this.outputVar, esFilter)
+            },
         },
         methods: {
-            applyFilter() {
-              let esFilter = "(" + (this.inputContent ? this.inputContent.replace(/\n/,' ') : "*") +")"
-              this.$set(this.component.vars, this.outputVar, esFilter)
-              this.hashState.content = this.inputContent
+            activateFromInputContent() {
+                this.activeContent = this.hashState.content = this.inputContent || ""
+            },
+            activateFromStateContent(newContent) {
+                this.activeContent = this.inputContent = newContent || ""
+                setTimeout(() => this.resize(),10) // dá tempo ao input box ter o conte
             },
             resize() {
                 const { textarea } = this.$refs;

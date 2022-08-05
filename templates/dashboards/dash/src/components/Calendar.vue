@@ -136,16 +136,6 @@ export default {
     }
   },
 
-  created() {
-    this.hashState = new DashboardComponentState(this.component.id)
-    const initialState = this.hashState.content
-    if (initialState) {
-      console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, initialState)
-      if (initialState.initialDate) this.calendarOptions.initialDate = initialState.initialDate
-      if (initialState.activeView) this.calendarOptions.initialView = initialState.activeView
-    }
-  },
-
   async mounted() {
     // Get the definition id to allow instance creation
     const definitions = await rmListDefinitions({name: this.definitionName, includeDisabled: true})
@@ -161,9 +151,11 @@ export default {
     this.calendarApi = calendarApi
 
     const lazyEventsLoader = debounce((dateInfo) => {
-      this.updateBoardState(dateInfo)
+      this.updateStateFromComponent(dateInfo)
       this.updateDateRange(dateInfo)
     }, 900)
+
+    this.initialDate = calendarApi.getDate()
 
     calendarApi.setOption('datesSet', (dateInfo) => {
       // Reflect immediately the change in the title
@@ -180,7 +172,7 @@ export default {
     calendarApi.setOption('selectMinDistance', !this.endDateField ? 1 : 0) //only allow to select on day if no end date field is available
     calendarApi.setOption('selectable', this.allowCreateInstances)
     calendarApi.setOption('select', this.redirectToNewInstance)
-    calendarApi.setOption('viewDidMount', this.updateBoardState)
+    calendarApi.setOption('viewDidMount', this.updateStateFromComponent)
 
     calendarApi.setOption('eventClick', (eventClickInfo) => {
       // Check if there is already a tooltip instance associated to the element
@@ -197,15 +189,17 @@ export default {
         this.buildTooltipInstance(element, eventClickInfo.event.extendedProps.esInstance, listViewActive).show()
       }
     })
+    this.hashState = new DashboardComponentState(this.component.id, this.updateComponentFromState)
+  },
+
+  beforeDestroy() {
+    this.hashState.stop()
+    if (this.dashInfo) {
+      this.dashInfo.stopUpdates()
+    }
   },
 
   watch: {
-    "hashState.content"(newContent) {
-      if (this.calendarApi && newContent) {
-        if (newContent.initialDate) this.calendarApi.gotoDate(newContent.initialDate)
-        if (newContent.activeView) this.calendarApi.changeView(newContent.activeView)
-      }
-    },
     query: function(newQuery) {
       if (!newQuery) return
 
@@ -241,21 +235,21 @@ export default {
     },
   },
 
-  beforeDestroy() {
-    if (this.dashInfo) {
-      this.dashInfo.stopUpdates()
-    }
-  },
-
   methods: {
-    updateBoardState() {
-      const currentDate = this.calendarApi.getDate()
-      const newState = {
-        initialDate: `${currentDate.getFullYear()}-${("0" + (currentDate.getMonth() + 1)).slice(-2)}-01`,
-        activeView: this.calendarApi.view.type
+    updateComponentFromState(newContent) {
+      if (this.calendarApi && newContent) {
+        console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, newContent)
+        if(newContent.initialDate) this.calendarApi.gotoDate(newContent.initialDate)
+        this.calendarApi.changeView(newContent.activeView ? newContent.activeView : this.calendarOptions.initialView )
       }
-
-      this.hashState.content = newState
+    },
+    updateStateFromComponent() {
+      const activeView = this.calendarApi.view.type
+      const currentDate = this.calendarApi.getDate()
+      const newState = { }
+      if(JSON.stringify(currentDate) != JSON.stringify(this.initialDate)) newState.initialDate = `${currentDate.getFullYear()}-${("0" + (currentDate.getMonth() + 1)).slice(-2)}-01`
+      if(activeView != this.calendarOptions.initialView) newState.activeView = activeView
+      if(newState.initialDate || newState.activeView ) this.hashState.content = newState
     },
     updateDateRange(dateInfo) {
       if (this.dateRange

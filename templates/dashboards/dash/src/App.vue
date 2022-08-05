@@ -23,8 +23,9 @@ export default {
         data: () => ({
             userInfo: null,
             name: null,
-            error:"",
+            error: "",
             dashboardInstance: null,
+            dashboardInstanceId: Number,
             dashboardParsed: null,
             dashboardState: "Loading"
         }),
@@ -40,36 +41,43 @@ export default {
                 //Recheck user (the user might have changed or his groups might have changed after previous load)
                 umLoggedin().then(userInfo => {
                   let name = params[0].split(":")[0]
-
-                  if(this.userInfo.username !== userInfo.username || name !== this.name){
+                  if( name !== this.name || this.userInfo.username !== userInfo.username ){
                     this.dashboardInstance.changeArgs({query: this.getDashboardQuery(name, userInfo) })
                   }
                 })
             });
         },
-        methods: {
-            getDashboardQuery(name, userInfo) {
-                this.userInfo = userInfo
-                this.name = name
-
-                // TODO this is wrong we should only set the dashboard name after we pull it from recordm.
-                // there is no guarantee that dashboard exists
-                document.title = "Recordm[" + name + "]"
-                let groups = userInfo.groups.map(g=> "\"" + g.name + "\"").join(" OR ")
-
-                let nameQuery = "name.raw:\"" + name + "\" "
-                let accessQuery = " (groupaccess.raw:(" + groups + ") OR (-groupaccess:*) )"
-                return "(" + nameQuery + accessQuery +") OR id:" + name
-            }
-        },
         watch: {
+            // Monitor changes to the id of the Dashboard instance
+             dashboardInstanceId(newInstanceId) {
+                axios
+                  .get("/recordm/recordm/instances/" + newInstanceId)
+                  .then(resp => {
+                      try {
+                          this.dashboardParsed = parseDashboard(resp.data, this.userInfo)
+                          this.dashboardState = "Ready"
+                      }
+                      catch(e) {
+                          this.error = "Error: error parsing dashboard " + newInstanceId
+                          this.dashboardState = "Error"
+                          console.error(e)
+                      }
+                  })
+                  .catch( (e) => {
+                      if( e.response && e.response.status && e.response.status === 403) {
+                          this.error = "New authorization required..."
+                      } else {
+                          this.error = "Error: error getting dashboard " + newInstanceId
+                      }
+                      this.dashboardState = "Error"
+                      console.error(e)
+                  })
+            },
+
             // Monitor state changes to the searching of the Dashboard instance
             'dashboardInstance.state'(instanceInfoState) {
                 if(instanceInfoState === "loading" || instanceInfoState === "updating") {
                   this.dashboardState = "Loading"
-
-                } else if(instanceInfoState === "cache" && this.dashboardParsed) {
-                  this.dashboardState = "Ready"
 
                 } else if(instanceInfoState === "error") {
                     // Special treatment for 430 (unauthorized) error:
@@ -88,10 +96,7 @@ export default {
                     } else {
                         this.dashboardState = "Error"
                         this.error = "Error: error getting dashboard (" + this.dashboardInstance.errorCode + ")"
-                    }
-                } else if( this.dashboardInstance.value.length === 0) {
-                    this.dashboardState = "Error"
-                    this.error = "Error: a dashboard '" + this.name + "' was not found for your user"
+                    }                    
                 }
             },
 
@@ -100,33 +105,25 @@ export default {
                 if(newDashboards.length === 0) {
                     this.dashboardState = "Error"
                     this.error = "Error: dashboard '" + this.name + "' was not found for your user"
-                    return
+                } else {
+                    //Instance(s) found (from ES). Use the 1st result.
+                    this.dashboardInstanceId =  newDashboards[0].id
                 }
+            }
+        },
+        methods: {
+            getDashboardQuery(name, userInfo) {
+                this.userInfo = userInfo
+                this.name = name
 
-                //Instance(s) found (from ES) but we still need to get the raw instance of the 1st result(from RM) and parse it
-                let firstDashId = newDashboards[0].id
-                axios
-                  .get("/recordm/recordm/instances/" + firstDashId)
-                  .then(resp => {
-                      try {
-                          this.dashboardParsed = parseDashboard(resp.data, this.userInfo)
-                          this.dashboardState = "Ready"
-                      }
-                      catch(e) {
-                          this.error = "Error: error parsing dashboard " + firstDashId
-                          this.dashboardState = "Error"
-                          console.error(e)
-                      }
-                  })
-                  .catch( (e) => {
-                      if( e.response && e.response.status && e.response.status === 403) {
-                          this.error = "New authorization required..."
-                      } else {
-                          this.error = "Error: error getting dashboard " + firstDashId
-                      }
-                      this.dashboardState = "Error"
-                      console.error(e)
-                  })
+                // TODO this is wrong we should only set the dashboard name after we pull it from recordm.
+                // there is no guarantee that dashboard exists
+                document.title = "Recordm[" + name + "]"
+                let groups = userInfo.groups.map(g=> "\"" + g.name + "\"").join(" OR ")
+
+                let nameQuery = "name.raw:\"" + name + "\" "
+                let accessQuery = " (groupaccess.raw:(" + groups + ") OR (-groupaccess:*) )"
+                return "(" + nameQuery + accessQuery +") OR id:" + name
             }
         }
     };

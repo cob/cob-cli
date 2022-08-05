@@ -239,7 +239,7 @@ export default {
     updateComponentFromState(newContent) {
       if (this.calendarApi && newContent) {
         console.debug('[dash][Calendar] Loaded new hashState for component', this.component.id, newContent)
-        if(newContent.initialDate) this.calendarApi.gotoDate(newContent.initialDate)
+        this.calendarApi.gotoDate(newContent.initialDate ? newContent.initialDate : this.initialDate )
         this.calendarApi.changeView(newContent.activeView ? newContent.activeView : this.calendarOptions.initialView )
       }
     },

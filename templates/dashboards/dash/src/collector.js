@@ -200,7 +200,7 @@ function parseDashboard(raw_dashboard, userInfo) {
                     } else {
                         // add dash-info values in Totals
                         v.dash_info = dashFunctions[v.Value].apply(this, v['Arg'].map( a =>
-                            a['Arg'].replaceAll("__USERNAME__",c.userInfo.username)
+                            a['Arg'].replace(/__USERNAME__/g,c.userInfo.username)
                         )) // Return DashInfo, which is used by the component
                     }
                     return v

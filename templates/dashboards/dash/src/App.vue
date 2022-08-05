@@ -58,7 +58,7 @@ export default {
                           this.dashboardState = "Ready"
                       }
                       catch(e) {
-                          this.error = "Error: error parsing dashboard " + newInstanceId
+                          this.error = "Error: error parsing dashboard " + newInstanceId + " (" + e + ")"
                           this.dashboardState = "Error"
                           console.error(e)
                       }

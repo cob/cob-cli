@@ -138,14 +138,17 @@ function parseDashboard(raw_dashboard, userInfo) {
                 "InputVarCalendar": [{}],
                 "OutputVarCalendar": "",
                 "MaxVisibleDayEvents": "",
-                "AllowCreateInstances":""
+                "AllowCreateInstances":"",
+                "CreateDefinition":""
             }],
-            "Definition": "",
-            "DateStartEventField": "",
-            "DateEndEventField": "",
-            "DescriptionEventField": "",
-            "StateEventField": "",
-            "EventsQuery": "",
+            "Events": [{
+                "Definition": "",
+                "DateStartEventField": "",
+                "DateEndEventField": "",
+                "DescriptionEventField": "",
+                "StateEventField": "",
+                "EventsQuery": "",
+            }],
         }
     }
 

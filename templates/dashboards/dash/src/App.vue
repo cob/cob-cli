@@ -17,6 +17,8 @@ import {instancesList} from '@cob/dashboard-info';
 import {parseDashboard} from './collector.js'
 import Dashboard from './components/Dashboard.vue'
 
+const DASHBOARD_DEF = "Dashboard_v1"
+
 export default {
         name: 'App',
         components: { Dashboard },
@@ -33,7 +35,7 @@ export default {
             // At the initial load we get the dashboard instance name from the url
             umLoggedin().then( userInfo => {
                 let name = document.getElementsByClassName("custom-resource")[0].getAttribute('data-name').split(":")[0]
-                this.dashboardInstance = instancesList("Dashboard", this.getDashboardQuery(name, userInfo), 1)
+                this.dashboardInstance = instancesList(DASHBOARD_DEF, this.getDashboardQuery(name, userInfo), 1)
             })
 
             // Upon anchor navigation we get the dashboard instance name from the first param to the 'resume' callback.

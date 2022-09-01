@@ -4,19 +4,19 @@
             v-model="inputContent"
             ref="textarea"
             @keydown.enter.exact.prevent
-            @keyup.enter.exact="activateFromInputContent"
+            @keyup.enter.exact="activateFromInputChange"
             @focus="resize"
             @keyup="resize"
             :placeholder="placeholder"
         ></textarea>
-        <button @click="activateFromInputContent" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
+        <button @click="activateFromInputChange" type="submit" class="max-h-11 p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
     </div>
 </template>
 
 <script>
-    import DashboardComponentState from "@/model/DashboardComponentState";
+    import ComponentStatePersistence from "@/model/ComponentStatePersistence";
 
     export default {
         props: {
@@ -25,13 +25,13 @@
         data: () => ({
             inputContent: "",
             activeContent: "",
-            hashState: Object
+            statePersistence: Object
         }),
         created() {
-            this.hashState = new DashboardComponentState(this.component.id, this.activateFromStateContent)
+            this.statePersistence = new ComponentStatePersistence(this.component.id, this.activateFromPersistenceChange)
         },
         beforeDestroy() {
-          this.hashState.stop()
+            this.statePersistence.stop()
         },
         computed: {
             options()     { return this.component['FilterCustomize'][0] },
@@ -47,10 +47,10 @@
             },
         },
         methods: {
-            activateFromInputContent() {
-                this.activeContent = this.hashState.content = this.inputContent || ""
+            activateFromInputChange() {
+                this.activeContent = this.statePersistence.content = this.inputContent || ""
             },
-            activateFromStateContent(newContent) {
+            activateFromPersistenceChange(newContent) {
                 this.activeContent = this.inputContent = newContent || ""
                 setTimeout(() => this.resize(),10) // dá tempo ao input box ter o conte
             },

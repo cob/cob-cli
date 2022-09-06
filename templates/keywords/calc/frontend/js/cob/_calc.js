@@ -75,10 +75,16 @@ cob.custom.customize.push(function (core, utils, ui) {
             let calculations = getAllCalculationsFields()
             calculations.forEach(
                 calculation => calculation.args.forEach( arg => {
+                    // eventos de field changes de qualquer das variáveis (ou seja, sempre que o argumento não for um número)
                     if(isNaN(arg)) {
-                        // Recalcular para eventos de field changes de qualquer das variáveis (ou seja, sempre que o argumento não for um número)                
-                        presenter.onFieldChange(arg.field.fieldDefinition.name, registerAndExecuteCalculation )
-
+                        if(arg.field.fieldDefinition.duplicable) {
+                            //O caso de campos duplicáveis é diferente porque é necessário voltar a registar tudo e só depois calcular
+                            presenter.onFieldChange(arg.field.fieldDefinition.name, () => registerAndExecuteCalculation() )
+                            // TODO: reagir à remoção de um duplicado
+                        } else {
+                            //No caso de campos normais só é necessário calcular tudo quando uma dependência muda
+                            presenter.onFieldChange(arg, () => executeCalculations() )
+                        }
                         //Caso o campo tenha uma condição também temos de reagir a mudanças na condição. TODO: reagir a toda a cadeia superior (sempre que haja uma condição ou seja duplicável) e não apenas condição directa
                         let conditionFp = presenter.findFieldPs(fp => fp.field.id === arg.field.fieldDefinition.conditionSource)
                         if(conditionFp.length) presenter.onFieldChange(conditionFp[0].field.fieldDefinition.name, registerAndExecuteCalculation )

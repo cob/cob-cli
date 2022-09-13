@@ -43,7 +43,7 @@
             state()            { return this.valueData.dash_info && this.valueData.dash_info.state || "" },
             updating()         { return this.state === "updating" || this.state === "loading" },
             classes()          { return (this.options['ValueClasses'] || "Default Info") + " S_"+this.valueData.dash_info.state },
-            link()             { return this.valueData.dash_info.href + (this.view ? "?&av=" + this.view : "") },
+            link()             { return this.valueData.dash_info.href + (this.view ? "&av=" + this.view : "") },
             expandedClasses()  { return this.classes.split(/\s/).map(c => specialClasses[c] || c ).join(" ") },
             value() {
                 if(this.valueData.dash_info.state === "loading") return "L"

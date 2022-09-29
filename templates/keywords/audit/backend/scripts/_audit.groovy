@@ -21,7 +21,7 @@ if (auditFields.size() > 0
 	&& msg.action =~ "add|update" ) {
 
 	def updates = getAuditFieldsUpdates(auditFields,msg.instance.fields)
-    def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
+	def result = actionPacks.recordm.update(msg.type, "recordmInstanceId:" + msg.instance.id, updates);
 	if(updates) log.info("[\$audit] UPDATE '${msg.type}' id:${msg.instance.id}, updates: ${updates}, result:${result.getStatus()} | ${result.getStatusInfo()} ");
 }
 
@@ -59,16 +59,18 @@ def getAuditFields(definitionName) {
 	def fields = [:]
 	(0..fieldsSize-1).each { index ->
 		def fieldDefinition  = definition.fieldDefinitions.getJSONObject(index)
-		def fieldDescription = fieldDefinition.get("description")
-		def fieldDefId       = fieldDefinition.get("id")
-		def fieldName        = fieldDefinition.get("name");
-		fields[fieldDefId]   = [name:fieldName, description: fieldDescription]
+		def fieldDescription = fieldDefinition.getString("description")
+		if(fieldDescription){
+			def fieldDefId       = fieldDefinition.get("id");
+			def fieldName        = fieldDefinition.get("name");
+			fields[fieldDefId]   = [name:fieldName, description: fieldDescription]
+		}
 	}
 
 	// Finalmente obtém a lista de campos que é necessário calcular
 	def auditFields = [];
 	fields.each { fieldId,field -> 
-		def matcher = field.description.toString() =~ /[$]audit\.(creator|updater)\.(username|uri|time)/
+		def matcher = field.description =~ /[$]audit\.(creator|updater)\.(username|uri|time)/
 		if(matcher) {
 			def op = matcher[0][1]
 			def arg = matcher[0][2]

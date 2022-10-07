@@ -19,16 +19,19 @@
 
     export default {
         components: { Attention },
-        props: { component: Object },
+        props: { 
+            component: Object,
+            userInfo: Object
+        },
         computed: {
             options() { return this.component['MenuCustomize'][0] },
             classes() { return this.options['MenuClasses']      || "flex flex-col gap-y-2" },             
             lines() {
                 let lines = this.component['Text'].map( line => ({
                     classes:   line["TextCustomize"][0]['TextClasses'] || "transition ease-in-out duration-300 rounded-md border border-gray-300 border-l-2 border-l-sky-600 shadow-sm transform hover:translate-x-0.5 p-2 bg-white",
-                    icon:      line["TextCustomize"][0]['Icon']        || "",
-                    text:      line['Text']                            || "",
-                    link:      line['Link']                            || "",
+                    icon:      line["TextCustomize"][0]['Icon'] || "",
+                    text:      line['Text'] || "",
+                    link:      line['Link'] && line['Link'].replace(/__USERNAME__/g, this.userInfo.username) || "",
                     groups:    line["TextCustomize"][0]['GroupVisibility'].map(g => g["GroupVisibility"] && g["GroupVisibility"] ).filter(g => g) || [],
                     attention: line["TextCustomize"][0]['AttentionInfo'],
                 }))

@@ -9,7 +9,7 @@
            :key="i" 
       >
         <div class='whitespace-nowrap mr-1 text-gray-400 field'>{{ description.name }}:</div>
-        <div class='whitespace-nowrap text-ellipsis overflow-hidden value'>{{ description.value }}</div>
+        <div class='whitespace-nowrap text-ellipsis overflow-hidden value' v-html="description.value"></div>
       </div>
     </div>
   </div>
@@ -46,9 +46,15 @@ export default {
         return this.esInstance._definitionInfo.instanceDescription
             .filter(fieldDefinition => this.esInstance[toEsFieldName(fieldDefinition.name)])
             .map(fieldDefinition => {
+              let value = getValue(this.esInstance, fieldDefinition).join(', ')
+              if(fieldDefinition.description.indexOf("$date")>=0) {
+                value = (new Date(value*1)).toISOString().split('T')[0]
+              } else if(fieldDefinition.description.indexOf("$link")>=0) {
+                value = "<a href='"+getValue(this.esInstance, fieldDefinition)+"'>link</a>"
+              }
               return {
                 name: fieldDefinition.name,
-                value: getValue(this.esInstance, fieldDefinition).join(', ')
+                value: value
               }
             });
       }

@@ -108,7 +108,7 @@ function parseDashboard(raw_dashboard, userInfo) {
                         "ValueClasses": "",
                         "View": "",
                         "ValueAttention": "",
-                        "AttentionClasses": "",
+                        "ValueAttentionClasses": "",
                         "Unit": "",
                     }],
                     "Style Value": "",

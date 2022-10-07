@@ -38,7 +38,7 @@
             options()          { return this.valueData['ValueCustomize'][0] },
             view()             { return this.options['View'] },
             attention()        { return this.options['AttentionInfo'] },
-            attentionClasses() { return this.options['AttentionClasses'] },
+            attentionClasses() { return this.options['ValueAttentionClasses'] },
             unit()             { return this.options['Unit'] },
             state()            { return this.valueData.dash_info && this.valueData.dash_info.state || "" },
             updating()         { return this.state === "updating" || this.state === "loading" },

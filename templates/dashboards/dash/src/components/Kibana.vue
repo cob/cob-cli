@@ -34,6 +34,7 @@
             inputs()      { return this.options['InputVarKibana'].map(v => v['InputVarKibana']) },
             inputFilter() {
               let filters = this.inputs.filter(v => this.component.vars[v]).map(v => this.component.vars[v]);
+              if (filters.length == 0) filters.push("*")
               if (this.fixedQuery !== "") filters.push(" AND (" + this.fixedQuery + ")");
               return filters.join(" ")
             },

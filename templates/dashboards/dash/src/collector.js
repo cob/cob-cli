@@ -139,7 +139,8 @@ function parseDashboard(raw_dashboard, userInfo) {
                 "OutputVarCalendar": "",
                 "MaxVisibleDayEvents": "",
                 "AllowCreateInstances":"",
-                "CreateDefinition":""
+                "CreateDefinition":"",
+                "EventViews":""
             }],
             "Events": [{
                 "Definition": "",

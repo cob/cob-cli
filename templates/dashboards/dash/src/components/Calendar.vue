@@ -26,7 +26,6 @@
   import tippy from 'tippy.js';
   import Instance from "@/components/shared/Instance";
   import Vue from "vue";
-  import {getValue} from "@/utils/EsInstanceUtils";
   import ComponentStatePersistence from "@/model/ComponentStatePersistence";
 
   const DEFAULT_EVENT_COLOR = '#0e7bbe'
@@ -39,7 +38,8 @@
     },
 
     props: {
-      component: Object
+      component: Object,
+      userInfo: Object
     },
 
     data: () => ({
@@ -57,14 +57,15 @@
         timeZone: 'UTC',
         locales: allLocales,
         // Take in consideration updating the initial state value of `activeView` if you change this value
-        initialView: 'dayGridMonth',
+        initialView: 'dayGridWeek',
         headerToolbar: {
           left: 'today prev next',
           center: '',
-          right: 'dayGridMonth,listMonth'
+          right: 'dayGridWeek,dayGridMonth,listMonth'
         },
         buttonText: {
           today: 'Today',
+          week: 'Week',
           month: 'Month',
           list: 'List',
         },
@@ -85,11 +86,14 @@
     }),
 
     created() {
+        this.calendarOptions.initialView = this.eventView[0]
+        this.calendarOptions.headerToolbar.right = this.eventView.join(",")
+        
         this.statePersistence = new ComponentStatePersistence(this.component.id, this.updateCalendarBasedOnPersistedStateChange)
 
         // Setup a dashInfo placeholder for each event source, initially with a zero result query ( "-*") so it has a fast response
         for(let i in this.eventSources) {
-          this.rmEventSources.push( instancesList( this.eventSources[i]['Definition'], "-*", 2000, 0, {validity: 30}) )
+          this.rmEventSources.push( instancesList( this.eventSources[i]['Definition'], "-*", 800, 0, "", {validity: 60}) )
         }
 
         // If configured get the definition id to allow instance creation
@@ -164,6 +168,7 @@
       inputVarCalendar()     { return this.options['InputVarCalendar'] || [] },
       allowCreateInstances() { return this.options['AllowCreateInstances'] === 'TRUE' || false},
       createDefinition()     { return this.options['CreateDefinition'] },
+      eventView()            { return this.options['EventViews'] && this.options['EventViews'].split(',') || ['dayGridWeek','dayGridMonth','listMonth'] },
       outputVar()            { return this.options['OutputVarCalendar'] || '' },
       dayMaxEvents()         { return parseInt(this.options['MaxVisibleDayEvents'], 10) || MAX_VISIBLE_DAY_EVENTS },
       
@@ -180,13 +185,14 @@
             // Calculate date range query part
             let startField = toEsFieldName(this.eventSources[i]['DateStartEventField'])
             let endField   = toEsFieldName(this.eventSources[i]['DateEndEventField'])
-            let dateRangeQuery = `${startField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
+            let dateRangeQuery = `(${startField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}])`
             if (endField) {
-              dateRangeQuery += ` OR ${endField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}]`
+              dateRangeQuery += ` OR (${endField}:[${this.dateRange[0].getTime()} TO ${this.dateRange[1].getTime()}])`
+              dateRangeQuery += ` OR (${startField}:<${this.dateRange[0].getTime()} AND ${endField}:>=${this.dateRange[1].getTime()})`
             }
 
             // Calculate final query
-            const eventQuery = this.eventSources[i]['EventsQuery'] || '*'
+            const eventQuery = this.eventSources[i]['EventsQuery'] && this.eventSources[i]['EventsQuery'].replace(/__USERNAME__/g, this.userInfo.username) || '*'
             const baseQuery = `${eventQuery} AND (${dateRangeQuery})`
             const inputVars = new Set(this.inputVarCalendar.map(inputVar => inputVar['InputVarCalendar']));
             const finalQuery = `${baseQuery} ${[...inputVars].map(inputVar => this.component.vars[inputVar]).join(' ')}`.trim()
@@ -272,13 +278,22 @@
               const startDate = new Date(parseInt(esInstance[startDateField][0], 10))
               const endDate = endDateField ? new Date(parseInt(esInstance[endDateField][0], 10)) : null
 
+              let color
+              if(stateField && stateField.startsWith("#")) {
+                color = stateField
+              } else if(!stateField || !esInstance[stateField]) {
+                color = DEFAULT_EVENT_COLOR
+              } else {
+                color = this.textToRGB(esInstance[stateField][0])
+              }
+
               return {
                 id: `calendar-event-${esInstance.id}`,
                 title: title[0] + (title.length > 1 ? `(${title.length})` : ''),
                 start: startDate,
                 end: endDate,
                 allDay: true,
-                backgroundColor: stateField && esInstance[stateField] ? this.textToRGB(esInstance[stateField][0]) : DEFAULT_EVENT_COLOR,
+                backgroundColor: color,
 
                 // from: https://fullcalendar.io/docs/event-object
                 // In addition to the fields above, you may also include your own non-standard fields in each Event object.

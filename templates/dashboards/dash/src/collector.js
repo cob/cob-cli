@@ -200,7 +200,7 @@ function parseDashboard(raw_dashboard, userInfo) {
                     if (v.Value === 'Label') {
                         v.dash_info = {value: v.Arg[0].Arg, state: "ready"}
                     } else if (v.Value === 'link') {
-                        v.dash_info = {value: icon, href: url, state: undefined, isLink: true}
+                        v.dash_info = {value:  v.Arg[1].Arg, href:  v.Arg[0].Arg, state: "ready", isLink: true}
                     } else {
                         // add dash-info values in Totals
                         v.dash_info = dashFunctions[v.Value].apply(this, v['Arg'].map( a =>

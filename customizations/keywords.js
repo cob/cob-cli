@@ -8,6 +8,7 @@ exports.option = {
     choices: [
         require("./keywords.calc").option,
         require("./keywords.audit").option,
+        require("./keywords.styleResults").option,
         require("./keywords.log").option
     ]}
   ]

@@ -122,7 +122,7 @@ def getAllCalculationFields(definitionName) {
 
 	// Obtém detalhes da definição
 	def definitionEncoded = URLEncoder.encode(definitionName, "utf-8").replace("+", "%20")
-	def resp = actionPacks.rmRest.get( "recordm/definitions/name/${definitionEncoded}".toString(), [:], "");
+	def resp = actionPacks.rmRest.get( "recordm/definitions/name/${definitionEncoded}".toString(), [:], "integrationm");
 	JSONObject definition = new JSONObject(resp);
 
 	def fieldsSize = definition.fieldDefinitions.length();

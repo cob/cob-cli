@@ -292,7 +292,7 @@
                 title: title[0] + (title.length > 1 ? `(${title.length})` : ''),
                 start: startDate,
                 end: endDate,
-                allDay: true,
+                allDay: false,
                 backgroundColor: color,
 
                 // from: https://fullcalendar.io/docs/event-object

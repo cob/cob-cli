@@ -36,6 +36,7 @@ program
 program
     .command('customize')
     .arguments('[name]', "Name of the customization", "interactive menu")
+    .option('-f --force', 'skips comparisons')
     .description('Interactive prompt to customize an aspect of the server')
     .action( customize );
 

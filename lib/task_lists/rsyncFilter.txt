@@ -1,4 +1,5 @@
 + /services/com.cultofbits.web.integration.properties
++ /services/com.cultofbits.genesis.comm.properties
 + /services/com.cultofbits.confm.interact.properties
 + /services/com.cultofbits.integrationm.service.properties
 - /services/**

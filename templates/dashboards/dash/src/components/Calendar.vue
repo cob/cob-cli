@@ -54,7 +54,7 @@
       debouncing: false,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, listPlugin],
-        timeZone: 'UTC',
+        timeZone: 'local',
         locales: allLocales,
         // Take in consideration updating the initial state value of `activeView` if you change this value
         initialView: 'dayGridWeek',

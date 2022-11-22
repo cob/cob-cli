@@ -5,7 +5,7 @@ module.exports = {
     safelist: [
         {
             pattern: /.*/,
-            variants: ['sm','md','lg','xl','2xl']
+            variants: ['sm','md','lg','xl','2xl','hover']
         },
     ],
     plugins: [],

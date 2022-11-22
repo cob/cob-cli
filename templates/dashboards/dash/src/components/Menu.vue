@@ -5,7 +5,7 @@
             :class="line.classes"
             :href="line.link"
         >
-            <span style="margin-right: 20px;">
+            <span>
                 <i v-if="line.icon" :class="line.icon" style="margin-right:4px"></i>
                 <span v-html="line.text"></span>
             </span>

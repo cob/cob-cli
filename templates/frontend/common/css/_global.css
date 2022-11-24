@@ -12,3 +12,8 @@
     max-width: 230px;
     width: -webkit-fill-available;
 } */
+
+.cob-app .nav > li > a.js-menu-rm-importer-stats,
+.cob-app .nav > li > a.js-menu-reports {
+  display:none
+}

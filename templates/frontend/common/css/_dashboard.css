@@ -1,7 +1,0 @@
-.cob-app #header .nav > li > a.js-menu-40795 {
-    visibility: hidden;
-}
-.cob-app #header .nav > li > a.js-menu-40795:after {
-    content:  "Dashboard";
-    visibility: visible;
-}

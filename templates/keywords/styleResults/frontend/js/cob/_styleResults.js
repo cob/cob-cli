@@ -11,7 +11,11 @@ cob.custom.customize.push(function (core, utils, ui) {
     
             for(let mapping of relevantMapping) {
                 let [styleValue, styleClass] = mapping.split(":")
-                if(styleValue.trim() == fieldValue) node.classList.add(styleClass.trim())
+                if( styleValue.trim() == fieldValue
+                    || styleValue.trim() == "" && fieldValue == undefined
+                ) {
+                    node.classList.add(styleClass.trim())
+                }
             }
         }
     }),

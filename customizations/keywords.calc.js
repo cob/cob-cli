@@ -13,5 +13,6 @@ exports.option = {
       const be_target = "./integrationm/"
       await copy("../../templates/keywords/calc/backend/",be_target)
       await mergeFiles("Keyword.Calc")
+      return require("../templates/keywords/calc/package.json").version
   }
 }

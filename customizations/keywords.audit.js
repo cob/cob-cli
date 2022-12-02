@@ -13,5 +13,6 @@ exports.option = {
       const be_target = "./integrationm/"
       await copy("../../templates/keywords/audit/backend",be_target)
       await mergeFiles("Keyword.Audit")
+      return require("../templates/keywords/audit/package.json").version
   }
 }

@@ -3,9 +3,12 @@ exports.option = {
     short: "Dash",
     questions: [
     ],
-    customization: function (answers) {
+    customization: async function (answers) {
+        console.log("\nApplying Dash keyword customizations ...")
+
         const { copy } = require("../lib/task_lists/customize_copy");
         const  target = "./recordm/customUI/dash/"
-        return copy("../../templates/dashboards/dash/",target)
+        await copy("../../templates/dashboards/dash/",target)
+        return require("../templates/dashboards/dash/package.json").version
     }
 }

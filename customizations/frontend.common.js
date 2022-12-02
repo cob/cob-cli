@@ -11,5 +11,6 @@ exports.option = {
       const target = "./recordm/customUI/"
       await copy("../../templates/frontend/common/",target)
       await mergeFiles("Frontend.Common")
+      return require("../templates/frontend/common/package.json").version
   }
 }

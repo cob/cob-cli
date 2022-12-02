@@ -16,3 +16,6 @@
 [submodule "templates/frontend/common"]
 	path = templates/frontend/common
 	url = git@github.com:cob/customize.frontend.common.git
+[submodule "templates/frontend/formatList/currency"]
+	path = templates/frontend/formatList/currency
+	url = git@github.com:cob/customize.frontend.formatList.currency.git

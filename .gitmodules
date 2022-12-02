@@ -1,3 +1,6 @@
 [submodule "templates/keywords/image"]
 	path = templates/keywords/image
 	url = https://github.com/cob/customize.keywords.image.git
+[submodule "templates/keywords/styleResults"]
+	path = templates/keywords/styleResults
+	url = git@github.com:cob/customize.keywords.styleResults.git

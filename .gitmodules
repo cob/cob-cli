@@ -19,3 +19,6 @@
 [submodule "templates/frontend/formatList/currency"]
 	path = templates/frontend/formatList/currency
 	url = git@github.com:cob/customize.frontend.formatList.currency.git
+[submodule "templates/dashboards/dash"]
+	path = templates/dashboards/dash
+	url = git@github.com:cob/customize.dashboard.dash.git

@@ -4,3 +4,6 @@
 [submodule "templates/keywords/styleResults"]
 	path = templates/keywords/styleResults
 	url = git@github.com:cob/customize.keywords.styleResults.git
+[submodule "templates/keywords/log"]
+	path = templates/keywords/log
+	url = git@github.com:cob/customize.keywords.log.git

@@ -10,3 +10,6 @@
 [submodule "templates/keywords/calc"]
 	path = templates/keywords/calc
 	url = git@github.com:cob/customize.keywords.calc.git
+[submodule "templates/keywords/audit"]
+	path = templates/keywords/audit
+	url = git@github.com:cob/customize.keywords.audit.git

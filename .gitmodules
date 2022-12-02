@@ -7,3 +7,6 @@
 [submodule "templates/keywords/log"]
 	path = templates/keywords/log
 	url = git@github.com:cob/customize.keywords.log.git
+[submodule "templates/keywords/calc"]
+	path = templates/keywords/calc
+	url = git@github.com:cob/customize.keywords.calc.git

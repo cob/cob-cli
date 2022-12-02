@@ -9,6 +9,7 @@ exports.option = {
         require("./keywords.calc").option,
         require("./keywords.audit").option,
         require("./keywords.styleResults").option,
+        require("./keywords.image").option,
         require("./keywords.log").option
     ]}
   ]

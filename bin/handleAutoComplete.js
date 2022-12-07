@@ -1,13 +1,10 @@
 const path = require('path');
-const directoryPath = path.join(__dirname,"../customizations/");
-
-const files = () => require('fs').readdirSync(directoryPath).map(f => f.substr(0,f.lastIndexOf(".")))
 
 /* Autocomplete Component*/
 var omelette = require('omelette');
 const commandStructure = {
     'init' : [], 
-    'customize' : files, 
+    'customize' : [], 
     'test' : [], 
     'deploy' : [], 
     'updateFromServer' : [],

@@ -31,7 +31,8 @@
     "webpack": "^5.49.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.2",
-    "whoami": "0.0.3"
+    "whoami": "0.0.3",
+    "xdg-basedir": "^5.1.0"
   },
   "keywords": [],
   "author": "mimes70",

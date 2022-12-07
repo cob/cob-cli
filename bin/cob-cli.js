@@ -35,8 +35,9 @@ program
 
 program
     .command('customize')
-    .arguments('[name]', "Name of the customization", "interactive menu")
+    .arguments('[name]', "Name to filter the list of customizations", "interactive menu")
     .option('-f --force', 'skips comparisons')
+    .option('-c --cache', 'cache all customizations')
     .description('Interactive prompt to customize an aspect of the server')
     .action( customize );
 

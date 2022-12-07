@@ -38,6 +38,7 @@ program
     .arguments('[name]', "Name to filter the list of customizations", "interactive menu")
     .option('-f --force', 'skips comparisons')
     .option('-c --cache', 'cache all customizations')
+    .option('-l --local', 'use local files')
     .description('Interactive prompt to customize an aspect of the server')
     .action( customize );
 

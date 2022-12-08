@@ -16,12 +16,9 @@ const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 program
     .description('CoB Command line to simplify server customizations')
     .usage("command")
-    .version( require('../package.json').version,'-v, --version', 'output the current version');
-
-program
-    .description('CoB Command line to simplify server customizations')
-    .usage("command")
-    .version( require('../package.json').version,'-v, --version', 'output the current version');
+    .version(require('../package.json').version, '-v, --version', 'output the current version')
+    .option('--setup','add autocomplete to system profiles')
+    .option('--cleanup', 'remove autocomplete from system profiles')
 
 program
     .command('init')

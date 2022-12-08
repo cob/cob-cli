@@ -15,9 +15,11 @@ completion.init()
 
 // add to system profiles
 if (~process.argv.indexOf('--setup')) {
+    console.log("Setting up...")
     completion.setupShellInitFile()
 }
 // remove from system profiles
 if (~process.argv.indexOf('--cleanup')) {
+    console.log("Cleaning...")
     completion.cleanupShellInitFile()
 }

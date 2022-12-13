@@ -36,6 +36,7 @@ program
     .option('-f --force', 'skips comparisons')
     .option('-c --cache', 'cache all customizations')
     .option('-l --local', 'use local files')
+    .option('-u --update', 'update all previsously added customizations')
     .description('Interactive prompt to customize an aspect of the server')
     .action( customize );
 

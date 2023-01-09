@@ -5,6 +5,7 @@ require("./handleAutoComplete");
 
 const program = require('commander');
 
+const getRepos         = require("../lib/commands/getRepos");
 const init             = require("../lib/commands/init");
 const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
@@ -19,6 +20,12 @@ program
     .version(require('../package.json').version, '-v, --version', 'output the current version')
     .option('--setup','add autocomplete to system profiles')
     .option('--cleanup', 'remove autocomplete from system profiles')
+
+program
+    .command('getRepos')
+    .description('clone (or update) all cob accessible repositories on gitlab,')
+    .arguments('<token>', 'private token for gitlab (whit api read permission)')
+    .action( getRepos );
 
 program
     .command('init')

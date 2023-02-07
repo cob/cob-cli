@@ -1,0 +1,14 @@
+.DS_Store
+node_modules
+.idea
+*.iml
+.env.json
+.test.in.execution
+
+# NativeScript application
+hooks
+platforms
+
+# CoB Enviroment management temporary files
+*ENV__DELETE__.*
+*ENV__ORIGINAL_BACKUP__.*

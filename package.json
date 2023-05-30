@@ -1,6 +1,6 @@
 {
   "name": "cob-cli",
-  "version": "2.37.1",
+  "version": "2.37.2",
   "description": "A command line utility to help Cult of Bits partners develop with higher speed and reusing common code and best practices.",
   "preferGlobal": true,
   "repository": {

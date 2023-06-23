@@ -20,7 +20,7 @@
     "axios": "^0.21.1",
     "colors": "^1.4.0",
     "commander": "^5.1.0",
-    "concurrently": "^5.3.0",
+    "concurrently": "^8.2.0",
     "execa": "^4.0.3",
     "fast-glob": "^3.2.5",
     "fs-extra": "^9.0.1",

@@ -11,6 +11,7 @@ const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const updateFromServer = require("../lib/commands/updateFromServer");
+const getDefs          = require("../lib/commands/getDefs");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
 /*******************************************/
@@ -77,5 +78,11 @@ program
     .command('upgradeRepo')
     .description('Upgrade current repository to the last cob-cli version structure')
     .action( upgradeRepo );
+    
+program
+    .command('getDefs')
+    .option('-e --environment <name>', 'environment to use')
+    .description('Updates local copy with definitions on server')
+    .action( getDefs );
     
 program.parse(process.argv);

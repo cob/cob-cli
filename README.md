@@ -32,5 +32,5 @@ Linux version:
 docker run --rm -p 8040:8040 \ 
 -v <PATH_TO_DIRECTORY_SSH_KEYS>:~/.ssh/ \ 
 -v <PATH_TO_SERVER_WORKING_DIRs>:/work/ \ 
-cultofbits/cob-cli
+cob/cob-cli:latest
 ```

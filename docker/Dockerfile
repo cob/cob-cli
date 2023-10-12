@@ -7,7 +7,7 @@ RUN apt update && apt upgrade && \
 RUN useradd -ms /bin/bash cobdev
 
 RUN mkdir /work
-RUN chown cobdev /work
+RUN chown -R cobdev /work
 WORKDIR /work
 
 USER cobdev
@@ -31,6 +31,7 @@ WORKDIR /cob-cli
 COPY . .
 RUN rm -rf node_modules .idea
 RUN chown -R cobdev /cob-cli
+
 
 USER cobdev
 ENV SHELL="bash"

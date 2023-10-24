@@ -12,6 +12,7 @@ const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const updateFromServer = require("../lib/commands/updateFromServer");
 const getDefs          = require("../lib/commands/getDefs");
+const generateMermaid  = require("../lib/commands/generateMermaid");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
 /*******************************************/
@@ -84,5 +85,14 @@ program
     .option('-e --environment <name>', 'environment to use')
     .description('Updates local copy with definitions on server')
     .action( getDefs );
+    
+program
+    .command('generateMermaid')
+    .option('-e --environment <name>', 'environment to use')
+    .option('-s --server <name>', 'server to use (ignores -e)')
+    .option('-f --filter <regexp>', 'regexp used to filter against names & descriptions')
+    .option('-d --debug', 'send debug info to stderr')
+    .description('Generates mermaid diagram from Definitions')
+    .action( generateMermaid );
     
 program.parse(process.argv);

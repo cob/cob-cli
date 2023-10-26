@@ -91,6 +91,7 @@ program
     .option('-e --environment <name>', 'environment to use')
     .option('-s --server <name>', 'server to use (ignores -e)')
     .option('-f --filter <regexp>', 'regexp used to filter against names & descriptions')
+    .option('-l --labels <lang>', 'add labels in the given language. Available options are "en", "pt" or "es"')
     .option('-d --debug', 'send debug info to stderr')
     .description('Generates mermaid diagram from Definitions')
     .action( generateMermaid );

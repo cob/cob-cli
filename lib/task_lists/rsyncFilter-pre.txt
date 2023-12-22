@@ -6,6 +6,8 @@
 - recordm-importer.log*
 - recordm-importer*.jar
 
+- upgrade.log
+
 - node_modules
 - .git
 - .gitkeep

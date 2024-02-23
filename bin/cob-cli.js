@@ -15,6 +15,10 @@ const getDefs          = require("../lib/commands/getDefs");
 const generateMermaid  = require("../lib/commands/generateMermaid");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
+const increaseVerbosity = function(_dummy, previous){
+   return previous + 1;
+}
+
 /*******************************************/
 program
     .description('CoB Command line to simplify server customizations')
@@ -35,7 +39,7 @@ program
     .arguments('<servername>')
     .option('-l --legacy <folder>','import git history from legacy ClientConfs. <folder> should be path to server files inside ClienConfs.')
     .option('-a --repoaccount <account url>', 'Specify git account to use', "git@gitlab.com:cob/")
-    .option('-V --verbose', 'verbose execution of tasks')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .description('Initializes a server customization repository. Use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .action( init );
 
@@ -51,7 +55,7 @@ program
 
 program
     .command('test')
-    .option('-V --verbose', 'verbose execution of tasks')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-e --environment <name>', 'environment to use')
     .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .option('-l --localOnly', 'test only localFiles (customUI)')
@@ -63,7 +67,7 @@ program
     .command('deploy')
     .option('-f --force', 'skips comparisons')
     .option('-e --environment <name>', 'environment to use')
-    .option('-V --verbose', 'verbose execution of tasks')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
     .action( deploy );
@@ -73,6 +77,7 @@ program
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
     .option('-e --environment <name>', 'environment to use')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .action( updateFromServer );
 
 program

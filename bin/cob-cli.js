@@ -14,6 +14,7 @@ const updateFromServer = require("../lib/commands/updateFromServer");
 const getDefs          = require("../lib/commands/getDefs");
 const generateMermaid  = require("../lib/commands/generateMermaid");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
+const updateCustomizationsVersions = require("../lib/commands/updateRecordmCustomizationVersions");
 
 const increaseVerbosity = function(_dummy, previous){
    return previous + 1;
@@ -80,6 +81,11 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .action( updateFromServer );
+
+program
+    .command('updateCustomizationsVersions')
+    .description('Send the versions of the local customizations to a definition in recordm')
+    .action( updateCustomizationsVersions );
 
 program
     .command('upgradeRepo')

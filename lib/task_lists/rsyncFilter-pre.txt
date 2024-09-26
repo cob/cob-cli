@@ -8,6 +8,7 @@
 - recordm-importer.log*
 - recordm-importer*.jar
 
+- install.log
 - upgrade.log
 
 - node_modules

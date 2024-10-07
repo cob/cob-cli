@@ -4,7 +4,6 @@
 + /services/com.cultofbits.integrationm.service.properties
 - /services/**
 
-+ /security/password.rules.properties
 - /security/**
 - /hornetq
 - /elasticsearch

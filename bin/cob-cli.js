@@ -46,6 +46,7 @@ program
 program
     .command('customize')
     .arguments('[name]', "Name to filter the list of customizations", "interactive menu")
+    .option('-s --space <space>', 'specifies search space, default is org:cob') 
     .option('-f --force', 'skips comparisons')
     .option('-c --cache', 'cache all customizations')
     .option('-l --local', 'use local files')

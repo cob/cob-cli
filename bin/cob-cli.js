@@ -40,7 +40,7 @@ program
     .option('-l --legacy <folder>','import git history from legacy ClientConfs. <folder> should be path to server files inside ClienConfs.')
     .option('-a --repoaccount <account url>', 'Specify git account to use', "git@gitlab.com:cob/")
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
-    .description('Initializes a server customization repository. Use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .description('Initializes a server customization repository. Use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .action( init );
 
 program
@@ -60,7 +60,7 @@ program
     .option('-e --environment <name>', 'environment to use')
     .option('-d --dashboard <name>', 'Aditionally specify a VUE dashboard to test')
     .option('-l --localOnly', 'test only localFiles (customUI)')
-    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .description('Test the customization')
     .action( test );
 
@@ -69,7 +69,7 @@ program
     .option('-f --force', 'skips comparisons')
     .option('-e --environment <name>', 'environment to use')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
-    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
     .action( deploy );
 
@@ -77,7 +77,7 @@ program
     .command('updateFromServer')
     .description('Updates local copy with current files on server, in case of changes made out of standard process.')
     .option('-e --environment <name>', 'environment to use')
-    .option('-s --servername <servername>', 'use <servername>.cultofbits.com (i.e. name without the FQDN)')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .action( updateFromServer );
 

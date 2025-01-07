@@ -87,7 +87,7 @@ program
     .description('Send the versions of the local customizations to a definition in recordm')
     .option('-g --updateFromGitHubToRecordm', 'Upload the most recent versions found on GitHub to Recordm')
     .option('-ib --ignoreMainBranch', 'Let the command run on any branch')
-    .option('-is --ignoreGitStatus', 'Dot not check git status')
+    .option('-is --ignoreGitStatus', 'Do not check git status')
 
     .action( updateCustomizationsVersions );
 

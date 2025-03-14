@@ -9,8 +9,8 @@
   },
   "main": "./bin/cob-cli.js",
   "scripts": {
-    "postinstall": "bin/cob-cli.js --setup",
-    "uninstall": "bin/cob-cli.js --cleanup"
+    "postinstall": "node bin/cob-cli.js --setup",
+    "uninstall": "node bin/cob-cli.js --cleanup"
   },
   "bin": {
     "cob-cli": "bin/cob-cli.js"

@@ -79,6 +79,7 @@ program
     .option('-e --environment <name>', 'environment to use')
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
+    .option('-c --code', 'By adding this flag you indicate that you want to being the code and not the data')
     .action( updateFromServer );
 
 program

@@ -1,0 +1,33 @@
+[
+	{
+		"name" : "BB032",
+		"definitions": {
+			"query" : ["BB032", "Dashboard", "BPO"]
+		},
+		"permissions" : {
+			"query" : "@BB032"
+		}, 
+		"instances" : [
+			{
+				"definition" : "Dashboard_v1",
+				"query" : "solution_reference:BB032"
+			},
+			{
+				"definition" : "Dashboard-Files",
+				"query" : "*"
+			},
+			{
+				"definition" : "Dashboard-Solutions",
+				"query" : "BB032"
+			},
+			{
+				"definition" : "Business Process",
+				"query" : "BB032"
+			},
+			{
+				"definition" : "Work Queues",
+				"query" : "BB032"
+			}
+		]
+	}
+]

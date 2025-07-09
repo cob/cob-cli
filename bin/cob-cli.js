@@ -10,6 +10,7 @@ const init             = require("../lib/commands/init");
 const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
+const package          = require("../lib/commands/package");
 const updateFromServer = require("../lib/commands/updateFromServer");
 const getDefs          = require("../lib/commands/getDefs");
 const generateMermaid  = require("../lib/commands/generateMermaid");
@@ -72,6 +73,13 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
     .action( deploy );
+
+program
+    .command('package')
+    .option('-e --environment <name>', 'environment to use')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
+    .description('Package customization for out-of-band deploying')
+    .action( package );
 
 program
     .command('updateFromServer')

@@ -12,6 +12,7 @@ const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
 const package          = require("../lib/commands/package");
 const updateFromServer = require("../lib/commands/updateFromServer");
+const tagDefs          = require("../lib/commands/tagDefs.js");
 const getDefs          = require("../lib/commands/getDefs");
 const generateMermaid  = require("../lib/commands/generateMermaid");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
@@ -101,6 +102,16 @@ program
     .option('-e --environment <name>', 'environment to use')
     .description('Updates local copy with definitions on server')
     .action( getDefs );
+
+program
+    .command('tagDefs')
+    .description('Allows the user to tag un-tagged Changes in Definitions configured on exported solutions.')
+    .option('-e --environment <name>', 'environment to use')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
+    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
+    .option('--all', 'tag all Definitions of all exported solutions. Use with care!')
+    .option('--cookie <path>', '')
+    .action( tagDefs );
     
 program
     .command('generateMermaid')

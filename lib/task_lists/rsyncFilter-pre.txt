@@ -25,3 +25,5 @@
 - **.ENV__*__.*
 
 - /keystores
+- /idpconfs
+- /storage

@@ -10,7 +10,6 @@ const init             = require("../lib/commands/init");
 const customize        = require("../lib/commands/customize");
 const test             = require("../lib/commands/test");
 const deploy           = require("../lib/commands/deploy");
-const cleanup          = require("../lib/commands/cleanup");
 const updateFromServer = require("../lib/commands/updateFromServer");
 const getDefs          = require("../lib/commands/getDefs");
 const generateMermaid  = require("../lib/commands/generateMermaid");
@@ -73,15 +72,6 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
     .action( deploy );
-
-program
-    .command('cleanup')
-    .option('-e --environment <name>', 'environment to use')
-    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
-    .option('-l --localOnly', 'only clean local state, skip server cleanup')
-    .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
-    .description('Clean up repository state after an interrupted test or deploy')
-    .action( cleanup );
 
 program
     .command('updateFromServer')

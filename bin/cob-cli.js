@@ -74,7 +74,14 @@ program
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .description('Deploy customization to the server')
-    .action( deploy );
+    .action( async (args) => {
+        try {
+            await deploy(args)
+        } catch (err) {
+            console.error("\n", err.message);
+            process.exitCode = 1;
+        }
+    });
 
 program
     .command('cleanup')

@@ -25,6 +25,8 @@ An aditional command is available to get the repo updated with files from server
 
 ### cob-cli init \<servername> [-l,--legacy <folder>] [-a,--repoaccount \<git acount url>]
 
+`<servername>` is just the name of the server, without the `.cultofbits.pt` FQDN and without the `server_` prefix: `cob-cli init learning` sets up the repository `server_learning` for `learning.cultofbits.pt`.
+
 This command has two diferent behaviors, depending on the circumstances:
  1. If already exists a repo in `https:/gitlab/cob/` (or the specified --repoaccount) for this server just do a `git clone` of that repo.
  2. Otherwise, creates all the infrastucture to suport the server customization. In this last option, if the `--legacy` is used, in addition to creating the infrastructure it will try to rebuild the server customization history, existing on the legacy repo (old ClientConfs).

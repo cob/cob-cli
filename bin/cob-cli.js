@@ -43,7 +43,7 @@ program
     .option('-l --legacy <folder>','import git history from legacy ClientConfs. <folder> should be path to server files inside ClienConfs.')
     .option('-a --repoaccount <account url>', 'Specify git account to use', "git@gitlab.com:cob/")
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
-    .description('Initializes a server customization repository. Use <servername>.cultofbits.pt (i.e. name without the FQDN)')
+    .description('Initializes the server customization repository server_<servername> for <servername>.cultofbits.pt (i.e. just the name, without the server_ prefix or the FQDN)')
     .action( init );
 
 program

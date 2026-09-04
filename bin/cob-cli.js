@@ -44,7 +44,14 @@ program
     .option('-a --repoaccount <account url>', 'Specify git account to use', "git@gitlab.com:cob/")
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .description('Initializes the server customization repository server_<servername> for <servername>.cultofbits.pt (i.e. just the name, without the server_ prefix or the FQDN)')
-    .action( init );
+    .action( async (servername, args) => {
+        try {
+            await init(servername, args)
+        } catch (err) {
+            console.error("\n", err.message);
+            process.exitCode = 1;
+        }
+    });
 
 program
     .command('customize')

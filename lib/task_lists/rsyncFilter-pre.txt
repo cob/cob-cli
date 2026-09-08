@@ -18,6 +18,7 @@
 - *.iml
 - *.swap
 - *.swp
+- *.hprof
 - .DS_Store
 - .env.json
 - .idea

@@ -79,6 +79,7 @@ program
     .option('-e --environment <name>', 'environment to use')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
+    .option('--cookie <path>', 'cookie file used to register changed customization versions, instead of asking for credentials')
     .description('Deploy customization to the server')
     .action( async (args) => {
         try {

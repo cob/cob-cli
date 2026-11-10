@@ -74,6 +74,8 @@ In adition it promotes the management of adequate and updated documentation.
 
 The --force option allows to bypass the conflict test and deploy the local configuration independently of the existing conditions. It should be used with extreme caution and only to resolve problems not possible to resolve in other ways.
 
+When a deploy to the `prod` environment changes the versions in `customizations.json` (compared with the last deploy to that server), the command finishes by registering them in the CoB customizations inventory (`dogfooding.cultofbits.com`). It asks for your credentials on that server, as `updateFromServer` and `tagDefs` do, or uses `--cookie <path>`; an empty username skips it. Only the repository name and the `customization: version` list are sent. If it is skipped or fails the deploy is still done, and a later `cob-cli deploy --force` sends the list again.
+
 Note: This command might not be available to the whole development team and hence some member might just pre-deploy to git hub and it's up to priveledge member of the this to finalize the deploy process after, typically after review.
 
 ---

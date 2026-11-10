@@ -114,7 +114,7 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-c --code', 'By adding this flag you indicate that you want to bring the code and not the data')
-    .option('--cookie <path>', '')
+    .option('--cookie <path>', 'cookie file with a valid cobtoken, to use instead of asking for credentials')
     .action( updateFromServer );
 
 program
@@ -137,7 +137,7 @@ program
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('--all', 'tag all Definitions of all exported solutions. Use with care!')
-    .option('--cookie <path>', '')
+    .option('--cookie <path>', 'cookie file with a valid cobtoken, to use instead of asking for credentials')
     .action( tagDefs );
     
 program.parse(process.argv);

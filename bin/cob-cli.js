@@ -124,6 +124,8 @@ program
 program
     .command('getDefs')
     .option('-e --environment <name>', 'environment to use')
+    .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
+    .option('--cookie <path>', 'cookie file with a valid cobtoken, to use instead of asking for credentials')
     .description('Updates local copy with definitions on server')
     .action( getDefs );
 

@@ -11,7 +11,7 @@ There are 4 main commands. The first, `init`, is to be run once in the beginning
  * `cob-cli init <servername> [-l,--legacy <folder>] [-a,--repoaccount <git acount url>]`
  * `cob-cli customize`
  * `cob-cli test [-d --dashboard <name>, --localOnly, --servername <servername>]`
- * `cob-cli deploy [-f,--force, --servername <servername>]`
+ * `cob-cli deploy [-f,--force, --servername <servername>, --cookie <path>, --customizationsInventoryOnly]`
 
 An aditional command is available to get the repo updated with files from server, which shouldn't be necessary unless changes are made directly to the server and outside of the cob-cli process. 
  * `cob-cli updateFromServer [--servername <servername>]`
@@ -68,13 +68,15 @@ Aditionally you can specify `--localOnly` if you just want to test frontend conf
 
 ---
 
-### cob-cli deploy [-f,--force, --servername <servername>]
+### cob-cli deploy [-f,--force, --servername <servername>, --cookie <path>, --customizationsInventoryOnly]
 This last command alows you to deploy your finished developmentto the server, garanting that there are no conflicts with changes made by other.
 In adition it promotes the management of adequate and updated documentation.
 
 The --force option allows to bypass the conflict test and deploy the local configuration independently of the existing conditions. It should be used with extreme caution and only to resolve problems not possible to resolve in other ways.
 
-When a deploy to the `prod` environment changes the versions in `customizations.json` (compared with the last deploy to that server), the command finishes by registering them in the CoB customizations inventory (`dogfooding.cultofbits.com`). It asks for your credentials on that server, as `updateFromServer` and `tagDefs` do, or uses `--cookie <path>`; an empty username skips it. Only the repository name and the `customization: version` list are sent. If it is skipped or fails the deploy is still done, and a later `cob-cli deploy --force` sends the list again.
+When a deploy to the `prod` environment changes the versions in `customizations.json` (compared with the last deploy to that server), the command finishes by registering them in the CoB customizations inventory (`dogfooding.cultofbits.com`). It asks for your credentials on that server (username and password, as `updateFromServer` and `tagDefs` do) or uses `--cookie <path>`; an empty username skips it. Note that the inventory is on `dogfooding.cultofbits.com`, so the cookie file given to `--cookie` must have the `cobtoken` of that server, not the one of the server being deployed, which is the one `updateFromServer` and `tagDefs` look for. Only the repository name and the `customization: version` list are sent.
+
+If the registration is skipped or fails the deploy is still done, and it is not tried again by the next deploys (the versions will no longer be different). To register again, without deploying anything, use `cob-cli deploy --customizationsInventoryOnly [-s <servername>]`: it sends the versions in the last commit deployed to that server (not the ones in the working copy, which may not be deployed yet). It only applies to the `prod` environment. Don't use `--force` for this, it skips the deploy safety checks.
 
 Note: This command might not be available to the whole development team and hence some member might just pre-deploy to git hub and it's up to priveledge member of the this to finalize the deploy process after, typically after review.
 

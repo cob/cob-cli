@@ -79,7 +79,8 @@ program
     .option('-e --environment <name>', 'environment to use')
     .option('-V --verbose', 'verbose execution of tasks', increaseVerbosity, 0)
     .option('-s --servername <servername>', 'use <servername>.cultofbits.pt (i.e. name without the FQDN)')
-    .option('--cookie <path>', 'cookie file used to register changed customization versions, instead of asking for credentials')
+    .option('--cookie <path>', 'cookie file with the cobtoken of dogfooding.cultofbits.com (not of the deployed server), used to register customization versions instead of asking for credentials')
+    .option('--customizationsInventoryOnly', 'deploys nothing: just registers again, in the customizations inventory, the versions of the last deploy to the server (e.g. after a failed registration)')
     .description('Deploy customization to the server')
     .action( async (args) => {
         try {

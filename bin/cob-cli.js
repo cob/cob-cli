@@ -15,7 +15,6 @@ const package          = require("../lib/commands/package");
 const updateFromServer = require("../lib/commands/updateFromServer");
 const tagDefs          = require("../lib/commands/tagDefs.js");
 const getDefs          = require("../lib/commands/getDefs");
-const generateMermaid  = require("../lib/commands/generateMermaid");
 const { upgradeRepo }  = require("../lib/commands/upgradeRepo");
 
 const increaseVerbosity = function(_dummy, previous){
@@ -138,16 +137,5 @@ program
     .option('--all', 'tag all Definitions of all exported solutions. Use with care!')
     .option('--cookie <path>', '')
     .action( tagDefs );
-    
-program
-    .command('generateMermaid')
-    .option('-e --environment <name>', 'environment to use')
-    .option('-s --server <name>', 'server to use (ignores -e)')
-    .option('-f --filter <regexp>', 'regexp used to filter against names & descriptions. You can use multiple filters separated by spaces and you can prefix the filter with a minus(-) to explicit Definition not containing that filter.')
-    .option('-i --includeReferencedTables', 'Includes tables referenced, even if excluded by the filter')
-    .option('-l --labels <lang>', 'add labels in the given language. Available options are "en", "pt" or "es"')
-    .option('-d --debug', 'send debug info to stderr')
-    .description('Generates mermaid diagram from Definitions')
-    .action( generateMermaid );
     
 program.parse(process.argv);
